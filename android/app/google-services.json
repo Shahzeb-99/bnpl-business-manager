@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "508326179650",
+    "project_id": "ecommerce-bnpl",
+    "storage_bucket": "ecommerce-bnpl.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508326179650:android:c74e9634b7cb99afc80edb",
+        "android_client_info": {
+          "package_name": "com.example.ecommerce_bnql"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508326179650-35gttdghd48peu1256sq4gpvn1s3qq3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBPK2_w_6TP5gBCKqgK57ApaiTRKB123U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508326179650-35gttdghd48peu1256sq4gpvn1s3qq3s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
