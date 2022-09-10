@@ -1,5 +1,6 @@
 import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
 import 'package:ecommerce_bnql/screens/login-registration%20screen/registration_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_bnql/screens/login-registration screen/decorations.dart';
@@ -8,8 +9,8 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   final auth = FirebaseAuth.instance;
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,9 @@ class LoginScreen extends StatelessWidget {
               decoration: kDecoration.inputBox('Email'),
               controller: email,
             ),
-            SizedBox(height: 5,),
+            const SizedBox(
+              height: 5,
+            ),
             TextField(
               decoration: kDecoration.inputBox('Password'),
               obscureText: true,
@@ -40,15 +43,18 @@ class LoginScreen extends StatelessWidget {
                         .then((value) => Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AllCustomersScreen())));
+                                builder: (context) =>
+                                    const AllCustomersScreen())));
                   } on Exception catch (e) {
-                    print(e);
+                    if (kDebugMode) {
+                      print(e);
+                    }
                   }
                 },
-                child: Text('Login')),
+                child: const Text('Login')),
             Row(
               children: [
-                Text('Dont have an account?'),
+                const Text('Don\'t have an account?'),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
@@ -56,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => RegistrationScreen()));
                   },
-                  child: Text(
+                  child: const Text(
                     '  Sign up',
                     style: TextStyle(color: Colors.blue),
                   ),

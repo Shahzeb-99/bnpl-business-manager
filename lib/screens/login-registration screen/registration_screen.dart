@@ -1,5 +1,6 @@
 import 'package:ecommerce_bnql/screens/login-registration screen/decorations.dart';
 import 'package:ecommerce_bnql/screens/login-registration screen/login_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -7,8 +8,8 @@ class RegistrationScreen extends StatelessWidget {
   RegistrationScreen({Key? key}) : super(key: key);
 
   final auth = FirebaseAuth.instance;
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class RegistrationScreen extends StatelessWidget {
               autofocus: true,
               controller: email,
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             TextField(
@@ -38,19 +39,21 @@ class RegistrationScreen extends StatelessWidget {
                     auth.createUserWithEmailAndPassword(
                         email: email.text, password: password.text);
                   } on Exception catch (e) {
-                    print(e);
+                    if (kDebugMode) {
+                      print(e);
+                    }
                   }
                 },
-                child: Text('Register')),
+                child: const Text('Register')),
             Row(
               children: [
-                Text('Already have an account?'),
+                const Text('Already have an account?'),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => LoginScreen()));
                   },
-                  child: Text(
+                  child: const Text(
                     '  Sign in',
                     style: TextStyle(color: Colors.blue),
                   ),

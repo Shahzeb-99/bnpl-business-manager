@@ -82,7 +82,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                               style: kBoldText,
                             ),
                             Text(
-                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstanding_balance} PKR',
+                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstandingBalance} PKR',
                             ),
                           ],
                         )

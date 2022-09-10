@@ -13,8 +13,8 @@ class CustomerView extends ChangeNotifier {
           for (var customer in value.docs) {
             Customers newCustomer = Customers(name:
               customer.get('name'),image:
-              customer.get('image'),outstanding_balance:
-              customer.get('outstanding_balance'),paid_amount:
+              customer.get('image'),outstandingBalance:
+              customer.get('outstanding_balance'),paidAmount:
               customer.get('paid_amount'), documentID: customer.id,
             );
             allCustomers.add(newCustomer);
