@@ -1,7 +1,7 @@
+import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'customer_screen.dart';
 
 class PurchaseWidget extends StatelessWidget {
   const PurchaseWidget(

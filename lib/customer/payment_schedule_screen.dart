@@ -1,11 +1,18 @@
+import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
+import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:flutter/material.dart';
-import 'package:ecommerce_bnql/customer/customer_screen.dart';
 
-class PaymentScheduleScreen extends StatelessWidget {
-  const PaymentScheduleScreen({Key? key, required this.paymentList}) : super(key: key);
+class PaymentScheduleScreen extends StatefulWidget {
+  const PaymentScheduleScreen({Key? key, required this.paymentList})
+      : super(key: key);
 
   final List<PaymentSchedule> paymentList;
 
+  @override
+  State<PaymentScheduleScreen> createState() => _PaymentScheduleScreenState();
+}
+
+class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,22 +23,47 @@ class PaymentScheduleScreen extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: paymentList.length,
+        itemCount: widget.paymentList.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
             color: const Color(0xFFD6EFF2),
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(flex: 2,
-                    child: Text(
-                        '${paymentList[index].date.toDate().day.toString()} - ${paymentList[index].date.toDate().month.toString()} - ${paymentList[index].date.toDate().year.toString()}'),
-                  ),
-                  Expanded(flex:2,child: Text('Amount : ${paymentList[index].amount.toString()} PKR')),
-                  paymentList[index].isPaid ? const Expanded(flex:1,child: Text('Paid')) : const Expanded(flex:1,child: Text('Not Paid')),
-                ],
+            child: InkWell(
+              onTap: () async {
+
+                  DateTime? newDate = await showDatePicker(
+                      initialDate: DateTime(
+                          widget.paymentList[index].date.toDate().year,
+                          widget.paymentList[index].date.toDate().month,
+                          widget.paymentList[index].date.toDate().day),
+                      firstDate: DateTime(DateTime.now().year),
+                      lastDate: DateTime(2030),
+                      context: context);
+
+                  setState(() {
+                    widget.paymentList[index].date = Timestamp.fromDate(newDate!);
+                  });
+                  widget.paymentList[index].updateFirestore();
+
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                          '${widget.paymentList[index].date.toDate().day.toString()} - ${widget.paymentList[index].date.toDate().month.toString()} - ${widget.paymentList[index].date.toDate().year.toString()}'),
+                    ),
+                    Expanded(
+                        flex: 2,
+                        child: Text(
+                            'Amount : ${widget.paymentList[index].amount.toString()} PKR')),
+                    widget.paymentList[index].isPaid
+                        ? const Expanded(flex: 1, child: Text('Paid'))
+                        : const Expanded(flex: 1, child: Text('Not Paid')),
+                  ],
+                ),
               ),
             ),
           );
@@ -39,4 +71,5 @@ class PaymentScheduleScreen extends StatelessWidget {
       ),
     );
   }
+
 }
