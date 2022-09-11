@@ -1,23 +1,24 @@
-import 'package:ecommerce_bnql/customer/customer_screen.dart';
-import 'package:ecommerce_bnql/vendor/all_vendor_screen.dart';
-import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
+import 'package:ecommerce_bnql/vendor/vendor_screen.dart';
+import 'package:ecommerce_bnql/view_model/viewmodel_vendors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
-class AllCustomersScreen extends StatefulWidget {
-  const AllCustomersScreen({Key? key}) : super(key: key);
+import '../customer/all_customer_screen.dart';
+
+class AllVendorScreen extends StatefulWidget {
+  const AllVendorScreen({Key? key}) : super(key: key);
 
   @override
-  State<AllCustomersScreen> createState() => _AllCustomersScreenState();
+  State<AllVendorScreen> createState() => _AllVendorScreenState();
 }
 
-class _AllCustomersScreenState extends State<AllCustomersScreen> {
+class _AllVendorScreenState extends State<AllVendorScreen> {
   final cloud = FirebaseFirestore.instance;
 
   @override
   void initState() {
-    Provider.of<CustomerView>(context, listen: false).getCustomers();
+    Provider.of<VendorView>(context, listen: false).getVendors();
     super.initState();
   }
 
@@ -38,7 +39,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          'Customers',
+          'Vendors',
           style: TextStyle(color: Colors.black, fontSize: 25),
         ),
       ),
@@ -50,21 +51,17 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextButton(
-                  onPressed: () {  },
-                  child: const Text('Dashboard'),
-                ),
-                TextButton(
                   onPressed: () {},
-                  child: const Text('Customers'),
+                  child: const Text('Dashboard'),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const AllVendorScreen()));
+                            builder: (context) => const AllCustomersScreen()));
                   },
-                  child: const Text('Vendors'),
+                  child: const Text('Customers'),
                 ),
               ],
             ),
@@ -76,52 +73,51 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider.of<CustomerView>(context).allCustomers.length,
+            itemCount: Provider.of<VendorView>(context).allVendors.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
                 color: const Color(0xFFD6EFF2),
-                child: InkWell(
+                child: InkWell(onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => VendorProfile(index: index)));
+                },
                   splashColor: Colors.teal.shade100,
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerProfile(
-                                  index: index,
-                                )));
-                  },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Hero(
-                          tag: 'profile',
-                          child: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                Provider.of<CustomerView>(context,
-                                        listen: false)
-                                    .allCustomers[index]
-                                    .image),
-                            radius: 30,
-                          ),
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              Provider.of<VendorView>(context, listen: false)
+                                  .allVendors[index]
+                                  .image),
+                          radius: 30,
                         ),
                         const SizedBox(
                           width: 20,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              Provider.of<CustomerView>(context, listen: false)
-                                  .allCustomers[index]
-                                  .name,
-                              style: kBoldText,
-                            ),
-                            Text(
-                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstandingBalance} PKR',
-                            ),
-                          ],
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                Provider.of<VendorView>(context, listen: false)
+                                    .allVendors[index]
+                                    .name,
+                                style: kBoldText,
+                              ),
+                              Text(
+                                Provider.of<VendorView>(context)
+                                    .allVendors[index]
+                                    .address,
+                                softWrap: true,
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),

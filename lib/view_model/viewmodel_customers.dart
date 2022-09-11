@@ -6,6 +6,7 @@ class CustomerView extends ChangeNotifier {
   List<Customers> allCustomers = [];
 
   void getCustomers() async {
+    allCustomers = [];
     final cloud = FirebaseFirestore.instance;
     await cloud.collection('customers').get().then(
       (value) async {

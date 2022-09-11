@@ -1,5 +1,6 @@
 import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
+import 'package:ecommerce_bnql/view_model/viewmodel_vendors.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -21,12 +22,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context)=>VendorView()),
         ChangeNotifierProvider(create: (context) => CustomerView()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData.light().copyWith(
+              primaryColor: Colors.tealAccent,
               textTheme: GoogleFonts.poppinsTextTheme(
                 Theme.of(context).textTheme,
               ).apply(
@@ -34,10 +37,12 @@ class MyApp extends StatelessWidget {
                 displayColor: Colors.black,
               ),
               scaffoldBackgroundColor: Colors.white,
-              appBarTheme: const AppBarTheme(elevation: 0,
-                  color: Colors.white,
-                  iconTheme: IconThemeData(color: Colors.black),
-                  )),
+              appBarTheme: const AppBarTheme(
+                elevation: 0,
+                color: Colors.white,
+                iconTheme: IconThemeData(color: Colors.black),
+              ),
+              buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
           home: const AllCustomersScreen()),
     );
   }

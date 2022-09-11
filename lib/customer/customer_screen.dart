@@ -15,7 +15,6 @@ class CustomerProfile extends StatefulWidget {
 }
 
 class _CustomerProfileState extends State<CustomerProfile> {
-  CollectionReference? ref;
   List<PurchaseWidget> allPurchases = [];
   List<PaymentSchedule> paymentScheduleList = [];
 
@@ -31,17 +30,18 @@ class _CustomerProfileState extends State<CustomerProfile> {
         appBar: AppBar(
           title: Row(
             children: [
-              const Text(
-                'John Wick',
-                style: TextStyle(color: Colors.black, fontSize: 25),
+                Text(
+                Provider.of<CustomerView>(context, listen: false)
+                    .allCustomers[widget.index]
+                    .name,
+                style: const TextStyle(color: Colors.black, fontSize: 25),
               ),
               Expanded(child: Container()),
               Hero(
                 tag: 'profile',
                 child: CircleAvatar(
                   backgroundImage: NetworkImage(
-                      Provider
-                          .of<CustomerView>(context, listen: false)
+                      Provider.of<CustomerView>(context, listen: false)
                           .allCustomers[0]
                           .image),
                 ),
@@ -55,35 +55,40 @@ class _CustomerProfileState extends State<CustomerProfile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Outstanding Balance: ${Provider
-                    .of<CustomerView>(context, listen: false)
-                    .allCustomers[0].outstandingBalance} PKR',
+                'Outstanding Balance: ${Provider.of<CustomerView>(context, listen: false).allCustomers[0].outstandingBalance} PKR',
                 style: const TextStyle(fontSize: 20),
               ),
               Text(
-                'Amount Paid: ${Provider
-                    .of<CustomerView>(context, listen: false)
-                    .allCustomers[0].paidAmount} PKR',
+                'Amount Paid: ${Provider.of<CustomerView>(context, listen: false).allCustomers[0].paidAmount} PKR',
                 style: const TextStyle(fontSize: 20),
               ),
               const SizedBox(
-                height: 5,
-                child: Divider(
+                height: 30,
+              ),
+              const Center(
+                child: Text(
+                  'All Purchases',
+                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+                child: Divider(thickness: 1,
                   color: Colors.black,
                 ),
               ),
               Expanded(
                 child: allPurchases.isNotEmpty
-                    ? ListView.builder(
-                    itemCount: allPurchases.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return allPurchases[index];
-                    })
+                    ? ListView.builder(physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
+                        itemCount: allPurchases.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return allPurchases[index];
+                        })
                     : Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.teal.shade300,
-                  ),
-                ),
+                        child: CircularProgressIndicator(
+                          color: Colors.teal.shade300,
+                        ),
+                      ),
               )
             ],
           ),
@@ -99,21 +104,19 @@ class _CustomerProfileState extends State<CustomerProfile> {
 
     final purchaseCollection = await cloud
         .collection('customers')
-        .doc(Provider
-        .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
-        .documentID)
+        .doc(Provider.of<CustomerView>(context, listen: false)
+            .allCustomers[widget.index]
+            .documentID)
         .collection('purchases')
         .get();
 
     for (var purchaseDocument in purchaseCollection.docs) {
       DocumentReference ref = purchaseDocument.get('product');
       paymentScheduleList =
-      await getPaymentSchedule(purchaseDocument.reference);
-
+          await getPaymentSchedule(purchaseDocument.reference);
 
       await ref.get().then(
-            (value) async {
+        (value) async {
           name = value.get('name');
 
           DocumentReference vendorReference = value.get('reference');
@@ -127,13 +130,14 @@ class _CustomerProfileState extends State<CustomerProfile> {
       amountPaid = purchaseDocument.get('paid_amount');
 
       setState(
-            () {
+        () {
           allPurchases.add(PurchaseWidget(
             image: image,
             name: name,
             outstandingBalance: outstandingBalance,
             amountPaid: amountPaid,
-            paymentList: paymentScheduleList,));
+            paymentList: paymentScheduleList,
+          ));
         },
       );
     }
@@ -142,7 +146,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
   Future<List<PaymentSchedule>> getPaymentSchedule(
       DocumentReference reference) async {
     List<PaymentSchedule> listOfPayment = [];
-    reference.collection('payment_schedule')
+    reference
+        .collection('payment_schedule')
         .orderBy('date', descending: false)
         .get()
         .then((value) {
@@ -151,8 +156,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
         Timestamp date = payment.get('date');
         bool isPaid = payment.get('isPaid');
 
-        listOfPayment
-            .add(PaymentSchedule(amount: amount,
+        listOfPayment.add(PaymentSchedule(
+            amount: amount,
             isPaid: isPaid,
             date: date,
             paymentReference: payment.id,
@@ -162,6 +167,3 @@ class _CustomerProfileState extends State<CustomerProfile> {
     return listOfPayment;
   }
 }
-
-
-
