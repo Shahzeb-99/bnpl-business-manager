@@ -33,7 +33,7 @@ class _VendorProfileState extends State<VendorProfile> {
                  Provider.of<VendorView>(context, listen: false)
                      .allVendors[widget.index]
                      .name,
-                style: TextStyle(color: Colors.black, fontSize: 25),
+                style: const TextStyle(color: Colors.black, fontSize: 25),
               ),
               Expanded(child: Container()),
               CircleAvatar(

@@ -8,8 +8,8 @@ class Customers {
 
   final String name;
   final String image;
-  final int outstandingBalance;
-  final int paidAmount;
+  final  outstandingBalance;
+  final  paidAmount;
   final String documentID;
 
 }

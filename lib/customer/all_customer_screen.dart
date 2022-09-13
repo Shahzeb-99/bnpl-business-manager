@@ -2,8 +2,9 @@ import 'package:ecommerce_bnql/customer/customer_screen.dart';
 import 'package:ecommerce_bnql/vendor/all_vendor_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+
+import 'add_customer_screen.dart';
 
 class AllCustomersScreen extends StatefulWidget {
   const AllCustomersScreen({Key? key}) : super(key: key);
@@ -13,7 +14,6 @@ class AllCustomersScreen extends StatefulWidget {
 }
 
 class _AllCustomersScreenState extends State<AllCustomersScreen> {
-  final cloud = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -37,9 +37,21 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
         }),
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Customers',
-          style: TextStyle(color: Colors.black, fontSize: 25),
+        title: Row(
+          children: [
+            const Text(
+              'Customers',
+              style: TextStyle(color: Colors.black, fontSize: 25),
+            ),
+            Expanded(
+              child: Container(),
+            ),
+            IconButton(
+              onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>  AddCustomerScreen()));},
+              icon: const Icon(Icons.add_rounded),
+              splashRadius: 25,
+            )
+          ],
         ),
       ),
       drawer: Drawer(
@@ -50,12 +62,8 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextButton(
-                  onPressed: () {  },
-                  child: const Text('Dashboard'),
-                ),
-                TextButton(
                   onPressed: () {},
-                  child: const Text('Customers'),
+                  child: const Text('Dashboard'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -95,16 +103,13 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Hero(
-                          tag: 'profile',
-                          child: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                Provider.of<CustomerView>(context,
-                                        listen: false)
-                                    .allCustomers[index]
-                                    .image),
-                            radius: 30,
-                          ),
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              Provider.of<CustomerView>(context,
+                                      listen: false)
+                                  .allCustomers[index]
+                                  .image),
+                          radius: 30,
                         ),
                         const SizedBox(
                           width: 20,

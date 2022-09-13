@@ -1,6 +1,9 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/customer/purchase_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_model/viewmodel_customers.dart';
@@ -37,14 +40,11 @@ class _CustomerProfileState extends State<CustomerProfile> {
                 style: const TextStyle(color: Colors.black, fontSize: 25),
               ),
               Expanded(child: Container()),
-              Hero(
-                tag: 'profile',
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      Provider.of<CustomerView>(context, listen: false)
-                          .allCustomers[0]
-                          .image),
-                ),
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    Provider.of<CustomerView>(context, listen: false)
+                        .allCustomers[0]
+                        .image),
               ),
             ],
           ),
@@ -101,6 +101,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
     int outstandingBalance;
     int amountPaid;
     final cloud = FirebaseFirestore.instance;
+    cloud.settings = const Settings(persistenceEnabled: true);
 
     final purchaseCollection = await cloud
         .collection('customers')
@@ -111,6 +112,12 @@ class _CustomerProfileState extends State<CustomerProfile> {
         .get();
 
     for (var purchaseDocument in purchaseCollection.docs) {
+      final source =
+      (purchaseDocument.metadata.isFromCache) ? "local cache" : "server";
+
+      if (kDebugMode) {
+        print("Data fetched from $source}");
+      }
       DocumentReference ref = purchaseDocument.get('product');
       paymentScheduleList =
           await getPaymentSchedule(purchaseDocument.reference);
@@ -152,7 +159,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
         .get()
         .then((value) {
       for (var payment in value.docs) {
-        int amount = payment.get('amount');
+        var amount = payment.get('amount');
         Timestamp date = payment.get('date');
         bool isPaid = payment.get('isPaid');
 
