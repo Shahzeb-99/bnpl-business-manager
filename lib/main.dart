@@ -1,5 +1,6 @@
-import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
+import 'package:ecommerce_bnql/dashboard/dashboard_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
+import 'package:ecommerce_bnql/view_model/viewmodel_dashboard.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_vendors.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context)=>VendorView()),
         ChangeNotifierProvider(create: (context) => CustomerView()),
+        ChangeNotifierProvider(create: (context) => DashboardView()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
                 iconTheme: IconThemeData(color: Colors.black),
               ),
               buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
-          home: const AllCustomersScreen()),
+          home: const Dashboard()),
     );
   }
 }

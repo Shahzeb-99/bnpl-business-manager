@@ -1,8 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, camel_case_types
 
-import 'package:ecommerce_bnql/customer/add_product.dart';
+import 'package:ecommerce_bnql/customer/add_new_customer/add_product.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AddCustomerScreen extends StatelessWidget {
   AddCustomerScreen({Key? key}) : super(key: key);
@@ -41,21 +40,6 @@ class AddCustomerScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: priceController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: kDecoration.inputBox('Purchase Amount', 'PKR'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'This field is required';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
               ],
             ),
           ),
@@ -69,7 +53,6 @@ class AddCustomerScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => AddProductScreen(
                         customerName: nameController.text,
-                        customerPurchaseamount: int.parse(priceController.text),
                       ),
                     ),
                   );

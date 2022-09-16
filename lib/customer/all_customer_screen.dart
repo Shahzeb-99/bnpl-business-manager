@@ -1,10 +1,11 @@
-import 'package:ecommerce_bnql/customer/customer_screen.dart';
+import 'package:ecommerce_bnql/customer/customer_page/customer_screen.dart';
+import 'package:ecommerce_bnql/dashboard/dashboard_screen.dart';
 import 'package:ecommerce_bnql/vendor/all_vendor_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'add_customer_screen.dart';
+import 'add_new_customer/add_customer_screen.dart';
 
 class AllCustomersScreen extends StatefulWidget {
   const AllCustomersScreen({Key? key}) : super(key: key);
@@ -47,7 +48,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               child: Container(),
             ),
             IconButton(
-              onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>  AddCustomerScreen()));},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => AddCustomerScreen()));
+              },
               icon: const Icon(Icons.add_rounded),
               splashRadius: 25,
             )
@@ -62,7 +66,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Dashboard()));
+                  },
                   child: const Text('Dashboard'),
                 ),
                 TextButton(
@@ -84,7 +91,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider.of<CustomerView>(context).allCustomers.length,
+            itemCount: Provider
+                .of<CustomerView>(context)
+                .allCustomers
+                .length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
@@ -95,7 +105,8 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CustomerProfile(
+                            builder: (context) =>
+                                CustomerProfile(
                                   index: index,
                                 )));
                   },
@@ -105,8 +116,9 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                       children: [
                         CircleAvatar(
                           backgroundImage: NetworkImage(
-                              Provider.of<CustomerView>(context,
-                                      listen: false)
+                              Provider
+                                  .of<CustomerView>(context,
+                                  listen: false)
                                   .allCustomers[index]
                                   .image),
                           radius: 30,
@@ -118,13 +130,16 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              Provider.of<CustomerView>(context, listen: false)
+                              Provider
+                                  .of<CustomerView>(context, listen: false)
                                   .allCustomers[index]
                                   .name,
                               style: kBoldText,
                             ),
                             Text(
-                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstandingBalance} PKR',
+                              'Outstanding Balance : ${Provider
+                                  .of<CustomerView>(context, listen: false)
+                                  .allCustomers[index].outstandingBalance} PKR',
                             ),
                           ],
                         )

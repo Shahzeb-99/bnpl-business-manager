@@ -1,22 +1,22 @@
-import 'package:ecommerce_bnql/customer/add_vendor_screen.dart';
+import 'package:ecommerce_bnql/customer/customer_page/add_vendor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AddProductScreen extends StatelessWidget {
   AddProductScreen(
       {Key? key,
-      required this.customerName,
-      required this.customerPurchaseamount})
+        required this.customerName,
+      })
       : super(key: key);
 
   final String customerName;
-  final int customerPurchaseamount;
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -28,7 +28,7 @@ class AddProductScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Form(
-              key: _formKey,
+              key: formKey,
               child: Column(
                 children: [
                   Padding(
@@ -41,6 +41,7 @@ class AddProductScreen extends StatelessWidget {
                         if (value == null || value.isEmpty) {
                           return 'This field is required';
                         }
+                        return null;
                       },
                     ),
                   ),
@@ -51,11 +52,12 @@ class AddProductScreen extends StatelessWidget {
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration:
-                          kDecoration.inputBox('Purchase Amount', 'PKR'),
+                      kDecoration.inputBox('Purchase Amount', 'PKR'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'This field is required';
                         }
+                        return null;
                       },
                     ),
                   ),
@@ -65,16 +67,15 @@ class AddProductScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate()) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => AddVendorScreen(
-                                ProductName: nameController.text,
-                                ProductPurchasecost: int.parse(priceController.text),
-                                customerPurchaseamount: customerPurchaseamount,
-                                customerName: customerName,
-                              )));
+                            productName: nameController.text,
+                            productPurchasecost: int.parse(priceController.text),
+                            customerName: customerName,
+                          )));
                 }
               },
               child: const Text('Next'),
