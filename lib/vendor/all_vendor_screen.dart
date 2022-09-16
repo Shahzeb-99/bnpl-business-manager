@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../customer/all_customer_screen.dart';
+import '../dashboard/dashboard_screen.dart';
 
 class AllVendorScreen extends StatefulWidget {
   const AllVendorScreen({Key? key}) : super(key: key);
@@ -51,7 +52,10 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Dashboard()));
+                  },
                   child: const Text('Dashboard'),
                 ),
                 TextButton(
