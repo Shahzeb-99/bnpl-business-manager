@@ -15,7 +15,6 @@ class AllCustomersScreen extends StatefulWidget {
 }
 
 class _AllCustomersScreenState extends State<AllCustomersScreen> {
-
   @override
   void initState() {
     Provider.of<CustomerView>(context, listen: false).getCustomers();
@@ -49,8 +48,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
             ),
             IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => AddCustomerScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddCustomerScreen()));
               },
               icon: const Icon(Icons.add_rounded),
               splashRadius: 25,
@@ -67,8 +68,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Dashboard()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Dashboard()));
                   },
                   child: const Text('Dashboard'),
                 ),
@@ -91,22 +94,47 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider
-                .of<CustomerView>(context)
-                .allCustomers
-                .length,
+            itemCount: Provider.of<CustomerView>(context).allCustomers.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
                 color: const Color(0xFFD6EFF2),
                 child: InkWell(
+                  onLongPress: () {
+                    {
+                      showModalBottomSheet<void>(backgroundColor: Colors.transparent,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(
+
+                                color: const Color(0xFFD6EFF2),
+                                borderRadius: BorderRadius.circular(20)),
+                            height: 200,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Text('Modal BottomSheet'),
+                                  ElevatedButton(
+                                    child: const Text('Close BottomSheet'),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
                   splashColor: Colors.teal.shade100,
                   onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                CustomerProfile(
+                            builder: (context) => CustomerProfile(
                                   index: index,
                                 )));
                   },
@@ -116,9 +144,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                       children: [
                         CircleAvatar(
                           backgroundImage: NetworkImage(
-                              Provider
-                                  .of<CustomerView>(context,
-                                  listen: false)
+                              Provider.of<CustomerView>(context, listen: false)
                                   .allCustomers[index]
                                   .image),
                           radius: 30,
@@ -130,16 +156,13 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              Provider
-                                  .of<CustomerView>(context, listen: false)
+                              Provider.of<CustomerView>(context, listen: false)
                                   .allCustomers[index]
                                   .name,
                               style: kBoldText,
                             ),
                             Text(
-                              'Outstanding Balance : ${Provider
-                                  .of<CustomerView>(context, listen: false)
-                                  .allCustomers[index].outstandingBalance} PKR',
+                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstandingBalance} PKR',
                             ),
                           ],
                         )

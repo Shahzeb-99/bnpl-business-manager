@@ -29,6 +29,14 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
           return Card(
             color: const Color(0xFFD6EFF2),
             child: InkWell(
+              onLongPress: () async {
+                setState(() {
+                  widget.paymentList[index].isPaid =
+                      !widget.paymentList[index].isPaid;
+                });
+               await widget.paymentList[index].updateFirestore();
+                widget.paymentList[index].updateBalance();
+              },
               onTap: () async {
                 DateTime? newDate = await showDatePicker(
                     initialDate: DateTime(

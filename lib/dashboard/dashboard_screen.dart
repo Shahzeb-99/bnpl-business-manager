@@ -49,8 +49,10 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => const AllCustomersScreen()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AllCustomersScreen()));
                   },
                   child: const Text('Customers'),
                 ),
@@ -137,7 +139,73 @@ class _DashboardState extends State<Dashboard> {
                     )
                   ],
                 ),
-              ),SizedBox(height: 250,)
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.25,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: Card(
+                          elevation: 5,
+                          color: const Color(0xFFD6EFF2),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Expanded(
+                                child: Center(
+                                  child: Text(
+                                    'Total Cost',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 25,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  '${Provider.of<DashboardView>(context).dashboardData.totalCost.toString()} Rupees',
+                                ),
+                              )
+                            ],
+                          )),
+                    ),
+                    Expanded(
+                      child: Card(
+                        elevation: 5,
+                        color: const Color(0xFFD6EFF2),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Center(
+                                child: Text(
+                                  'Total Profit',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            Expanded(
+                              child: Text(
+                                '${Provider.of<DashboardView>(context).dashboardData.totalOutstandingBalance - Provider.of<DashboardView>(context).dashboardData.totalCost} Rupees',
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.25,)
             ],
           ),
         ),
