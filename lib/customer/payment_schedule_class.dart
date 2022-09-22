@@ -6,12 +6,56 @@ class PaymentSchedule {
   bool isPaid;
   DocumentReference purchaseReference;
   String paymentReference;
+  String customerdocID;
 
-  PaymentSchedule({required this.paymentReference,required this.purchaseReference,required this.amount, required this.date, required this.isPaid});
+  PaymentSchedule(
+      {required this.paymentReference,
+      required this.purchaseReference,
+      required this.amount,
+      required this.date,
+      required this.isPaid,
+      required this.customerdocID});
 
-  void updateFirestore(){
-    purchaseReference.collection('payment_schedule').doc(paymentReference).update(
-        {'date': date});
+  Future<void> updateFirestore() async {
+    purchaseReference
+        .collection('payment_schedule')
+        .doc(paymentReference)
+        .update({'date': date, 'isPaid': isPaid});
   }
 
+  void updateBalance() {
+    final cloud = FirebaseFirestore.instance;
+    cloud.collection('financials').doc('finance').update(
+      {
+
+        'outstanding_balance': isPaid
+            ? FieldValue.increment(-amount)
+            : FieldValue.increment(amount),
+        'amount_paid': isPaid
+            ? FieldValue.increment(amount)
+            : FieldValue.increment(-amount),
+      },
+    );
+    purchaseReference.update(
+      {
+        'outstanding_balance': isPaid
+            ? FieldValue.increment(-amount)
+            : FieldValue.increment(amount),
+        'paid_amount': isPaid
+            ? FieldValue.increment(amount)
+            : FieldValue.increment(-amount),
+      },
+    );
+
+    cloud.collection('customers').doc(customerdocID).update(
+      {
+        'outstanding_balance': isPaid
+            ? FieldValue.increment(-amount)
+            : FieldValue.increment(amount),
+        'paid_amount': isPaid
+            ? FieldValue.increment(amount)
+            : FieldValue.increment(-amount),
+      },
+    );
+  }
 }

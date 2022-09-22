@@ -15,7 +15,6 @@ class AllCustomersScreen extends StatefulWidget {
 }
 
 class _AllCustomersScreenState extends State<AllCustomersScreen> {
-
   @override
   void initState() {
     Provider.of<CustomerView>(context, listen: false).getCustomers();
@@ -49,8 +48,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
             ),
             IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => AddCustomerScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddCustomerScreen()));
               },
               icon: const Icon(Icons.add_rounded),
               splashRadius: 25,
@@ -67,8 +68,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Dashboard()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>  Dashboard()));
                   },
                   child: const Text('Dashboard'),
                 ),
@@ -100,6 +103,48 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                 elevation: 5,
                 color: const Color(0xFFD6EFF2),
                 child: InkWell(
+                  onLongPress: () {
+                    {
+                      showModalBottomSheet<void>(
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: const BoxDecoration(
+                                color: Color(0xFFD6EFF2),
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20))),
+                            height: 200,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                      child: const Text('Delete Customer'),
+                                      onPressed: () {
+                                        Provider
+                                            .of<CustomerView>(context,
+                                            listen: false)
+                                            .allCustomers[index]
+                                            .deleteCustomer();
+                                        setState(() {
+                                          Provider
+                                              .of<CustomerView>(context,
+                                              listen: false)
+                                              .allCustomers
+                                              .removeAt(index);
+                                        });
+                                        Navigator.pop(context);
+                                      }),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
                   splashColor: Colors.teal.shade100,
                   onTap: () {
                     Navigator.push(
@@ -117,8 +162,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                         CircleAvatar(
                           backgroundImage: NetworkImage(
                               Provider
-                                  .of<CustomerView>(context,
-                                  listen: false)
+                                  .of<CustomerView>(context, listen: false)
                                   .allCustomers[index]
                                   .image),
                           radius: 30,

@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
                 iconTheme: IconThemeData(color: Colors.black),
               ),
               buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
-          home: const Dashboard()),
+          home:   Dashboard()),
     );
   }
 }

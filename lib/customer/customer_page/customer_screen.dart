@@ -42,7 +42,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
             CircleAvatar(
               backgroundImage: NetworkImage(
                   Provider.of<CustomerView>(context, listen: false)
-                      .allCustomers[0]
+                      .allCustomers[widget.index]
                       .image),
             ),
           ],
@@ -54,11 +54,11 @@ class _CustomerProfileState extends State<CustomerProfile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Outstanding Balance: ${Provider.of<CustomerView>(context, listen: false).allCustomers[0].outstandingBalance} PKR',
+              'Outstanding Balance: ${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].outstandingBalance} PKR',
               style: const TextStyle(fontSize: 20),
             ),
             Text(
-              'Amount Paid: ${Provider.of<CustomerView>(context, listen: false).allCustomers[0].paidAmount} PKR',
+              'Amount Paid: ${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].paidAmount} PKR',
               style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(
@@ -143,7 +143,9 @@ class _CustomerProfileState extends State<CustomerProfile> {
       }
       DocumentReference ref = purchaseDocument.get('product');
       paymentScheduleList =
-          await getPaymentSchedule(purchaseDocument.reference);
+          await getPaymentSchedule(purchaseDocument.reference,Provider.of<CustomerView>(context, listen: false)
+              .allCustomers[widget.index]
+              .documentID);
 
       await ref.get().then(
         (value) async {
@@ -174,7 +176,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
   }
 
   Future<List<PaymentSchedule>> getPaymentSchedule(
-      DocumentReference reference) async {
+      DocumentReference reference,String customerDocID) async {
     List<PaymentSchedule> listOfPayment = [];
     reference
         .collection('payment_schedule')
@@ -191,7 +193,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
             isPaid: isPaid,
             date: date,
             paymentReference: payment.id,
-            purchaseReference: reference));
+            purchaseReference: reference, customerdocID: customerDocID));
       }
     });
     return listOfPayment;
