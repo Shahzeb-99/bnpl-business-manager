@@ -25,7 +25,17 @@ class PaymentSchedule {
 
   void updateBalance() {
     final cloud = FirebaseFirestore.instance;
+    cloud.collection('financials').doc('finance').update(
+      {
 
+        'outstanding_balance': isPaid
+            ? FieldValue.increment(-amount)
+            : FieldValue.increment(amount),
+        'amount_paid': isPaid
+            ? FieldValue.increment(amount)
+            : FieldValue.increment(-amount),
+      },
+    );
     purchaseReference.update(
       {
         'outstanding_balance': isPaid
@@ -34,7 +44,6 @@ class PaymentSchedule {
         'paid_amount': isPaid
             ? FieldValue.increment(amount)
             : FieldValue.increment(-amount),
-
       },
     );
 

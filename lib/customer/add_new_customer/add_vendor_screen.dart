@@ -4,6 +4,8 @@ import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum Vendor { newVendor, existingVendor }
+
 class AddVendorScreen extends StatefulWidget {
   const AddVendorScreen(
       {Key? key,
@@ -24,10 +26,19 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   List<String> vendorList = [];
   String selectedVendor = 'Select';
   bool loading = false;
+  var cashInHand = 0;
+  final TextEditingController costController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  Vendor? _selectedVendorOption;
 
   @override
   void initState() {
     final cloud = FirebaseFirestore.instance;
+    cloud.collection('financials').doc('finance').get().then((value) {
+      cashInHand = value.get('cash_available');
+      print(cashInHand);
+    });
     cloud.collection('vendors').get().then(
       (value) {
         for (var vendor in value.docs) {
@@ -46,8 +57,6 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController costController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -62,6 +71,42 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  ListTile(
+                    title: const Text('New Vendor'),
+                    leading: Radio<Vendor?>(
+                      value: Vendor.newVendor,
+                      groupValue: _selectedVendorOption,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedVendorOption = value;
+                        });
+                      },
+                    ),
+                  ),
+                  _selectedVendorOption == Vendor.newVendor
+                      ? TextFormField(
+                          controller: nameController,
+                          decoration: kDecoration.inputBox('Vendor Name', ''),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'This field is required';
+                            }
+                            return null;
+                          },
+                        )
+                      : Divider(),
+                  ListTile(
+                    title: const Text('Existing Vendor'),
+                    leading: Radio<Vendor?>(
+                      value: Vendor.existingVendor,
+                      groupValue: _selectedVendorOption,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedVendorOption = value;
+                        });
+                      },
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -79,11 +124,14 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                               child: Text(items),
                             );
                           }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedVendor = value!;
-                            });
-                          },
+                          onChanged:
+                              _selectedVendorOption == Vendor.existingVendor
+                                  ? (value) {
+                                      setState(() {
+                                        selectedVendor = value!;
+                                      });
+                                    }
+                                  : null,
                           hint: const Text('Select Vendor'),
                         ),
                       ),
@@ -105,6 +153,9 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'This field is required';
+                                } else if (int.parse(costController.text) >
+                                    cashInHand) {
+                                  return 'Not enough Cash available';
                                 }
                                 return null;
                               },
@@ -116,23 +167,38 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       onPressed: () async {
-                        bool status = await UpdateFirestore(
-                                productSalePrice: widget.productPurchasecost,
-                                vendorName: selectedVendor,
-                                customerName: widget.customerName,
-                                productCost: int.parse(costController.text),
-                                productName: widget.productName)
-                            .addCustomer();
+                        if (formKey.currentState!.validate()) {
+                          bool status =
+                              _selectedVendorOption == Vendor.existingVendor
+                                  ? await UpdateFirestore(
+                                          productSalePrice:
+                                              widget.productPurchasecost,
+                                          vendorName: selectedVendor,
+                                          customerName: widget.customerName,
+                                          productCost:
+                                              int.parse(costController.text),
+                                          productName: widget.productName)
+                                      .addCustomerToExistingVendor()
+                                  : await UpdateFirestore(
+                                          productSalePrice:
+                                              widget.productPurchasecost,
+                                          vendorName: nameController.text,
+                                          customerName: widget.customerName,
+                                          productCost:
+                                              int.parse(costController.text),
+                                          productName: widget.productName)
+                                      .addCustomerToNewVendor();
 
-                        if (!mounted) return;
+                          if (!mounted) return;
 
-                        if (status) {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AllCustomersScreen()),
-                              (route) => false);
+                          if (status) {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AllCustomersScreen()),
+                                (route) => false);
+                          }
                         }
                       },
                       child: const Text('Next'),

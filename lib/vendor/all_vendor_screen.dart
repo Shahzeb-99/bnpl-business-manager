@@ -54,7 +54,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => const Dashboard()));
+                        MaterialPageRoute(builder: (context) =>   Dashboard()));
                   },
                   child: const Text('Dashboard'),
                 ),
