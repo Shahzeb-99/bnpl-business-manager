@@ -1,18 +1,34 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/customer/paymentScheduleWidget.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../view_model/viewmodel_customers.dart';
 
 class PaymentScheduleScreen extends StatefulWidget {
-  const PaymentScheduleScreen({Key? key, required this.paymentList})
+  const PaymentScheduleScreen(
+      {Key? key, required this.paymentList, required this.productIndex,required this.index})
       : super(key: key);
 
   final List<PaymentSchedule> paymentList;
+  final productIndex;
+  final index;
 
   @override
   State<PaymentScheduleScreen> createState() => _PaymentScheduleScreenState();
 }
 
 class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
+
+  @override
+
+    void initState() {
+      Provider.of<CustomerView>(context, listen: false).getPaymentSchedule(index: widget.index, productIndex: widget.productIndex);
+      super.initState();
+    }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,57 +40,11 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
       ),
       body: ListView.builder(
         physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-        itemCount: widget.paymentList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            color: const Color(0xFFD6EFF2),
-            child: InkWell(
-              onLongPress: () async {
-                setState(() {
-                  widget.paymentList[index].isPaid =
-                      !widget.paymentList[index].isPaid;
-                });
-               await widget.paymentList[index].updateFirestore();
-                widget.paymentList[index].updateBalance();
-              },
-              onTap: () async {
-                DateTime? newDate = await showDatePicker(
-                    initialDate: DateTime(
-                        widget.paymentList[index].date.toDate().year,
-                        widget.paymentList[index].date.toDate().month,
-                        widget.paymentList[index].date.toDate().day),
-                    firstDate: DateTime(DateTime.now().year),
-                    lastDate: DateTime(2030),
-                    context: context);
-
-                setState(() {
-                  widget.paymentList[index].date = Timestamp.fromDate(newDate!);
-                });
-                widget.paymentList[index].updateFirestore();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                          '${widget.paymentList[index].date.toDate().day.toString()} - ${widget.paymentList[index].date.toDate().month.toString()} - ${widget.paymentList[index].date.toDate().year.toString()}'),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                          'Amount : ${widget.paymentList[index].amount.toString()} PKR'),
-                    ),
-                    widget.paymentList[index].isPaid
-                        ? const Expanded(flex: 1, child: Text('Paid'))
-                        : const Expanded(flex: 1, child: Text('Not Paid')),
-                  ],
-                ),
-              ),
-            ),
-          );
+        itemCount: Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].paymentSchedule.length,
+        itemBuilder: (BuildContext context, int paymentIndex) {
+          return PaymentScheduleWidget(index: widget.index,
+              productIndex: widget.productIndex,
+              paymentIndex: paymentIndex);
         },
       ),
     );

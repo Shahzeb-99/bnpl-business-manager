@@ -2,22 +2,23 @@ import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_screen.dart';
 import 'package:flutter/material.dart';
 
-
 class PurchaseWidget extends StatelessWidget {
-  const PurchaseWidget(
+  PurchaseWidget(
       {Key? key,
-      required this.paymentList,
       required this.image,
       required this.name,
       required this.outstandingBalance,
-      required this.amountPaid})
+      required this.amountPaid,
+      required this.productIndex, required this.index})
       : super(key: key);
 
+  final int productIndex;
+  final int index;
   final String image;
   final String name;
   final int outstandingBalance;
   final int amountPaid;
-  final List<PaymentSchedule> paymentList;
+  List<PaymentSchedule> paymentList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class PurchaseWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      PaymentScheduleScreen(paymentList: paymentList)));
+                      PaymentScheduleScreen(paymentList: paymentList, productIndex: productIndex, index: index,)));
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),

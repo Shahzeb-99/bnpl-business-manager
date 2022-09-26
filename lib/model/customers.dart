@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/model/purchases.dart';
 
 class Customers {
   Customers(
@@ -13,7 +14,7 @@ class Customers {
   final outstandingBalance;
   final paidAmount;
   final String documentID;
- // List<PaymentSchedule> listOfPayment
+  List<Purchase> purchases = [];
 
   deleteCustomer() async {
     int cost = 0;
@@ -54,4 +55,62 @@ class Customers {
       },
     );
   }
+
+  Future<void> getPurchases() async {
+    purchases=[];
+
+    final cloud = FirebaseFirestore.instance;
+    DocumentReference documentReference;
+    var outstandingBalance;
+    var paidAmount;
+    String productName = '';
+    var productSellingPrice;
+    var productCost;
+    String productImage = '';
+    String vendorName = '';
+print('debig');
+    await cloud
+        .collection('customers')
+        .doc(documentID)
+        .collection('purchases')
+        .get()
+        .then(
+          (value) async {
+        for (var purchase in value.docs) {
+          documentReference = purchase.reference;
+          outstandingBalance = purchase.get('outstanding_balance');
+          paidAmount = purchase.get('paid_amount');
+          DocumentReference productReference = purchase.get('product');
+          await productReference.get().then(
+                (value) async {
+              productName = value.get('name');
+              productSellingPrice = value.get('price');
+              DocumentReference vendorDocumentReference =
+              value.get('reference');
+              await vendorDocumentReference.get().then(
+                    (value) {print('debig');
+                  productCost = value.get('price');
+                  productImage = value.get('image');
+                },
+              );
+              await vendorDocumentReference.parent.parent?.get().then((value) {print('debig');
+                vendorName = value.get('name');
+              });
+            },
+          );
+          print('debig');
+          purchases.add(Purchase(
+            vendorName: vendorName,
+            outstandingBalance: outstandingBalance,
+            amountPaid: paidAmount,
+            productName: productName,
+            productImage: productImage,
+            purchaseAmount: productCost,
+            sellingAmount: productSellingPrice, documentReferencePurchase: documentReference,
+          ));
+        }
+      },
+    );
+  }
 }
+
