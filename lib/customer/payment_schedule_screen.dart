@@ -7,7 +7,10 @@ import '../view_model/viewmodel_customers.dart';
 
 class PaymentScheduleScreen extends StatefulWidget {
   const PaymentScheduleScreen(
-      {Key? key, required this.paymentList, required this.productIndex,required this.index})
+      {Key? key,
+      required this.paymentList,
+      required this.productIndex,
+      required this.index})
       : super(key: key);
 
   final List<PaymentSchedule> paymentList;
@@ -19,15 +22,12 @@ class PaymentScheduleScreen extends StatefulWidget {
 }
 
 class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
-
   @override
-
-    void initState() {
-      Provider.of<CustomerView>(context, listen: false).getPaymentSchedule(index: widget.index, productIndex: widget.productIndex);
-      super.initState();
-    }
-
-
+  void initState() {
+    Provider.of<CustomerView>(context, listen: false).getPaymentSchedule(
+        index: widget.index, productIndex: widget.productIndex);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +38,44 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
           style: TextStyle(color: Colors.black, fontSize: 25),
         ),
       ),
-      body: ListView.builder(
-        physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-        itemCount: Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].paymentSchedule.length,
-        itemBuilder: (BuildContext context, int paymentIndex) {
-          return PaymentScheduleWidget(index: widget.index,
-              productIndex: widget.productIndex,
-              paymentIndex: paymentIndex);
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Product Name : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].productName}',style:  TextStyle(fontSize: 20),),
+            Text('Vendor Name : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].vendorName}',style:  TextStyle(fontSize: 20)),
+            Text('Selling Amount : ${
+              Provider.of<CustomerView>(context)
+                  .allCustomers[widget.index]
+                  .purchases[widget.productIndex]
+                  .sellingAmount
+                  .toString()
+            }',style:  TextStyle(fontSize: 20)),
+            Text('Purchase Amount : ${
+              Provider.of<CustomerView>(context)
+                  .allCustomers[widget.index]
+                  .purchases[widget.productIndex]
+                  .purchaseAmount
+                  .toString()
+            }',style:  TextStyle(fontSize: 20)),
+            Expanded(
+              child: ListView.builder(
+                physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
+                itemCount: Provider.of<CustomerView>(context)
+                    .allCustomers[widget.index]
+                    .purchases[widget.productIndex]
+                    .paymentSchedule
+                    .length,
+                itemBuilder: (BuildContext context, int paymentIndex) {
+                  return PaymentScheduleWidget(
+                      index: widget.index,
+                      productIndex: widget.productIndex,
+                      paymentIndex: paymentIndex);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
