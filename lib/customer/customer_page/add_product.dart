@@ -2,17 +2,26 @@ import 'package:ecommerce_bnql/customer/customer_page/add_vendor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AddProductScreen extends StatelessWidget {
-  AddProductScreen(
-      {Key? key,
-        required this.customerName,
-      })
-      : super(key: key);
+const List<String> profitPercentage = ['5', '10', '15', '20', '25'];
+
+class AddProductScreen extends StatefulWidget {
+  AddProductScreen({
+    Key? key,
+    required this.customerName,
+  }) : super(key: key);
 
   final String customerName;
 
+  @override
+  State<AddProductScreen> createState() => _AddProductScreenState();
+}
+
+class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController nameController = TextEditingController();
+
   final TextEditingController priceController = TextEditingController();
+
+  String selectedProfit = profitPercentage.first;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +61,7 @@ class AddProductScreen extends StatelessWidget {
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration:
-                      kDecoration.inputBox('Purchase Amount', 'PKR'),
+                          kDecoration.inputBox('Purchase Amount', 'PKR'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'This field is required';
@@ -61,8 +70,51 @@ class AddProductScreen extends StatelessWidget {
                       },
                     ),
                   ),
+
                 ],
               )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: const Color(0xFFD6EFF2),
+                  borderRadius: BorderRadius.circular(4)),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  dropdownColor: const Color(0xFFD6EFF2),
+                  value: selectedProfit,
+                  items: profitPercentage.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Row(
+                        children: [
+                          Text(items),
+                          Text('%'),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedProfit = value!;
+                    });
+                  },
+                  hint: const Text('Select Percentage'),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+                decoration: BoxDecoration(
+                    color: const Color(0xFFD6EFF2),
+                    borderRadius: BorderRadius.circular(4)),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Text(
+                    'Total Selling Amount : ${getTotalProfit(price: priceController.text, percentage: selectedProfit)}')),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
@@ -72,10 +124,11 @@ class AddProductScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => AddVendorScreen(
-                            productName: nameController.text,
-                            productPurchasecost: int.parse(priceController.text),
-                            customerName: customerName,
-                          )));
+                                productName: nameController.text,
+                                productPurchasecost:
+                                    int.parse(priceController.text),
+                                customerName: widget.customerName,
+                              )));
                 }
               },
               child: const Text('Next'),
@@ -85,6 +138,17 @@ class AddProductScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+int getTotalProfit({required String price, required String percentage}) {
+  if (price.isNotEmpty) {
+    double total =
+        (int.parse(price) * (int.parse(percentage) / 100)) + int.parse(price);
+
+    return total.toInt();
+  }
+
+  return 0;
 }
 
 class kDecoration {

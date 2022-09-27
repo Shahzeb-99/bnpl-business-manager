@@ -23,11 +23,10 @@ class PaymentSchedule {
         .update({'date': date, 'isPaid': isPaid});
   }
 
-  void updateBalance() {
+  Future<void> updateBalance() async {
     final cloud = FirebaseFirestore.instance;
     cloud.collection('financials').doc('finance').update(
       {
-
         'outstanding_balance': isPaid
             ? FieldValue.increment(-amount)
             : FieldValue.increment(amount),
@@ -57,5 +56,10 @@ class PaymentSchedule {
             : FieldValue.increment(-amount),
       },
     );
+  }
+  Future<void> togglePayment()async {
+    isPaid = !isPaid;
+    await updateFirestore();
+    await updateBalance();
   }
 }

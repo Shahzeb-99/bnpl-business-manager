@@ -31,6 +31,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   final TextEditingController nameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   Vendor? _selectedVendorOption;
+  DateTime? firstPaymentDate;
 
   @override
   void initState() {
@@ -143,6 +144,21 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                         key: formKey,
                         child: Column(
                           children: [
+                            InputDatePickerFormField(
+                              fieldLabelText:'First Payment Date',
+                              keyboardType: TextInputType.datetime,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2050),
+                              initialDate: DateTime.now(),
+                              onDateSubmitted: (newDate) {
+                                firstPaymentDate = newDate;
+                                print(firstPaymentDate);
+                              },
+                              onDateSaved: (newDate) {
+                                firstPaymentDate = newDate;
+                                print(firstPaymentDate);
+                              },
+                            ),
                             TextFormField(
                               controller: costController,
                               inputFormatters: [
@@ -177,7 +193,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           customerName: widget.customerName,
                                           productCost:
                                               int.parse(costController.text),
-                                          productName: widget.productName)
+                                          productName: widget.productName,
+                                          firstPaymnetDate: firstPaymentDate!)
                                       .addCustomerToExistingVendor()
                                   : await UpdateFirestore(
                                           productSalePrice:
@@ -186,7 +203,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           customerName: widget.customerName,
                                           productCost:
                                               int.parse(costController.text),
-                                          productName: widget.productName)
+                                          productName: widget.productName,
+                                          firstPaymnetDate: firstPaymentDate!)
                                       .addCustomerToNewVendor();
 
                           if (!mounted) return;

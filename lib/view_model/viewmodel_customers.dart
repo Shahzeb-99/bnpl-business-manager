@@ -13,8 +13,6 @@ class CustomerView extends ChangeNotifier {
       (value) async {
         if (value.docs.isNotEmpty) {
           for (var customer in value.docs) {
-
-
             Customers newCustomer = Customers(
               name: customer.get('name'),
               image: customer.get('image'),
@@ -41,6 +39,7 @@ class CustomerView extends ChangeNotifier {
     notifyListeners();
 
   }
+  void update(){notifyListeners();}
 
 
 }

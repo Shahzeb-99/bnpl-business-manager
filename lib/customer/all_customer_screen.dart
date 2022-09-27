@@ -68,10 +68,8 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>  Dashboard()));
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Dashboard()));
                   },
                   child: const Text('Dashboard'),
                 ),
@@ -94,10 +92,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider
-                .of<CustomerView>(context)
-                .allCustomers
-                .length,
+            itemCount: Provider.of<CustomerView>(context).allCustomers.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
@@ -123,15 +118,13 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                   ElevatedButton(
                                       child: const Text('Delete Customer'),
                                       onPressed: () {
-                                        Provider
-                                            .of<CustomerView>(context,
-                                            listen: false)
+                                        Provider.of<CustomerView>(context,
+                                                listen: false)
                                             .allCustomers[index]
                                             .deleteCustomer();
                                         setState(() {
-                                          Provider
-                                              .of<CustomerView>(context,
-                                              listen: false)
+                                          Provider.of<CustomerView>(context,
+                                                  listen: false)
                                               .allCustomers
                                               .removeAt(index);
                                         });
@@ -151,9 +144,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                CustomerProfile(
-                                  index: index,
-                                )));
+                                CustomerProfile(index: index)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -161,8 +152,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                       children: [
                         CircleAvatar(
                           backgroundImage: NetworkImage(
-                              Provider
-                                  .of<CustomerView>(context, listen: false)
+                              Provider.of<CustomerView>(context, listen: false)
                                   .allCustomers[index]
                                   .image),
                           radius: 30,
@@ -174,16 +164,13 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              Provider
-                                  .of<CustomerView>(context, listen: false)
+                              Provider.of<CustomerView>(context, listen: false)
                                   .allCustomers[index]
                                   .name,
                               style: kBoldText,
                             ),
                             Text(
-                              'Outstanding Balance : ${Provider
-                                  .of<CustomerView>(context, listen: false)
-                                  .allCustomers[index].outstandingBalance} PKR',
+                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstandingBalance} PKR',
                             ),
                           ],
                         )

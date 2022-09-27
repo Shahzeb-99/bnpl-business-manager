@@ -1,15 +1,18 @@
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_screen.dart';
+import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class PurchaseWidget extends StatelessWidget {
+class PurchaseWidget extends StatefulWidget {
   PurchaseWidget(
       {Key? key,
       required this.image,
       required this.name,
       required this.outstandingBalance,
       required this.amountPaid,
-      required this.productIndex, required this.index})
+      required this.productIndex,
+      required this.index})
       : super(key: key);
 
   final int productIndex;
@@ -18,6 +21,12 @@ class PurchaseWidget extends StatelessWidget {
   final String name;
   final int outstandingBalance;
   final int amountPaid;
+
+  @override
+  State<PurchaseWidget> createState() => _PurchaseWidgetState();
+}
+
+class _PurchaseWidgetState extends State<PurchaseWidget> {
   List<PaymentSchedule> paymentList = [];
 
   @override
@@ -25,12 +34,18 @@ class PurchaseWidget extends StatelessWidget {
     return Card(
       color: const Color(0xFFD6EFF2),
       child: InkWell(
-        onTap: () {
+        onTap: ()   {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      PaymentScheduleScreen(paymentList: paymentList, productIndex: productIndex, index: index,)));
+            context,
+            MaterialPageRoute(
+              builder: (context) => PaymentScheduleScreen(
+                paymentList: paymentList,
+                productIndex: widget.productIndex,
+                index: widget.index,
+              ),
+            ),
+          ).whenComplete(() =>  Provider.of<CustomerView>(context, listen: false).update());
+       
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -42,7 +57,7 @@ class PurchaseWidget extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.10,
                 width: MediaQuery.of(context).size.height * 0.10,
                 child: Image.network(
-                  image,
+                  widget.image,
                   fit: BoxFit.fitHeight,
                 ),
               ),
@@ -53,11 +68,12 @@ class PurchaseWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    widget.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text('Outstanding Balance : $outstandingBalance PKR'),
-                  Text('Amount Paid : $amountPaid PKR'),
+                  Text(
+                      'Outstanding Balance : ${widget.outstandingBalance} PKR'),
+                  Text('Amount Paid : ${widget.amountPaid} PKR'),
                 ],
               )
             ],

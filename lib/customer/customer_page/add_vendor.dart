@@ -30,7 +30,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   final TextEditingController costController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
+DateTime? firstPaymentDate;
   // ignore: no_leading_underscores_for_local_identifiers
   Vendor? _selectedVendorOption;
 
@@ -139,6 +139,15 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                       ),
                     ),
                   ),
+                  InputDatePickerFormField(     fieldLabelText:'First Payment Date',
+                    keyboardType: TextInputType.datetime,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2050),
+                    initialDate: DateTime.now(),
+                    onDateSubmitted: (newDate) {
+                       firstPaymentDate = newDate;
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Form(
@@ -179,7 +188,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           customerName: widget.customerName,
                                           productCost:
                                               int.parse(costController.text),
-                                          productName: widget.productName)
+                                          productName: widget.productName, firstPaymnetDate: firstPaymentDate!)
                                       .addProduct()
                                   : await UpdateFirestore(
                                           productSalePrice:
@@ -188,7 +197,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           customerName: widget.customerName,
                                           productCost:
                                               int.parse(costController.text),
-                                          productName: widget.productName)
+                                          productName: widget.productName, firstPaymnetDate: firstPaymentDate!)
                                       .addProductToNewVendor();
 
                           if (!mounted) return;

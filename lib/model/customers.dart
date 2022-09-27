@@ -11,8 +11,8 @@ class Customers {
 
   final String name;
   final String image;
-  final outstandingBalance;
-  final paidAmount;
+  var outstandingBalance;
+  var paidAmount;
   final String documentID;
   List<Purchase> purchases = [];
 

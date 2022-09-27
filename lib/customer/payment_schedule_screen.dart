@@ -40,24 +40,25 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Product Name : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].productName}',style:  TextStyle(fontSize: 20),),
-            Text('Vendor Name : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].vendorName}',style:  TextStyle(fontSize: 20)),
-            Text('Selling Amount : ${
-              Provider.of<CustomerView>(context)
-                  .allCustomers[widget.index]
-                  .purchases[widget.productIndex]
-                  .sellingAmount
-                  .toString()
-            }',style:  TextStyle(fontSize: 20)),
-            Text('Purchase Amount : ${
-              Provider.of<CustomerView>(context)
-                  .allCustomers[widget.index]
-                  .purchases[widget.productIndex]
-                  .purchaseAmount
-                  .toString()
-            }',style:  TextStyle(fontSize: 20)),
+            Text(
+              'Product Name : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].productName}',
+              style: const TextStyle(fontSize: 20),
+            ),
+            Text(
+                'Vendor Name : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].vendorName}',
+                style: const TextStyle(fontSize: 20)),
+            Text(
+                'Selling Amount : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].sellingAmount.toString()}',
+                style: const TextStyle(fontSize: 20)),
+            Text(
+                'Purchase Amount : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].purchaseAmount.toString()}',
+                style: const TextStyle(fontSize: 20)),
+            Text(
+                'Profit : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].sellingAmount - Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].purchaseAmount}',
+                style: const TextStyle(fontSize: 20)),
             Expanded(
               child: ListView.builder(
                 physics: const ScrollPhysics(parent: BouncingScrollPhysics()),

@@ -6,13 +6,17 @@ class UpdateFirestore {
   int productCost;
   int productSalePrice;
   String customerName;
+  DateTime firstPaymnetDate;
 
   UpdateFirestore(
       {required this.productSalePrice,
       required this.vendorName,
       required this.customerName,
       required this.productCost,
-      required this.productName});
+      required this.productName,
+        required this.firstPaymnetDate
+
+      });
 
   Future<bool> addCustomerToExistingVendor() async {
     final cloud = FirebaseFirestore.instance;
@@ -68,8 +72,7 @@ class UpdateFirestore {
 
         final double productPayment = productSalePrice / 7;
 
-        var timeNow = DateTime.now();
-        timeNow = timeNow.add(const Duration(days: 30));
+        var timeNow = firstPaymnetDate;
         for (var i = 1; i < 8; i++) {
           await cloud
               .collection('customers')
@@ -86,7 +89,7 @@ class UpdateFirestore {
               'isPaid': false
             },
           );
-          timeNow = timeNow.add(const Duration(days: 7));
+          timeNow = timeNow.add(const Duration(days: 30));
         }
       },
     );
@@ -148,8 +151,7 @@ class UpdateFirestore {
 
         final double productPayment = productSalePrice / 7;
 
-        var timeNow = DateTime.now();
-        timeNow = timeNow.add(const Duration(days: 30));
+        var timeNow = firstPaymnetDate;
         for (var i = 1; i < 8; i++) {
           await cloud
               .collection('customers')
@@ -166,7 +168,7 @@ class UpdateFirestore {
               'isPaid': false
             },
           );
-          timeNow = timeNow.add(const Duration(days: 7));
+          timeNow = timeNow.add(const Duration(days: 30));
         }
 
     return true;
@@ -231,8 +233,7 @@ class UpdateFirestore {
 
           final double productPayment = productSalePrice / 7;
 
-          var timeNow = DateTime.now();
-          timeNow = timeNow.add(const Duration(days: 30));
+          var timeNow = firstPaymnetDate;
           for (var i = 1; i < 8; i++) {
             await cloud
                 .collection('customers')
@@ -249,7 +250,7 @@ class UpdateFirestore {
                 'isPaid': false
               },
             );
-            timeNow = timeNow.add(const Duration(days: 7));
+            timeNow = timeNow.add(const Duration(days: 30));
           }
         });
       },
@@ -319,8 +320,7 @@ class UpdateFirestore {
 
       final double productPayment = productSalePrice / 7;
 
-      var timeNow = DateTime.now();
-      timeNow = timeNow.add(const Duration(days: 30));
+      var timeNow = firstPaymnetDate;
       for (var i = 1; i < 8; i++) {
         await cloud
             .collection('customers')
@@ -337,7 +337,7 @@ class UpdateFirestore {
             'isPaid': false
           },
         );
-        timeNow = timeNow.add(const Duration(days: 7));
+        timeNow = timeNow.add(const Duration(days: 30));
       }
     });
 
