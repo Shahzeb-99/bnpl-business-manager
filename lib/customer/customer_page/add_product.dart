@@ -126,7 +126,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           builder: (context) => AddVendorScreen(
                                 productName: nameController.text,
                                 productPurchasecost:
-                                    int.parse(priceController.text),
+                                getTotalProfit(price: priceController.text, percentage: selectedProfit),
                                 customerName: widget.customerName,
                               )));
                 }
