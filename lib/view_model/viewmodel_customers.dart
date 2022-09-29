@@ -4,6 +4,7 @@ import '/model/customers.dart';
 
 class CustomerView extends ChangeNotifier {
   List<Customers> allCustomers = [];
+  bool monthSwitch=false;
 
   void getCustomers() async {
     allCustomers = [];
@@ -40,6 +41,7 @@ class CustomerView extends ChangeNotifier {
 
   }
   void update(){notifyListeners();}
+  void toggleSwitch(bool value){monthSwitch=value;notifyListeners();}
 
 
 }

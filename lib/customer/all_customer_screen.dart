@@ -64,24 +64,29 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Dashboard()));
-                  },
-                  child: const Text('Dashboard'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => Dashboard()));
+                      },
+                      child: const Text('Dashboard'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AllVendorScreen()));
+                      },
+                      child: const Text('Vendors'),
+                    ),
+                  ],
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AllVendorScreen()));
-                  },
-                  child: const Text('Vendors'),
-                ),
+                Switch(value: Provider.of<CustomerView>(context ).monthSwitch, onChanged: (value){Provider.of<CustomerView>(context,listen: false).toggleSwitch(value);})
               ],
             ),
           ),
