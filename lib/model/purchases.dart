@@ -4,6 +4,7 @@ import '/customer/payment_schedule_class.dart';
 
 class Purchase {
   DocumentReference documentReferencePurchase;
+  Timestamp purchaseDate;
   var purchaseAmount;
   String vendorName;
   var sellingAmount;
@@ -25,6 +26,7 @@ class Purchase {
     required this.purchaseAmount,
     required this.sellingAmount,
     this.totalProfit,
+    required this.purchaseDate
   });
 
   Future<void> getPaymentSchedule(

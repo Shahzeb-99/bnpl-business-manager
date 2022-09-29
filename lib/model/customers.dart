@@ -29,12 +29,12 @@ class Customers {
         if (value.docs.isNotEmpty) {
           for (var product in value.docs) {
             DocumentReference productRef = product.get('product');
-           await productRef.get().then(
+            await productRef.get().then(
               (value) async {
                 DocumentReference vendorReference = value.get('reference');
-               await vendorReference.get().then(
+                await vendorReference.get().then(
                   (value) {
-                    final int cost1 =  value.get('price');
+                    final int cost1 = value.get('price');
                     cost = cost + cost1;
                   },
                 );
@@ -57,8 +57,8 @@ class Customers {
   }
 
   Future<void> getPurchases() async {
-    purchases=[];
-
+    purchases = [];
+    Timestamp purchaseDate;
     final cloud = FirebaseFirestore.instance;
     DocumentReference documentReference;
     var outstandingBalance;
@@ -68,49 +68,53 @@ class Customers {
     var productCost;
     String productImage = '';
     String vendorName = '';
-print('debig');
+    print('debig');
     await cloud
         .collection('customers')
         .doc(documentID)
         .collection('purchases')
         .get()
         .then(
-          (value) async {
+      (value) async {
         for (var purchase in value.docs) {
           documentReference = purchase.reference;
+          purchaseDate = purchase.get('purchaseDate');
           outstandingBalance = purchase.get('outstanding_balance');
           paidAmount = purchase.get('paid_amount');
           DocumentReference productReference = purchase.get('product');
           await productReference.get().then(
-                (value) async {
+            (value) async {
               productName = value.get('name');
               productSellingPrice = value.get('price');
               DocumentReference vendorDocumentReference =
-              value.get('reference');
+                  value.get('reference');
               await vendorDocumentReference.get().then(
-                    (value) {print('debig');
+                (value) {
+                  print('debig');
                   productCost = value.get('price');
                   productImage = value.get('image');
                 },
               );
-              await vendorDocumentReference.parent.parent?.get().then((value) {print('debig');
+              await vendorDocumentReference.parent.parent?.get().then((value) {
+                print('debig');
                 vendorName = value.get('name');
               });
             },
           );
           print('debig');
           purchases.add(Purchase(
+            purchaseDate: purchaseDate,
             vendorName: vendorName,
             outstandingBalance: outstandingBalance,
             amountPaid: paidAmount,
             productName: productName,
             productImage: productImage,
             purchaseAmount: productCost,
-            sellingAmount: productSellingPrice, documentReferencePurchase: documentReference,
+            sellingAmount: productSellingPrice,
+            documentReferencePurchase: documentReference,
           ));
         }
       },
     );
   }
 }
-

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/customer/customer_page/add_product.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/customer/purchase_widget.dart';
@@ -17,22 +18,11 @@ class CustomerProfile extends StatefulWidget {
 class _CustomerProfileState extends State<CustomerProfile> {
   List<PurchaseWidget> allPurchases = [];
   List<PaymentSchedule> paymentScheduleList = [];
-  num outstandingBalance=0;
-  num amountPaid=0;
-
 
   @override
   void initState() {
     Provider.of<CustomerView>(context, listen: false)
         .getPurchases(widget.index);
-    if(Provider.of<CustomerView>(context, listen: false).monthSwitch){
-      for(var customer in Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].purchases){
-        outstandingBalance=outstandingBalance+customer.outstandingBalance;
-        amountPaid=amountPaid+customer.amountPaid;
-      }
-
-
-    }
     super.initState();
   }
 
@@ -119,26 +109,29 @@ class _CustomerProfileState extends State<CustomerProfile> {
                           .purchases
                           .length,
                       itemBuilder: (BuildContext context, int index) {
-                        return PurchaseWidget(
-                          image: Provider.of<CustomerView>(context)
-                              .allCustomers[widget.index]
-                              .purchases[index]
-                              .productImage,
-                          name: Provider.of<CustomerView>(context)
-                              .allCustomers[widget.index]
-                              .purchases[index]
-                              .productName,
-                          outstandingBalance: Provider.of<CustomerView>(context)
-                              .allCustomers[widget.index]
-                              .purchases[index]
-                              .outstandingBalance,
-                          amountPaid: Provider.of<CustomerView>(context)
-                              .allCustomers[widget.index]
-                              .purchases[index]
-                              .amountPaid,
-                          productIndex: index,
-                          index: widget.index,
-                        );
+                        return 
+                           checkToggle(index) ? PurchaseWidget(
+                                image: Provider.of<CustomerView>(context)
+                                    .allCustomers[widget.index]
+                                    .purchases[index]
+                                    .productImage,
+                                name: Provider.of<CustomerView>(context)
+                                    .allCustomers[widget.index]
+                                    .purchases[index]
+                                    .productName,
+                                outstandingBalance:
+                                    Provider.of<CustomerView>(context)
+                                        .allCustomers[widget.index]
+                                        .purchases[index]
+                                        .outstandingBalance,
+                                amountPaid: Provider.of<CustomerView>(context)
+                                    .allCustomers[widget.index]
+                                    .purchases[index]
+                                    .amountPaid,
+                                productIndex: index,
+                                index: widget.index,
+                              )
+                            : Container();
                       })
                   : Center(
                       child: CircularProgressIndicator(
@@ -150,8 +143,23 @@ class _CustomerProfileState extends State<CustomerProfile> {
         ),
       ),
     );
+    
+    
+    
   }
-
+bool checkToggle(int index){
+  if (Provider.of<CustomerView>(context,listen: false).monthSwitch) {
+    return Provider.of<CustomerView>(context)
+        .allCustomers[widget.index]
+        .purchases[index]
+        .purchaseDate
+        .compareTo(Timestamp.fromDate(DateTime.now()
+        .subtract(Duration(days: 30)))) >
+        0;
+  }else {
+    return true;
+  }
+}
 // void updateProfile() async {
 //   String image = '';
 //   String name = '';

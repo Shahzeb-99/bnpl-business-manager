@@ -68,6 +68,7 @@ class UpdateFirestore {
             'product': productReference,
             'outstanding_balance': productSalePrice,
             'paid_amount': 0,
+            'purchaseDate':Timestamp.now(),
           },
         );
 
@@ -148,6 +149,7 @@ class UpdateFirestore {
             'product': productReference,
             'outstanding_balance': productSalePrice,
             'paid_amount': 0,
+            'purchaseDate':Timestamp.now(),
           },
         );
 
@@ -230,6 +232,7 @@ class UpdateFirestore {
               'product': productReference,
               'outstanding_balance': productSalePrice,
               'paid_amount': 0,
+              'purchaseDate':Timestamp.now(),
             },
           );
 
@@ -317,6 +320,7 @@ class UpdateFirestore {
           'product': productReference,
           'outstanding_balance': productSalePrice,
           'paid_amount': 0,
+          'purchaseDate':Timestamp.now(),
         },
       );
 
