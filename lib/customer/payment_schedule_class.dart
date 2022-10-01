@@ -33,6 +33,9 @@ class PaymentSchedule {
         'amount_paid': isPaid
             ? FieldValue.increment(amount)
             : FieldValue.increment(-amount),
+        'cash_available': isPaid
+            ? FieldValue.increment(amount)
+            : FieldValue.increment(-amount),
       },
     );
     purchaseReference.update(
@@ -57,7 +60,8 @@ class PaymentSchedule {
       },
     );
   }
-  Future<void> togglePayment()async {
+
+  Future<void> togglePayment() async {
     isPaid = !isPaid;
     await updateFirestore();
     await updateBalance();

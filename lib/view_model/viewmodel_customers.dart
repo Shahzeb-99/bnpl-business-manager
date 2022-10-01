@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
 import 'package:flutter/foundation.dart';
 import '/model/customers.dart';
 
 class CustomerView extends ChangeNotifier {
   List<Customers> allCustomers = [];
-  bool monthSwitch=false;
+  bool monthSwitch = false;
+  CustomerFilterOptions option = CustomerFilterOptions.all;
 
   void getCustomers() async {
     allCustomers = [];
@@ -31,17 +33,24 @@ class CustomerView extends ChangeNotifier {
   }
 
   void getPurchases(int index) async {
-   await allCustomers[index].getPurchases();
-   notifyListeners();
-
-  }
-  void getPaymentSchedule({required int index, required int productIndex}) async {
-    await allCustomers[index].purchases[productIndex].getPaymentSchedule(allCustomers[index].documentID);
+    await allCustomers[index].getPurchases();
     notifyListeners();
-
   }
-  void update(){notifyListeners();}
-  void toggleSwitch(bool value){monthSwitch=value;notifyListeners();}
 
+  void getPaymentSchedule(
+      {required int index, required int productIndex}) async {
+    await allCustomers[index]
+        .purchases[productIndex]
+        .getPaymentSchedule(allCustomers[index].documentID);
+    notifyListeners();
+  }
 
+  void update() {
+    notifyListeners();
+  }
+
+  void toggleSwitch(bool value) {
+    monthSwitch = value;
+    notifyListeners();
+  }
 }

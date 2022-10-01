@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
 import 'package:ecommerce_bnql/customer/customer_page/add_product.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/customer/purchase_widget.dart';
@@ -40,11 +42,10 @@ class _CustomerProfileState extends State<CustomerProfile> {
             ),
             Expanded(child: Container()),
             CircleAvatar(
-              backgroundImage: NetworkImage(
-                  Provider.of<CustomerView>(context, listen: false)
-                      .allCustomers[widget.index]
-                      .image),
-            ),
+                backgroundImage: CachedNetworkImageProvider(
+                    Provider.of<CustomerView>(context, listen: false)
+                        .allCustomers[widget.index]
+                        .image)),
           ],
         ),
       ),
@@ -109,8 +110,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
                           .purchases
                           .length,
                       itemBuilder: (BuildContext context, int index) {
-                        return 
-                           checkToggle(index) ? PurchaseWidget(
+                        return checkToggle(index)
+                            ? PurchaseWidget(
                                 image: Provider.of<CustomerView>(context)
                                     .allCustomers[widget.index]
                                     .purchases[index]
@@ -143,23 +144,29 @@ class _CustomerProfileState extends State<CustomerProfile> {
         ),
       ),
     );
-    
-    
-    
   }
-bool checkToggle(int index){
-  if (Provider.of<CustomerView>(context,listen: false).monthSwitch) {
-    return Provider.of<CustomerView>(context)
-        .allCustomers[widget.index]
-        .purchases[index]
-        .purchaseDate
-        .compareTo(Timestamp.fromDate(DateTime.now()
-        .subtract(Duration(days: 30)))) >
-        0;
-  }else {
-    return true;
+
+  bool checkToggle(int index) {
+    if (Provider.of<CustomerView>(context, listen: false).option==CustomerFilterOptions.oneMonth) {
+      return Provider.of<CustomerView>(context)
+              .allCustomers[widget.index]
+              .purchases[index]
+              .purchaseDate
+              .compareTo(Timestamp.fromDate(
+                  DateTime.now().subtract(const Duration(days: 30)))) >
+          0;
+    } else if (Provider.of<CustomerView>(context, listen: false).option==CustomerFilterOptions.sixMonths) {
+      return Provider.of<CustomerView>(context)
+          .allCustomers[widget.index]
+          .purchases[index]
+          .purchaseDate
+          .compareTo(Timestamp.fromDate(
+          DateTime.now().subtract(const Duration(days: 180)))) >
+          0;
+    } else {
+      return true;
+    }
   }
-}
 // void updateProfile() async {
 //   String image = '';
 //   String name = '';

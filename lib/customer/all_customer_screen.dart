@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 
 import 'add_new_customer/add_customer_screen.dart';
 
+enum CustomerFilterOptions { all, oneMonth, sixMonths }
+
 class AllCustomersScreen extends StatefulWidget {
   const AllCustomersScreen({Key? key}) : super(key: key);
 
@@ -70,8 +72,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => Dashboard()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Dashboard()));
                       },
                       child: const Text('Dashboard'),
                     ),
@@ -86,7 +90,45 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                     ),
                   ],
                 ),
-                Switch(value: Provider.of<CustomerView>(context ).monthSwitch, onChanged: (value){Provider.of<CustomerView>(context,listen: false).toggleSwitch(value);})
+                ListTile(
+                  title: const Text('All Time'),
+                  leading: Radio<CustomerFilterOptions?>(
+                    value: CustomerFilterOptions.all,
+                    groupValue: Provider.of<CustomerView>(context).option,
+                    onChanged: (value) {
+                      setState(() {
+                        Provider.of<CustomerView>(context, listen: false)
+                            .option = value!;
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('Last Month'),
+                  leading: Radio<CustomerFilterOptions?>(
+                    value: CustomerFilterOptions.oneMonth,
+                    groupValue: Provider.of<CustomerView>(context).option,
+                    onChanged: (value) {
+                      setState(() {
+                        Provider.of<CustomerView>(context, listen: false)
+                            .option = value!;
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('Last Six Months'),
+                  leading: Radio<CustomerFilterOptions?>(
+                    value: CustomerFilterOptions.sixMonths,
+                    groupValue: Provider.of<CustomerView>(context).option,
+                    onChanged: (value) {
+                      setState(() {
+                        Provider.of<CustomerView>(context, listen: false)
+                            .option = value!;
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
           ),

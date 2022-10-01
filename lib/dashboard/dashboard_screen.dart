@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 
 import '../vendor/all_vendor_screen.dart';
 
+enum DashboardFilterOptions { all, oneMonth, sixMonths }
+
 class Dashboard extends StatefulWidget {
   Dashboard({Key? key}) : super(key: key);
 
@@ -70,6 +72,51 @@ class _DashboardState extends State<Dashboard> {
                   },
                   child: const Text('Vendors'),
                 ),
+                ListTile(
+                  title: const Text('All Time'),
+                  leading: Radio<DashboardFilterOptions?>(
+                    value: DashboardFilterOptions.all,
+                    groupValue: Provider.of<DashboardView>(context).option,
+                    onChanged: (value) {
+                      setState(() {
+                        Provider.of<DashboardView>(context, listen: false)
+                            .option = value!;
+                        Provider.of<DashboardView>(context, listen: false)
+                            .getFinancials();
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('Last Month'),
+                  leading: Radio<DashboardFilterOptions?>(
+                    value: DashboardFilterOptions.oneMonth,
+                    groupValue: Provider.of<DashboardView>(context).option,
+                    onChanged: (value) {
+                      setState(() {
+                        Provider.of<DashboardView>(context, listen: false)
+                            .option = value!;
+                        Provider.of<DashboardView>(context, listen: false)
+                            .getMonthlyFinancials();
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('Last Six Months'),
+                  leading: Radio<DashboardFilterOptions?>(
+                    value: DashboardFilterOptions.sixMonths,
+                    groupValue: Provider.of<DashboardView>(context).option,
+                    onChanged: (value) {
+                      setState(() {
+                        Provider.of<DashboardView>(context, listen: false)
+                            .option = value!;
+                        Provider.of<DashboardView>(context, listen: false)
+                            .getMonthlyFinancials();
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -97,7 +144,7 @@ class _DashboardState extends State<Dashboard> {
                               const Expanded(
                                 child: Center(
                                   child: Text(
-                                    'Outstanding Balance',
+                                    'Remaining Installments',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 20,
@@ -109,9 +156,15 @@ class _DashboardState extends State<Dashboard> {
                                 height: 25,
                               ),
                               Expanded(
-                                child: Text(
-                                  '${Provider.of<DashboardView>(context).dashboardData.totalOutstandingBalance.toString()} Rupees',
-                                ),
+                                child: Provider.of<DashboardView>(context)
+                                            .option ==
+                                        DashboardFilterOptions.all
+                                    ? Text(
+                                        '${Provider.of<DashboardView>(context).dashboardData.totalOutstandingBalance.toString()} Rupees',
+                                      )
+                                    : Text(
+                                        '${Provider.of<DashboardView>(context).outstandingBalance} Rupees',
+                                      ),
                               )
                             ],
                           )),
@@ -126,7 +179,8 @@ class _DashboardState extends State<Dashboard> {
                               const Expanded(
                                 child: Center(
                                   child: Text(
-                                    'Amount Paid',
+                                    'Recovery account',
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 ),
@@ -135,9 +189,15 @@ class _DashboardState extends State<Dashboard> {
                                 height: 25,
                               ),
                               Expanded(
-                                child: Text(
-                                  '${Provider.of<DashboardView>(context).dashboardData.totalAmountPaid.toString()} Rupees',
-                                ),
+                                child: Provider.of<DashboardView>(context)
+                                            .option ==
+                                        DashboardFilterOptions.all
+                                    ? Text(
+                                        '${Provider.of<DashboardView>(context).dashboardData.totalAmountPaid.toString()} Rupees',
+                                      )
+                                    : Text(
+                                        '${Provider.of<DashboardView>(context).amount_paid} Rupees',
+                                      ),
                               )
                             ],
                           )),
@@ -161,7 +221,7 @@ class _DashboardState extends State<Dashboard> {
                               const Expanded(
                                 child: Center(
                                   child: Text(
-                                    'Total Cost',
+                                    'Purchase account',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 20,
@@ -173,9 +233,15 @@ class _DashboardState extends State<Dashboard> {
                                 height: 25,
                               ),
                               Expanded(
-                                child: Text(
-                                  '${Provider.of<DashboardView>(context).dashboardData.totalCost.toString()} Rupees',
-                                ),
+                                child: Provider.of<DashboardView>(context)
+                                            .option ==
+                                        DashboardFilterOptions.all
+                                    ? Text(
+                                        '${Provider.of<DashboardView>(context).dashboardData.totalCost.toString()} Rupees',
+                                      )
+                                    : Text(
+                                        '${Provider.of<DashboardView>(context).total_cost} Rupees',
+                                      ),
                               )
                             ],
                           )),
@@ -190,7 +256,8 @@ class _DashboardState extends State<Dashboard> {
                             const Expanded(
                               child: Center(
                                 child: Text(
-                                  'Total Profit',
+                                  'Calculative profit',
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ),
@@ -199,8 +266,15 @@ class _DashboardState extends State<Dashboard> {
                               height: 25,
                             ),
                             Expanded(
-                              child: Text(
-                                  '${Provider.of<DashboardView>(context).dashboardData.profit} Rupees '),
+                              child:
+                                  Provider.of<DashboardView>(context).option ==
+                                          DashboardFilterOptions.all
+                                      ? Text(
+                                          '${Provider.of<DashboardView>(context).dashboardData.profit.toString()} Rupees',
+                                        )
+                                      : Text(
+                                          '${Provider.of<DashboardView>(context).outstandingBalance + Provider.of<DashboardView>(context).amount_paid - Provider.of<DashboardView>(context).total_cost} Rupees',
+                                        ),
                             )
                           ],
                         ),
@@ -297,7 +371,8 @@ class _DashboardState extends State<Dashboard> {
                                                           int.parse(widget
                                                               .moneyController
                                                               .text);
-                                                  widget.moneyController.clear();
+                                                  widget.moneyController
+                                                      .clear();
                                                   Navigator.pop(context);
                                                 });
                                               },
@@ -319,7 +394,7 @@ class _DashboardState extends State<Dashboard> {
                           const Expanded(
                             child: Center(
                               child: Text(
-                                'Available Cash',
+                                'Cash in Hand',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 20,
