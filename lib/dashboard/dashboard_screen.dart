@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
+import 'package:ecommerce_bnql/dashboard/amount_spend_screen.dart';
+import 'package:ecommerce_bnql/dashboard/outstanding_balance_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -138,68 +140,85 @@ class _DashboardState extends State<Dashboard> {
                       child: Card(
                           elevation: 5,
                           color: const Color(0xFFD6EFF2),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Expanded(
-                                child: Center(
-                                  child: Text(
-                                    'Remaining Installments',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 20,
+                          child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AllOutstandingBalance()));
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        'Remaining Installments',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 25,
-                              ),
-                              Expanded(
-                                child: Provider.of<DashboardView>(context)
-                                            .option ==
-                                        DashboardFilterOptions.all
-                                    ? Text(
-                                        '${Provider.of<DashboardView>(context).dashboardData.totalOutstandingBalance.toString()} Rupees',
-                                      )
-                                    : Text(
-                                        '${Provider.of<DashboardView>(context).outstandingBalance} Rupees',
-                                      ),
-                              )
-                            ],
-                          )),
+                                  const SizedBox(
+                                    height: 25,
+                                  ),
+                                  Expanded(
+                                    child: Provider.of<DashboardView>(context)
+                                                .option ==
+                                            DashboardFilterOptions.all
+                                        ? Text(
+                                            '${Provider.of<DashboardView>(context).dashboardData.totalOutstandingBalance.toString()} Rupees',
+                                          )
+                                        : Text(
+                                            '${Provider.of<DashboardView>(context).outstandingBalance} Rupees',
+                                          ),
+                                  )
+                                ],
+                              ))),
                     ),
                     Expanded(
                       child: Card(
                           elevation: 5,
                           color: const Color(0xFFD6EFF2),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Expanded(
-                                child: Center(
-                                  child: Text(
-                                    'Recovery account',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 20),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AllAmountSpend()));
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      'Recovery account',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 20),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 25,
-                              ),
-                              Expanded(
-                                child: Provider.of<DashboardView>(context)
-                                            .option ==
-                                        DashboardFilterOptions.all
-                                    ? Text(
-                                        '${Provider.of<DashboardView>(context).dashboardData.totalAmountPaid.toString()} Rupees',
-                                      )
-                                    : Text(
-                                        '${Provider.of<DashboardView>(context).amount_paid} Rupees',
-                                      ),
-                              )
-                            ],
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                Expanded(
+                                  child: Provider.of<DashboardView>(context)
+                                              .option ==
+                                          DashboardFilterOptions.all
+                                      ? Text(
+                                          '${Provider.of<DashboardView>(context).dashboardData.totalAmountPaid.toString()} Rupees',
+                                        )
+                                      : Text(
+                                          '${Provider.of<DashboardView>(context).amount_paid} Rupees',
+                                        ),
+                                )
+                              ],
+                            ),
                           )),
                     )
                   ],
@@ -285,134 +304,283 @@ class _DashboardState extends State<Dashboard> {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.25,
-                child: Card(
-                    elevation: 5,
-                    color: const Color(0xFFD6EFF2),
-                    child: InkWell(
-                      onTap: () {
-                        showModalBottomSheet<void>(
-                          backgroundColor: Colors.transparent,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SingleChildScrollView(
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20))),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    // mainAxisAlignment: MainAxisAlignment.start,
-                                    // crossAxisAlignment:
-                                    //     CrossAxisAlignment.stretch,
-                                    //mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text(
-                                        'Add Money',
-                                        style: TextStyle(fontSize: 25),
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: TextFormField(
-                                              autofocus: true,
-                                              controller:
-                                                  widget.moneyController,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly
-                                              ],
-                                              decoration: kDecoration.inputBox(
-                                                  'Amount', 'PKR'),
-                                              validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return 'This field is required';
-                                                }
-                                                return null;
-                                              },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Card(
+                          elevation: 5,
+                          color: const Color(0xFFD6EFF2),
+                          child: InkWell(
+                            onTap: () {
+                              showModalBottomSheet<void>(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SingleChildScrollView(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Column(
+                                          // mainAxisAlignment: MainAxisAlignment.start,
+                                          // crossAxisAlignment:
+                                          //     CrossAxisAlignment.stretch,
+                                          //mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text(
+                                              'Add Money',
+                                              style: TextStyle(fontSize: 25),
                                             ),
-                                          ),
-                                          IconButton(
-                                              splashColor: Colors.tealAccent,
-                                              onPressed: () {
-                                                final cloud =
-                                                    FirebaseFirestore.instance;
-                                                cloud
-                                                    .collection('financials')
-                                                    .doc('finance')
-                                                    .update({
-                                                  'cash_available':
-                                                      FieldValue.increment(
-                                                          int.parse(widget
-                                                              .moneyController
-                                                              .text))
-                                                }).whenComplete(() {
-                                                  Provider.of<DashboardView>(
-                                                              context,
-                                                              listen: false)
-                                                          .dashboardData
-                                                          .cashAvailable =
-                                                      Provider.of<DashboardView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .dashboardData
-                                                              .cashAvailable +
-                                                          int.parse(widget
-                                                              .moneyController
-                                                              .text);
-                                                  widget.moneyController
-                                                      .clear();
-                                                  Navigator.pop(context);
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                  Icons.navigate_next))
-                                        ],
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: TextFormField(
+                                                    autofocus: true,
+                                                    controller:
+                                                        widget.moneyController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly
+                                                    ],
+                                                    decoration:
+                                                        kDecoration.inputBox(
+                                                            'Amount', 'PKR'),
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return 'This field is required';
+                                                      }
+                                                      return null;
+                                                    },
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                    splashColor:
+                                                        Colors.tealAccent,
+                                                    onPressed: () {
+                                                      final cloud =
+                                                          FirebaseFirestore
+                                                              .instance;
+                                                      cloud
+                                                          .collection(
+                                                              'financials')
+                                                          .doc('finance')
+                                                          .update({
+                                                        'cash_available':
+                                                            FieldValue.increment(
+                                                                int.parse(widget
+                                                                    .moneyController
+                                                                    .text))
+                                                      }).whenComplete(() {
+                                                        Provider.of<
+                                                                    DashboardView>(
+                                                                context,
+                                                                listen: false)
+                                                            .dashboardData
+                                                            .cashAvailable = Provider
+                                                                    .of<DashboardView>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                .dashboardData
+                                                                .cashAvailable +
+                                                            int.parse(widget
+                                                                .moneyController
+                                                                .text);
+                                                        widget.moneyController
+                                                            .clear();
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.navigate_next))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      'Cash in Hand',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Expanded(
-                            child: Center(
-                              child: Text(
-                                'Cash in Hand',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20,
+                                const SizedBox(
+                                  height: 25,
                                 ),
-                              ),
+                                Expanded(
+                                  child: Text(
+                                    '${Provider.of<DashboardView>(context).dashboardData.cashAvailable.toString()} Rupees',
+                                  ),
+                                )
+                              ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          Expanded(
-                            child: Text(
-                              '${Provider.of<DashboardView>(context).dashboardData.cashAvailable.toString()} Rupees',
+                          )),
+                    ),
+                    Expanded(
+                      child: Card(
+                          elevation: 5,
+                          color: const Color(0xFFD6EFF2),
+                          child: InkWell(
+                            onTap: () {
+                              showModalBottomSheet<void>(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SingleChildScrollView(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Column(
+                                          // mainAxisAlignment: MainAxisAlignment.start,
+                                          // crossAxisAlignment:
+                                          //     CrossAxisAlignment.stretch,
+                                          //mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text(
+                                              'Add Expenses',
+                                              style: TextStyle(fontSize: 25),
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: TextFormField(
+                                                    autofocus: true,
+                                                    controller:
+                                                        widget.moneyController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly
+                                                    ],
+                                                    decoration:
+                                                        kDecoration.inputBox(
+                                                            'Amount', 'PKR'),
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return 'This field is required';
+                                                      }
+                                                      return null;
+                                                    },
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                    splashColor:
+                                                        Colors.tealAccent,
+                                                    onPressed: () {
+                                                      final cloud =
+                                                          FirebaseFirestore
+                                                              .instance;
+                                                      cloud
+                                                          .collection(
+                                                              'financials')
+                                                          .doc('finance')
+                                                          .update({
+                                                        'expenses': FieldValue
+                                                            .increment(
+                                                                int.parse(widget
+                                                                    .moneyController
+                                                                    .text))
+                                                      }).whenComplete(() {
+                                                        Provider.of<
+                                                                    DashboardView>(
+                                                                context,
+                                                                listen: false)
+                                                            .dashboardData
+                                                            .expenses = Provider
+                                                                    .of<DashboardView>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                .dashboardData
+                                                                .expenses +
+                                                            int.parse(widget
+                                                                .moneyController
+                                                                .text);
+                                                        widget.moneyController
+                                                            .clear();
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.navigate_next))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      'Expenses',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '${Provider.of<DashboardView>(context).dashboardData.expenses.toString()} Rupees',
+                                  ),
+                                )
+                              ],
                             ),
-                          )
-                        ],
-                      ),
-                    )),
+                          )),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 const List<String> profitPercentage = ['5', '10', '15', '20', '25'];
 
 class AddProductScreen extends StatefulWidget {
-  AddProductScreen({
+  const AddProductScreen({
     Key? key,
     required this.customerName,
   }) : super(key: key);
@@ -90,7 +90,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       child: Row(
                         children: [
                           Text(items),
-                          Text('%'),
+                          const Text('%'),
                         ],
                       ),
                     );

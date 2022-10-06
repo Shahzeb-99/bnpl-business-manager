@@ -2,10 +2,9 @@ import 'package:ecommerce_bnql/customer/add_new_customer/add_vendor_screen.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const List<String> profitPercentage = ['5', '10', '15', '20', '25'];
 
 class AddProductScreen extends StatefulWidget {
-  AddProductScreen({
+  const AddProductScreen({
     Key? key,
     required this.customerName,
   }) : super(key: key);
@@ -19,13 +18,14 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  final TextEditingController profitController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
-  String selectedProfit = profitPercentage.first;
   String price = '';
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -56,7 +56,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
+                    child: TextFormField(onChanged: (value){setState(() {
+
+                    });},
                       controller: priceController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -70,40 +72,27 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(onChanged: (value){setState(() {
+
+                    });},
+                      controller: profitController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration:
+                      kDecoration.inputBox('Profit Percentage', '%'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This field is required';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 ],
               )),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: const Color(0xFFD6EFF2),
-                  borderRadius: BorderRadius.circular(4)),
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  dropdownColor: const Color(0xFFD6EFF2),
-                  value: selectedProfit,
-                  items: profitPercentage.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Row(
-                        children: [
-                          Text(items),
-                          Text('%'),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedProfit = value!;
-                    });
-                  },
-                  hint: const Text('Select Percentage'),
-                ),
-              ),
-            ),
-          ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -112,7 +101,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     borderRadius: BorderRadius.circular(4)),
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Text(
-                    'Total Selling Amount : ${getTotalProfit(price: priceController.text, percentage: selectedProfit)}')),
+                    'Total Selling Amount : ${getTotalProfit(price: priceController.text, percentage: profitController.text)}')),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -125,7 +114,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           builder: (context) => AddVendorScreen(
                                 productName: nameController.text,
                                 productPurchasecost:
-                               getTotalProfit(price: priceController.text, percentage: selectedProfit),
+                               getTotalProfit(price: priceController.text, percentage: profitController.text),
                                 customerName: widget.customerName,
                               )));
                 }
@@ -140,7 +129,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 }
 
 int getTotalProfit({required String price, required String percentage}) {
-  if (price.isNotEmpty) {
+  if (price.isNotEmpty && percentage.isNotEmpty) {
     double total =
         (int.parse(price) * (int.parse(percentage) / 100)) + int.parse(price);
 
@@ -153,7 +142,7 @@ int getTotalProfit({required String price, required String percentage}) {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
+      suffix: suffix.isNotEmpty ?   Text(suffix) : null,
       filled: true,
       fillColor: const Color(0xFFD6EFF2),
       border: const OutlineInputBorder(),

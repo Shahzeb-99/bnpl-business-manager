@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PurchaseWidget extends StatefulWidget {
-  PurchaseWidget(
+  const PurchaseWidget(
       {Key? key,
       required this.image,
       required this.name,

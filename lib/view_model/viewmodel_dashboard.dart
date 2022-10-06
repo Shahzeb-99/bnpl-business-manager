@@ -10,7 +10,7 @@ class DashboardView extends ChangeNotifier {
       totalOutstandingBalance: 0,
       totalCost: 0,
       profit: 0,
-      cashAvailable: 0);
+      cashAvailable: 0, expenses: 0);
 
   var outstandingBalance;
   var amount_paid;
@@ -21,6 +21,7 @@ class DashboardView extends ChangeNotifier {
     dashboardData.totalCost = 0;
     dashboardData.totalOutstandingBalance = 0;
     dashboardData.totalAmountPaid = 0;
+    dashboardData.expenses = 0;
 
     final cloud = FirebaseFirestore.instance;
 
@@ -31,6 +32,7 @@ class DashboardView extends ChangeNotifier {
         dashboardData.totalAmountPaid = value.docs[0].get('amount_paid');
         dashboardData.totalCost = value.docs[0].get('total_cost');
         dashboardData.cashAvailable = value.docs[0].get('cash_available');
+        dashboardData.expenses=value.docs[0].get('expenses');
         dashboardData.profit = (dashboardData.totalOutstandingBalance +
                 dashboardData.totalAmountPaid) -
             dashboardData.totalCost;
@@ -52,11 +54,11 @@ class DashboardView extends ChangeNotifier {
               .collection('purchases')
               .where('purchaseDate',
                   isGreaterThan: Timestamp.fromDate(
-                      DateTime.now().subtract(option==DashboardFilterOptions.oneMonth?Duration(days: 30):Duration(days: 180))))
+                      DateTime.now().subtract(option==DashboardFilterOptions.oneMonth?const Duration(days: 30):const Duration(days: 180))))
               .get()
               .then((value) async {
             for (var purchase in value.docs) {
-              print(purchase.get('purchaseDate'));
+
               outstandingBalance += purchase.get('outstanding_balance');
               amount_paid += purchase.get('paid_amount');
               DocumentReference product = purchase.get('product');
@@ -70,13 +72,13 @@ class DashboardView extends ChangeNotifier {
                   );
                 },
               );
-              print(outstandingBalance);
+
             }
           });
         }
       },
     );
-    print('object');
+
     notifyListeners();
   }
 }

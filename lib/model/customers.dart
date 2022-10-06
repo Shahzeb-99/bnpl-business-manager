@@ -68,7 +68,7 @@ class Customers {
     var productCost;
     String productImage = '';
     String vendorName = '';
-    print('debig');
+
     await cloud
         .collection('customers')
         .doc(documentID)
@@ -90,18 +90,18 @@ class Customers {
                   value.get('reference');
               await vendorDocumentReference.get().then(
                 (value) {
-                  print('debig');
+
                   productCost = value.get('price');
                   productImage = value.get('image');
                 },
               );
               await vendorDocumentReference.parent.parent?.get().then((value) {
-                print('debig');
+
                 vendorName = value.get('name');
               });
             },
           );
-          print('debig');
+
           purchases.add(Purchase(
             purchaseDate: purchaseDate,
             vendorName: vendorName,

@@ -14,8 +14,8 @@ class PaymentScheduleScreen extends StatefulWidget {
       : super(key: key);
 
   final List<PaymentSchedule> paymentList;
-  final productIndex;
-  final index;
+  final int productIndex;
+  final int index;
 
   @override
   State<PaymentScheduleScreen> createState() => _PaymentScheduleScreenState();

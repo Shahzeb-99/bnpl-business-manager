@@ -7,9 +7,10 @@ class UpdateFirestore {
   int productSalePrice;
   String customerName;
   DateTime firstPaymnetDate;
+  DateTime orderDate;
 
   UpdateFirestore(
-      {required this.productSalePrice,
+      {required this.orderDate,required this.productSalePrice,
       required this.vendorName,
       required this.customerName,
       required this.productCost,
@@ -68,12 +69,13 @@ class UpdateFirestore {
             'product': productReference,
             'outstanding_balance': productSalePrice,
             'paid_amount': 0,
-            'purchaseDate':Timestamp.now(),
+            'purchaseDate':Timestamp.fromDate(orderDate),
           },
         );
 
         final double productPayment = productSalePrice / 7;
-
+        final double lastPayment = productSalePrice-productPayment.toInt()*7;
+        final double lastPayment2 = productPayment.toInt()+lastPayment;
         var timeNow = firstPaymnetDate;
         for (var i = 1; i < 8; i++) {
           await cloud
@@ -84,7 +86,7 @@ class UpdateFirestore {
               .collection('payment_schedule')
               .add(
             {
-              'amount': productPayment.toInt(),
+              'amount':i<7?productPayment.toInt():lastPayment2.toInt(),
               'date': Timestamp.fromDate(
                 DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
               ),
@@ -149,11 +151,13 @@ class UpdateFirestore {
             'product': productReference,
             'outstanding_balance': productSalePrice,
             'paid_amount': 0,
-            'purchaseDate':Timestamp.now(),
+            'purchaseDate':Timestamp.fromDate(orderDate),
           },
         );
 
         final double productPayment = productSalePrice / 7;
+        final double lastPayment = productSalePrice-productPayment.toInt()*7;
+        final double lastPayment2 = productPayment.toInt()+lastPayment;
 
         var timeNow = firstPaymnetDate;
         for (var i = 1; i < 8; i++) {
@@ -165,7 +169,7 @@ class UpdateFirestore {
               .collection('payment_schedule')
               .add(
             {
-              'amount': productPayment.toInt(),
+              'amount': i<7?productPayment.toInt():lastPayment2.toInt(),
               'date': Timestamp.fromDate(
                 DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
               ),
@@ -232,12 +236,13 @@ class UpdateFirestore {
               'product': productReference,
               'outstanding_balance': productSalePrice,
               'paid_amount': 0,
-              'purchaseDate':Timestamp.now(),
+              'purchaseDate':Timestamp.fromDate(orderDate),
             },
           );
 
           final double productPayment = productSalePrice / 7;
-
+          final double lastPayment = productSalePrice-productPayment.toInt()*7;
+          final double lastPayment2 = productPayment.toInt()+lastPayment;
           var timeNow = firstPaymnetDate;
           for (var i = 1; i < 8; i++) {
             await cloud
@@ -248,7 +253,7 @@ class UpdateFirestore {
                 .collection('payment_schedule')
                 .add(
               {
-                'amount': productPayment.toInt(),
+                'amount': i<7?productPayment.toInt():lastPayment2.toInt(),
                 'date': Timestamp.fromDate(
                   DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
                 ),
@@ -320,12 +325,13 @@ class UpdateFirestore {
           'product': productReference,
           'outstanding_balance': productSalePrice,
           'paid_amount': 0,
-          'purchaseDate':Timestamp.now(),
+          'purchaseDate':Timestamp.fromDate(orderDate),
         },
       );
 
       final double productPayment = productSalePrice / 7;
-
+      final double lastPayment = productSalePrice-productPayment.toInt()*7;
+      final double lastPayment2 = productPayment.toInt()+lastPayment;
       var timeNow = firstPaymnetDate;
       for (var i = 1; i < 8; i++) {
         await cloud
@@ -336,7 +342,7 @@ class UpdateFirestore {
             .collection('payment_schedule')
             .add(
           {
-            'amount': productPayment.toInt(),
+            'amount': i<7?productPayment.toInt():lastPayment2.toInt(),
             'date': Timestamp.fromDate(
               DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
             ),

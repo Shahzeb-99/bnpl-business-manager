@@ -4,7 +4,8 @@ class DashboardData {
   int totalCost;
   int profit;
   int cashAvailable;
+  int expenses;
 
   DashboardData(
-      {required this.cashAvailable,required this.profit,required this.totalAmountPaid, required this.totalOutstandingBalance,required this.totalCost});
+      {required this.expenses,required this.cashAvailable,required this.profit,required this.totalAmountPaid, required this.totalOutstandingBalance,required this.totalCost});
 }
