@@ -103,6 +103,7 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            customerID: documentID,
             purchaseDate: purchaseDate,
             vendorName: vendorName,
             outstandingBalance: outstandingBalance,

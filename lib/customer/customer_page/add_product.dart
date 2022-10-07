@@ -20,12 +20,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController nameController = TextEditingController();
 
   final TextEditingController priceController = TextEditingController();
-
+  final formKey = GlobalKey<FormState>();
   String selectedProfit = profitPercentage.first;
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(

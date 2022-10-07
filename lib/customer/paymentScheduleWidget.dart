@@ -112,13 +112,23 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                         .toString()}'),
               ),
               Expanded(
-                flex: 2,
-                child: Text(
-                    'Amount : ${Provider
-                        .of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index].purchases[widget
-                        .productIndex].paymentSchedule[widget.paymentIndex]
-                        .amount.toString()} PKR'),
+                flex: 4,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        'Amount : ${Provider
+                            .of<CustomerView>(context, listen: false)
+                            .allCustomers[widget.index].purchases[widget
+                            .productIndex].paymentSchedule[widget.paymentIndex]
+                            .amount.toString()} PKR'),
+                    Text(
+                        'Remaining : ${Provider
+                            .of<CustomerView>(context, listen: false)
+                            .allCustomers[widget.index].purchases[widget
+                            .productIndex].paymentSchedule[widget.paymentIndex]
+                            .remainingAmount.toString()} PKR'),
+                  ],
+                ),
               ),
               Provider
                   .of<CustomerView>(context, listen: false)

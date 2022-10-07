@@ -198,6 +198,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                             bool status = _selectedVendorOption ==
                                     Vendor.existingVendor
                                 ? await UpdateFirestore(
+                              numberOfPayments: 7,
                               orderDate: orderDate!,
                                         productSalePrice:
                                             widget.productPurchasecost,
@@ -208,7 +209,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                         productName: widget.productName,
                                         firstPaymnetDate: firstPaymentDate!)
                                     .addProduct()
-                                : await UpdateFirestore(orderDate: orderDate!,
+                                : await UpdateFirestore(numberOfPayments:7,orderDate: orderDate!,
                                         productSalePrice:
                                             widget.productPurchasecost,
                                         vendorName: nameController.text,

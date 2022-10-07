@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '/customer/payment_schedule_class.dart';
 
 class Purchase {
+  String customerID;
   DocumentReference documentReferencePurchase;
   Timestamp purchaseDate;
   var purchaseAmount;
@@ -16,7 +17,8 @@ class Purchase {
   var amountPaid;
   List<PaymentSchedule> paymentSchedule = [];
 
-  Purchase({required this.documentReferencePurchase,
+  Purchase({required this.customerID,
+    required this.documentReferencePurchase,
     required this.vendorName,
     required this.outstandingBalance,
     required this.amountPaid,
@@ -26,12 +28,9 @@ class Purchase {
     required this.purchaseAmount,
     required this.sellingAmount,
     this.totalProfit,
-    required this.purchaseDate
-  });
+    required this.purchaseDate});
 
-  Future<void> getPaymentSchedule(
-
-       String customerDocID) async {
+  Future<void> getPaymentSchedule(String customerDocID) async {
     paymentSchedule = [];
     await documentReferencePurchase
         .collection('payment_schedule')
@@ -43,7 +42,8 @@ class Purchase {
         Timestamp date = payment.get('date');
         bool isPaid = payment.get('isPaid');
 
-       paymentSchedule.add(PaymentSchedule(
+        paymentSchedule.add(PaymentSchedule(
+            remainingAmount: payment.get('remainingAmount'),
             amount: amount,
             isPaid: isPaid,
             date: date,
@@ -51,6 +51,25 @@ class Purchase {
             purchaseReference: documentReferencePurchase,
             customerdocID: customerDocID));
       }
+    });
+  }
+
+  updateCustomTransaction({required int amount}) async {
+    final cloud = FirebaseFirestore.instance;
+
+    await cloud.collection('customers').doc(customerID).update({
+      'outstanding_balance': FieldValue.increment(-amount),
+      'paid_amount': FieldValue.increment(amount),
+    });
+
+    await documentReferencePurchase.update({
+      'outstanding_balance': FieldValue.increment(-amount),
+      'paid_amount': FieldValue.increment(amount),
+    });
+    cloud.collection('financials').doc('finance').update({
+      'amount_paid': FieldValue.increment(amount),
+      'outstanding_balance': FieldValue.increment(-amount),
+      'cash_available': FieldValue.increment(amount),
     });
   }
 }

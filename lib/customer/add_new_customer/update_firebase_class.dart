@@ -8,16 +8,17 @@ class UpdateFirestore {
   String customerName;
   DateTime firstPaymnetDate;
   DateTime orderDate;
+  double numberOfPayments;
 
   UpdateFirestore(
-      {required this.orderDate,required this.productSalePrice,
+      {required this.numberOfPayments,
+      required this.orderDate,
+      required this.productSalePrice,
       required this.vendorName,
       required this.customerName,
       required this.productCost,
       required this.productName,
-        required this.firstPaymnetDate
-
-      });
+      required this.firstPaymnetDate});
 
   Future<bool> addCustomerToExistingVendor() async {
     final cloud = FirebaseFirestore.instance;
@@ -25,7 +26,7 @@ class UpdateFirestore {
       {
         'outstanding_balance': FieldValue.increment(productSalePrice),
         'total_cost': FieldValue.increment(productCost),
-        'cash_available':FieldValue.increment(-productCost),
+        'cash_available': FieldValue.increment(-productCost),
       },
     );
 
@@ -69,15 +70,16 @@ class UpdateFirestore {
             'product': productReference,
             'outstanding_balance': productSalePrice,
             'paid_amount': 0,
-            'purchaseDate':Timestamp.fromDate(orderDate),
+            'purchaseDate': Timestamp.fromDate(orderDate),
           },
         );
 
-        final double productPayment = productSalePrice / 7;
-        final double lastPayment = productSalePrice-productPayment.toInt()*7;
-        final double lastPayment2 = productPayment.toInt()+lastPayment;
+        final double productPayment = productSalePrice / numberOfPayments;
+        final double lastPayment =
+            productSalePrice - productPayment.toInt() * numberOfPayments;
+        final double lastPayment2 = productPayment.toInt() + lastPayment;
         var timeNow = firstPaymnetDate;
-        for (var i = 1; i < 8; i++) {
+        for (var i = 1; i < numberOfPayments + 1; i++) {
           await cloud
               .collection('customers')
               .doc(newCustomerReference.id)
@@ -86,11 +88,16 @@ class UpdateFirestore {
               .collection('payment_schedule')
               .add(
             {
-              'amount':i<7?productPayment.toInt():lastPayment2.toInt(),
+              'amount': i < numberOfPayments
+                  ? productPayment.toInt()
+                  : lastPayment2.toInt(),
               'date': Timestamp.fromDate(
                 DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
               ),
-              'isPaid': false
+              'isPaid': false,
+              'remainingAmount':i < numberOfPayments
+                  ? productPayment.toInt()
+                  : lastPayment2.toInt(),
             },
           );
           timeNow = timeNow.add(const Duration(days: 30));
@@ -99,6 +106,7 @@ class UpdateFirestore {
     );
     return true;
   }
+
   Future<bool> addCustomerToNewVendor() async {
     final cloud = FirebaseFirestore.instance;
 
@@ -106,10 +114,9 @@ class UpdateFirestore {
       {
         'outstanding_balance': FieldValue.increment(productSalePrice),
         'total_cost': FieldValue.increment(productCost),
-        'cash_available':FieldValue.increment(-productCost),
+        'cash_available': FieldValue.increment(-productCost),
       },
     );
-
 
     DocumentReference vendorReference;
 
@@ -117,14 +124,16 @@ class UpdateFirestore {
       'name': vendorName,
       'address': 'Address',
       'city': 'City',
-      'image': 'https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc='
+      'image':
+          'https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc='
     });
-    DocumentReference vendorDocumentReference = await vendorReference.collection('products').add(
+    DocumentReference vendorDocumentReference =
+        await vendorReference.collection('products').add(
       {
         'name': productName,
         'price': productCost,
         'image':
-        'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
+            'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
       },
     );
     final productReference = await cloud.collection('products').add(
@@ -134,58 +143,66 @@ class UpdateFirestore {
         'reference': vendorDocumentReference
       },
     );
-        final newCustomerReference = await cloud.collection('customers').add(
-          {
-            'name': customerName,
-            'outstanding_balance': productSalePrice,
-            'paid_amount': 0,
-            'image': 'https://cdn-icons-png.flaticon.com/512/147/147144.png'
-          },
-        );
-        final purchaseReference = await cloud
-            .collection('customers')
-            .doc(newCustomerReference.id)
-            .collection('purchases')
-            .add(
-          {
-            'product': productReference,
-            'outstanding_balance': productSalePrice,
-            'paid_amount': 0,
-            'purchaseDate':Timestamp.fromDate(orderDate),
-          },
-        );
+    final newCustomerReference = await cloud.collection('customers').add(
+      {
+        'name': customerName,
+        'outstanding_balance': productSalePrice,
+        'paid_amount': 0,
+        'image': 'https://cdn-icons-png.flaticon.com/512/147/147144.png'
+      },
+    );
+    final purchaseReference = await cloud
+        .collection('customers')
+        .doc(newCustomerReference.id)
+        .collection('purchases')
+        .add(
+      {
+        'product': productReference,
+        'outstanding_balance': productSalePrice,
+        'paid_amount': 0,
+        'purchaseDate': Timestamp.fromDate(orderDate),
+      },
+    );
 
-        final double productPayment = productSalePrice / 7;
-        final double lastPayment = productSalePrice-productPayment.toInt()*7;
-        final double lastPayment2 = productPayment.toInt()+lastPayment;
+    final double productPayment = productSalePrice / numberOfPayments;
+    final double lastPayment =
+        productSalePrice - productPayment.toInt() * numberOfPayments;
+    final double lastPayment2 = productPayment.toInt() + lastPayment;
 
-        var timeNow = firstPaymnetDate;
-        for (var i = 1; i < 8; i++) {
-          await cloud
-              .collection('customers')
-              .doc(newCustomerReference.id)
-              .collection('purchases')
-              .doc(purchaseReference.id)
-              .collection('payment_schedule')
-              .add(
-            {
-              'amount': i<7?productPayment.toInt():lastPayment2.toInt(),
-              'date': Timestamp.fromDate(
-                DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
-              ),
-              'isPaid': false
-            },
-          );
-          timeNow = timeNow.add(const Duration(days: 30));
-        }
+    var timeNow = firstPaymnetDate;
+    for (var i = 1; i < numberOfPayments + 1; i++) {
+      await cloud
+          .collection('customers')
+          .doc(newCustomerReference.id)
+          .collection('purchases')
+          .doc(purchaseReference.id)
+          .collection('payment_schedule')
+          .add(
+        {
+          'amount': i < numberOfPayments
+              ? productPayment.toInt()
+              : lastPayment2.toInt(),
+          'date': Timestamp.fromDate(
+            DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
+          ),
+          'isPaid': false,
+          'remainingAmount':i < numberOfPayments
+              ? productPayment.toInt()
+              : lastPayment2.toInt(),
+        },
+      );
+      timeNow = timeNow.add(const Duration(days: 30));
+    }
 
     return true;
   }
 
   Future<bool> addProduct() async {
-
     final cloud = FirebaseFirestore.instance;
-    cloud.collection('financials').doc('finance').update({'cash_available':FieldValue.increment(-productCost)});
+    cloud
+        .collection('financials')
+        .doc('finance')
+        .update({'cash_available': FieldValue.increment(-productCost)});
     DocumentReference vendorReference;
 
     final vendorQuery =
@@ -236,15 +253,16 @@ class UpdateFirestore {
               'product': productReference,
               'outstanding_balance': productSalePrice,
               'paid_amount': 0,
-              'purchaseDate':Timestamp.fromDate(orderDate),
+              'purchaseDate': Timestamp.fromDate(orderDate),
             },
           );
 
-          final double productPayment = productSalePrice / 7;
-          final double lastPayment = productSalePrice-productPayment.toInt()*7;
-          final double lastPayment2 = productPayment.toInt()+lastPayment;
+          final double productPayment = productSalePrice / numberOfPayments;
+          final double lastPayment =
+              productSalePrice - productPayment.toInt() * numberOfPayments;
+          final double lastPayment2 = productPayment.toInt() + lastPayment;
           var timeNow = firstPaymnetDate;
-          for (var i = 1; i < 8; i++) {
+          for (var i = 1; i < numberOfPayments + 1; i++) {
             await cloud
                 .collection('customers')
                 .doc(value.docs[0].id)
@@ -253,11 +271,16 @@ class UpdateFirestore {
                 .collection('payment_schedule')
                 .add(
               {
-                'amount': i<7?productPayment.toInt():lastPayment2.toInt(),
+                'amount': i < numberOfPayments
+                    ? productPayment.toInt()
+                    : lastPayment2.toInt(),
                 'date': Timestamp.fromDate(
                   DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
                 ),
-                'isPaid': false
+                'isPaid': false,
+                'remainingAmount':i < numberOfPayments
+                    ? productPayment.toInt()
+                    : lastPayment2.toInt(),
               },
             );
             timeNow = timeNow.add(const Duration(days: 30));
@@ -269,26 +292,29 @@ class UpdateFirestore {
   }
 
   Future<bool> addProductToNewVendor() async {
-    
-
     final cloud = FirebaseFirestore.instance;
 
-    cloud.collection('financials').doc('finance').update({'cash_available':FieldValue.increment(-productCost)});
-    
+    cloud
+        .collection('financials')
+        .doc('finance')
+        .update({'cash_available': FieldValue.increment(-productCost)});
+
     DocumentReference vendorReference;
 
     vendorReference = await cloud.collection('vendors').add({
       'name': vendorName,
       'address': 'Address',
       'city': 'City',
-      'image': 'https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc='
+      'image':
+          'https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc='
     });
-    DocumentReference vendorDocumentReference = await vendorReference.collection('products').add(
+    DocumentReference vendorDocumentReference =
+        await vendorReference.collection('products').add(
       {
         'name': productName,
         'price': productCost,
         'image':
-        'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
+            'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
       },
     );
     final productReference = await cloud.collection('products').add(
@@ -325,15 +351,16 @@ class UpdateFirestore {
           'product': productReference,
           'outstanding_balance': productSalePrice,
           'paid_amount': 0,
-          'purchaseDate':Timestamp.fromDate(orderDate),
+          'purchaseDate': Timestamp.fromDate(orderDate),
         },
       );
 
-      final double productPayment = productSalePrice / 7;
-      final double lastPayment = productSalePrice-productPayment.toInt()*7;
-      final double lastPayment2 = productPayment.toInt()+lastPayment;
+      final double productPayment = productSalePrice / numberOfPayments;
+      final double lastPayment =
+          productSalePrice - productPayment.toInt() * numberOfPayments;
+      final double lastPayment2 = productPayment.toInt() + lastPayment;
       var timeNow = firstPaymnetDate;
-      for (var i = 1; i < 8; i++) {
+      for (var i = 1; i < numberOfPayments + 1; i++) {
         await cloud
             .collection('customers')
             .doc(value.docs[0].id)
@@ -342,11 +369,16 @@ class UpdateFirestore {
             .collection('payment_schedule')
             .add(
           {
-            'amount': i<7?productPayment.toInt():lastPayment2.toInt(),
+            'amount': i < numberOfPayments
+                ? productPayment.toInt()
+                : lastPayment2.toInt(),
             'date': Timestamp.fromDate(
               DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
             ),
-            'isPaid': false
+            'isPaid': false,
+            'remainingAmount':i < numberOfPayments
+                ? productPayment.toInt()
+                : lastPayment2.toInt(),
           },
         );
         timeNow = timeNow.add(const Duration(days: 30));

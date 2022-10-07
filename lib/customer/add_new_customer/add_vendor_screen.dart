@@ -23,6 +23,8 @@ class AddVendorScreen extends StatefulWidget {
 }
 
 class _AddVendorScreenState extends State<AddVendorScreen> {
+  List<double> numberOfPayments = [6, 12, 18, 24, 30, 36];
+  double? selectedPayment;
   List<String> vendorList = [];
   String selectedVendor = 'Select';
   bool loading = false;
@@ -58,6 +60,35 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _showMyDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFFD6EFF2),
+            title: const Text('Missing Fields'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const <Widget>[
+                  Text(
+                      'All the field are required to continue.'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -144,14 +175,14 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Form(
                           key: formKey,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Padding(
-                                padding:
-                                const EdgeInsets.only(bottom: 8.0),
+                                padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
@@ -160,22 +191,23 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                         decoration: BoxDecoration(
                                             color: const Color(0xFFD6EFF2),
                                             borderRadius:
-                                            BorderRadius.circular(4)),
+                                                BorderRadius.circular(4)),
                                         height: 60,
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 20, horizontal: 10),
                                         child: firstPaymentDate == null
                                             ? const Text(
-                                          'First Payment Date',
-                                          textAlign: TextAlign.start,
-                                        )
+                                                'First Payment Date',
+                                                textAlign: TextAlign.start,
+                                              )
                                             : Text(
-                                            '${firstPaymentDate?.day}-${firstPaymentDate?.month}-${firstPaymentDate?.year}'),
+                                                '${firstPaymentDate?.day}-${firstPaymentDate?.month}-${firstPaymentDate?.year}'),
                                       ),
                                     ),
                                     IconButton(
                                         onPressed: () async {
-                                          firstPaymentDate = await showDatePicker(
+                                          firstPaymentDate =
+                                              await showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
                                             firstDate: DateTime.now(),
@@ -190,8 +222,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 ),
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsets.only(bottom: 8.0),
+                                padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
@@ -229,6 +260,36 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   ],
                                 ),
                               ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFFD6EFF2),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton<double>(
+                                      dropdownColor: const Color(0xFFD6EFF2),
+                                      value: selectedPayment,
+                                      items:
+                                          numberOfPayments.map((double items) {
+                                        return DropdownMenuItem(
+                                          value: items,
+                                          child: Text(items.toInt().toString()),
+                                        );
+                                      }).toList(),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedPayment = newValue;
+
+                                        });
+                                      },
+                                      hint: const Text('Number of Payments'),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               TextFormField(
                                 controller: costController,
                                 inputFormatters: [
@@ -254,41 +315,46 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                       child: ElevatedButton(
                         onPressed: () async {
                           if (formKey.currentState!.validate()) {
-                            bool status = _selectedVendorOption ==
-                                    Vendor.existingVendor
-                                ? await UpdateFirestore(
-                                        orderDate: orderDate!,
-                                        productSalePrice:
-                                            widget.productPurchasecost,
-                                        vendorName: selectedVendor,
-                                        customerName: widget.customerName,
-                                        productCost:
-                                            int.parse(costController.text),
-                                        productName: widget.productName,
-                                        firstPaymnetDate: firstPaymentDate!)
-                                    .addCustomerToExistingVendor()
-                                : await UpdateFirestore(
-                                        orderDate: orderDate!,
-                                        productSalePrice:
-                                            widget.productPurchasecost,
-                                        vendorName: nameController.text,
-                                        customerName: widget.customerName,
-                                        productCost:
-                                            int.parse(costController.text),
-                                        productName: widget.productName,
-                                        firstPaymnetDate: firstPaymentDate!)
-                                    .addCustomerToNewVendor();
-
-                            if (!mounted) return;
-
-                            if (status) {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AllCustomersScreen()),
-                                  (route) => false);
+                            if (selectedPayment!=null||firstPaymentDate!=null||orderDate!=null) {
+                              bool status = _selectedVendorOption ==
+                                      Vendor.existingVendor
+                                  ? await UpdateFirestore(
+                                          numberOfPayments: selectedPayment!,
+                                          orderDate: orderDate!,
+                                          productSalePrice:
+                                              widget.productPurchasecost,
+                                          vendorName: selectedVendor,
+                                          customerName: widget.customerName,
+                                          productCost:
+                                              int.parse(costController.text),
+                                          productName: widget.productName,
+                                          firstPaymnetDate: firstPaymentDate!)
+                                      .addCustomerToExistingVendor()
+                                  :_selectedVendorOption==Vendor.newVendor? await UpdateFirestore(
+                                          numberOfPayments: selectedPayment!,
+                                          orderDate: orderDate!,
+                                          productSalePrice:
+                                              widget.productPurchasecost,
+                                          vendorName: nameController.text.isNotEmpty?nameController.text:'No Name',
+                                          customerName: widget.customerName,
+                                          productCost:
+                                              int.parse(costController.text),
+                                          productName: widget.productName,
+                                          firstPaymnetDate: firstPaymentDate!)
+                                      .addCustomerToNewVendor():false;
+                              
+                              if (!mounted) return;
+                              
+                              if (status) {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AllCustomersScreen()),
+                                    (route) => false);
+                              }else{_showMyDialog();}
                             }
+                            else{_showMyDialog();}
                           }
                         },
                         child: const Text('Next'),
