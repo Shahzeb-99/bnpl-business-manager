@@ -131,6 +131,15 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                               payment.updateFirestore();
 
                                             }
+                                            if(newPayment > 0){
+                                              Provider.of<CustomerView>(context,
+                                                  listen: false)
+                                                  .allCustomers[widget.index]
+                                                  .purchases[widget.productIndex]
+                                                  .updateCustomTransaction(
+                                                  amount: -newPayment);
+
+                                            }
                                           }
 
                                           Navigator.pop(context);

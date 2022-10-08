@@ -24,17 +24,17 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
     return Card(
       color: const Color(0xFFD6EFF2),
       child: InkWell(
-        onLongPress: () {
-          setState(() {
-            Provider
-                .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
-                .purchases[widget.productIndex]
-                .paymentSchedule[widget.paymentIndex]
-                .togglePayment();
-            update();
-          });
-        },
+        // onLongPress: () {
+        //   // setState(() {
+        //   //   Provider
+        //   //       .of<CustomerView>(context, listen: false)
+        //   //       .allCustomers[widget.index]
+        //   //       .purchases[widget.productIndex]
+        //   //       .paymentSchedule[widget.paymentIndex]
+        //   //       .togglePayment();
+        //   //   update();
+        //   // });
+        // },
         onTap: () async {
           DateTime? newDate = await showDatePicker(
               initialDate: DateTime(
