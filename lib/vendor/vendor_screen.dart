@@ -16,7 +16,6 @@ class VendorProfile extends StatefulWidget {
 class _VendorProfileState extends State<VendorProfile> {
   List<VendorWidget> allProducts = [];
 
-
   @override
   void initState() {
     updateProfile();
@@ -29,10 +28,10 @@ class _VendorProfileState extends State<VendorProfile> {
         appBar: AppBar(
           title: Row(
             children: [
-               Text(
-                 Provider.of<VendorView>(context, listen: false)
-                     .allVendors[widget.index]
-                     .name,
+              Text(
+                Provider.of<VendorView>(context, listen: false)
+                    .allVendors[widget.index]
+                    .name,
                 style: const TextStyle(color: Colors.black, fontSize: 25),
               ),
               Expanded(child: Container()),
@@ -84,7 +83,6 @@ class _VendorProfileState extends State<VendorProfile> {
   }
 
   void updateProfile() async {
-
     final cloud = FirebaseFirestore.instance;
 
     final productCollection = await cloud
@@ -96,9 +94,8 @@ class _VendorProfileState extends State<VendorProfile> {
         .get();
 
     for (var productDocument in productCollection.docs) {
-
       String image = productDocument.get('image');
-      int price=productDocument.get('price');
+      int price = productDocument.get('price');
       String name = productDocument.get('name');
       setState(
         () {

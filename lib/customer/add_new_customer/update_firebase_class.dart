@@ -95,7 +95,7 @@ class UpdateFirestore {
                 DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
               ),
               'isPaid': false,
-              'remainingAmount':i < numberOfPayments
+              'remainingAmount': i < numberOfPayments
                   ? productPayment.toInt()
                   : lastPayment2.toInt(),
             },
@@ -186,7 +186,7 @@ class UpdateFirestore {
             DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
           ),
           'isPaid': false,
-          'remainingAmount':i < numberOfPayments
+          'remainingAmount': i < numberOfPayments
               ? productPayment.toInt()
               : lastPayment2.toInt(),
         },
@@ -278,7 +278,7 @@ class UpdateFirestore {
                   DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
                 ),
                 'isPaid': false,
-                'remainingAmount':i < numberOfPayments
+                'remainingAmount': i < numberOfPayments
                     ? productPayment.toInt()
                     : lastPayment2.toInt(),
               },
@@ -376,7 +376,7 @@ class UpdateFirestore {
               DateTime.utc(timeNow.year, timeNow.month, timeNow.day),
             ),
             'isPaid': false,
-            'remainingAmount':i < numberOfPayments
+            'remainingAmount': i < numberOfPayments
                 ? productPayment.toInt()
                 : lastPayment2.toInt(),
           },

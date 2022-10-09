@@ -21,7 +21,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  bool loading=false;
+  bool loading = false;
 
   @override
   void initState() {
@@ -44,14 +44,13 @@ class _DashboardState extends State<Dashboard> {
                 color: Colors.black,
               ));
         }),
-        backgroundColor: Colors.white,
-        elevation: 0,
         title: const Text(
           'Dashboard',
           style: TextStyle(color: Colors.black, fontSize: 25),
         ),
       ),
       drawer: Drawer(
+        backgroundColor: const Color(0xFFE8C8D2),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -143,7 +142,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFD6EFF2),
+                            color: const Color(0xFFE8C8D2),
                             child: InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -186,7 +185,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFD6EFF2),
+                            color: const Color(0xFFE8C8D2),
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -237,7 +236,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFD6EFF2),
+                            color: const Color(0xFFE8C8D2),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -272,7 +271,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                           elevation: 5,
-                          color: const Color(0xFFD6EFF2),
+                          color: const Color(0xFFE8C8D2),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -289,15 +288,15 @@ class _DashboardState extends State<Dashboard> {
                                 height: 25,
                               ),
                               Expanded(
-                                child:
-                                    Provider.of<DashboardView>(context).option ==
-                                            DashboardFilterOptions.all
-                                        ? Text(
-                                            '${Provider.of<DashboardView>(context).dashboardData.profit.toString()} Rupees',
-                                          )
-                                        : Text(
-                                            '${Provider.of<DashboardView>(context).outstandingBalance + Provider.of<DashboardView>(context).amount_paid - Provider.of<DashboardView>(context).total_cost} Rupees',
-                                          ),
+                                child: Provider.of<DashboardView>(context)
+                                            .option ==
+                                        DashboardFilterOptions.all
+                                    ? Text(
+                                        '${Provider.of<DashboardView>(context).dashboardData.profit.toString()} Rupees',
+                                      )
+                                    : Text(
+                                        '${Provider.of<DashboardView>(context).outstandingBalance + Provider.of<DashboardView>(context).amount_paid - Provider.of<DashboardView>(context).total_cost} Rupees',
+                                      ),
                               )
                             ],
                           ),
@@ -314,7 +313,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFD6EFF2),
+                            color: const Color(0xFFE8C8D2),
                             child: InkWell(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -328,7 +327,7 @@ class _DashboardState extends State<Dashboard> {
                                                 .viewInsets
                                                 .bottom),
                                         decoration: const BoxDecoration(
-                                            color: Colors.white,
+                                            color: Color(0xFFE8C8D2),
                                             borderRadius: BorderRadius.vertical(
                                                 top: Radius.circular(20))),
                                         child: Padding(
@@ -351,8 +350,8 @@ class _DashboardState extends State<Dashboard> {
                                                   Expanded(
                                                     child: TextFormField(
                                                       autofocus: true,
-                                                      controller:
-                                                          widget.moneyController,
+                                                      controller: widget
+                                                          .moneyController,
                                                       keyboardType:
                                                           TextInputType.number,
                                                       inputFormatters: [
@@ -372,16 +371,16 @@ class _DashboardState extends State<Dashboard> {
                                                     ),
                                                   ),
                                                   IconButton(
-                                                      splashColor:
-                                                          Colors.tealAccent,
+                                                      splashColor: const Color(
+                                                          0xFFE8C8D2),
                                                       onPressed: () async {
                                                         setState(() {
-                                                          loading=true;
+                                                          loading = true;
                                                         });
                                                         final cloud =
                                                             FirebaseFirestore
                                                                 .instance;
-                                                       await cloud
+                                                        await cloud
                                                             .collection(
                                                                 'financials')
                                                             .doc('finance')
@@ -392,16 +391,15 @@ class _DashboardState extends State<Dashboard> {
                                                                       .moneyController
                                                                       .text))
                                                         }).whenComplete(() {
-                                                          Provider.of<
-                                                                      DashboardView>(
+                                                          Provider.of<DashboardView>(
                                                                   context,
                                                                   listen: false)
                                                               .dashboardData
-                                                              .cashAvailable = Provider
-                                                                      .of<DashboardView>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
+                                                              .cashAvailable = Provider.of<
+                                                                          DashboardView>(
+                                                                      context,
+                                                                      listen:
+                                                                          false)
                                                                   .dashboardData
                                                                   .cashAvailable +
                                                               int.parse(widget
@@ -409,9 +407,10 @@ class _DashboardState extends State<Dashboard> {
                                                                   .text);
                                                           widget.moneyController
                                                               .clear();
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                              context);
                                                         });
-                                                        loading= false;
+                                                        loading = false;
                                                       },
                                                       icon: const Icon(
                                                           Icons.navigate_next))
@@ -454,7 +453,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFD6EFF2),
+                            color: const Color(0xFFE8C8D2),
                             child: InkWell(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -468,7 +467,7 @@ class _DashboardState extends State<Dashboard> {
                                                 .viewInsets
                                                 .bottom),
                                         decoration: const BoxDecoration(
-                                            color: Colors.white,
+                                            color: Color(0xFFE8C8D2),
                                             borderRadius: BorderRadius.vertical(
                                                 top: Radius.circular(20))),
                                         child: Padding(
@@ -491,8 +490,8 @@ class _DashboardState extends State<Dashboard> {
                                                   Expanded(
                                                     child: TextFormField(
                                                       autofocus: true,
-                                                      controller:
-                                                          widget.moneyController,
+                                                      controller: widget
+                                                          .moneyController,
                                                       keyboardType:
                                                           TextInputType.number,
                                                       inputFormatters: [
@@ -512,8 +511,6 @@ class _DashboardState extends State<Dashboard> {
                                                     ),
                                                   ),
                                                   IconButton(
-                                                      splashColor:
-                                                          Colors.tealAccent,
                                                       onPressed: () {
                                                         final cloud =
                                                             FirebaseFirestore
@@ -522,32 +519,58 @@ class _DashboardState extends State<Dashboard> {
                                                             .collection(
                                                                 'financials')
                                                             .doc('finance')
-                                                            .update({
-                                                          'expenses': FieldValue
-                                                              .increment(
-                                                                  int.parse(widget
-                                                                      .moneyController
-                                                                      .text))
-                                                        }).whenComplete(() {
-                                                          Provider.of<
-                                                                      DashboardView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .dashboardData
-                                                              .expenses = Provider
-                                                                      .of<DashboardView>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                  .dashboardData
-                                                                  .expenses +
-                                                              int.parse(widget
-                                                                  .moneyController
-                                                                  .text);
-                                                          widget.moneyController
-                                                              .clear();
-                                                          Navigator.pop(context);
-                                                        });
+                                                            .update(
+                                                          {
+                                                            'expenses': FieldValue
+                                                                .increment(int
+                                                                    .parse(widget
+                                                                        .moneyController
+                                                                        .text)),
+                                                            'cash_available': FieldValue
+                                                                .increment(-int
+                                                                    .parse(widget
+                                                                        .moneyController
+                                                                        .text))
+                                                          },
+                                                        ).whenComplete(
+                                                          () {
+                                                            Provider.of<DashboardView>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .dashboardData
+                                                                .expenses = Provider.of<
+                                                                            DashboardView>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .dashboardData
+                                                                    .expenses +
+                                                                int.parse(widget
+                                                                    .moneyController
+                                                                    .text);
+                                                            Provider.of<DashboardView>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .dashboardData
+                                                                .cashAvailable = Provider.of<
+                                                                            DashboardView>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .dashboardData
+                                                                    .cashAvailable -
+                                                                int.parse(widget
+                                                                    .moneyController
+                                                                    .text);
+                                                            widget
+                                                                .moneyController
+                                                                .clear();
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        );
                                                       },
                                                       icon: const Icon(
                                                           Icons.navigate_next))
@@ -604,16 +627,16 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFFD6EFF2),
+      fillColor: const Color(0xFFE8C8D2),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

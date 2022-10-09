@@ -32,9 +32,9 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFFD6EFF2),
+      color: const Color(0xFFE8C8D2),
       child: InkWell(
-        onTap: ()   {
+        onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -44,8 +44,8 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                 index: widget.index,
               ),
             ),
-          ).whenComplete(() =>  Provider.of<CustomerView>(context, listen: false).update());
-       
+          ).whenComplete(
+              () => Provider.of<CustomerView>(context, listen: false).update());
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),

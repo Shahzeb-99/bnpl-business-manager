@@ -54,7 +54,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
                           decoration: const BoxDecoration(
-                              color: Colors.white,
+                              color: const Color(0xFFE8C8D2),
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(20))),
                           child: Padding(
@@ -129,16 +129,15 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                               });
 
                                               payment.updateFirestore();
-
                                             }
-                                            if(newPayment > 0){
+                                            if (newPayment > 0) {
                                               Provider.of<CustomerView>(context,
-                                                  listen: false)
+                                                      listen: false)
                                                   .allCustomers[widget.index]
-                                                  .purchases[widget.productIndex]
+                                                  .purchases[
+                                                      widget.productIndex]
                                                   .updateCustomTransaction(
-                                                  amount: -newPayment);
-
+                                                      amount: -newPayment);
                                             }
                                           }
 
@@ -206,18 +205,18 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
+      suffix: suffix.isNotEmpty ? Text(suffix) : null,
       filled: true,
-      fillColor: const Color(0xFFD6EFF2),
+      fillColor: const Color(0xFFE8C8D2),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

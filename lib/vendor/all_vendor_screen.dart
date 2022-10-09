@@ -37,14 +37,15 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                 color: Colors.black,
               ));
         }),
-        backgroundColor: Colors.white,
-        elevation: 0,
+
+
         title: const Text(
           'Vendors',
           style: TextStyle(color: Colors.black, fontSize: 25),
         ),
       ),
       drawer: Drawer(
+        backgroundColor: const Color(0xFFE8C8D2),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -54,7 +55,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) =>   Dashboard()));
+                        MaterialPageRoute(builder: (context) => Dashboard()));
                   },
                   child: const Text('Dashboard'),
                 ),
@@ -74,21 +75,22 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical:10,horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
             itemCount: Provider.of<VendorView>(context).allVendors.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
-                color: const Color(0xFFD6EFF2),
-                child: InkWell(onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => VendorProfile(index: index)));
-                },
-                  splashColor: Colors.teal.shade100,
+                color: const Color(0xFFE8C8D2),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VendorProfile(index: index)));
+                  },
+
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(

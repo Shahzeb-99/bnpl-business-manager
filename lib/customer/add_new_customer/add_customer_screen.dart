@@ -72,16 +72,16 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFFD6EFF2),
+      fillColor: const Color(0xFFE8C8D2),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

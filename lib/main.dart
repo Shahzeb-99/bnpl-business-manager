@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=>VendorView()),
+        ChangeNotifierProvider(create: (context) => VendorView()),
         ChangeNotifierProvider(create: (context) => CustomerView()),
         ChangeNotifierProvider(create: (context) => DashboardView()),
       ],
@@ -31,21 +31,25 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData.light().copyWith(
-              primaryColor: Colors.tealAccent,
+              primaryColor: const Color(0xFFE8C8D2),
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xFFC45A81),
+              ),
               textTheme: GoogleFonts.poppinsTextTheme(
                 Theme.of(context).textTheme,
               ).apply(
                 bodyColor: Colors.black, //<-- SEE HERE
                 displayColor: Colors.black,
               ),
-              scaffoldBackgroundColor: Colors.white,
+              scaffoldBackgroundColor: const Color(0xFF800000),
               appBarTheme: const AppBarTheme(
-                elevation: 0,
-                color: Colors.white,
+                elevation: 3,
+                color: Color(0xFF800000),
                 iconTheme: IconThemeData(color: Colors.black),
               ),
-              buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
-          home:   Dashboard()),
+              buttonTheme:
+                  const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
+          home: Dashboard()),
     );
   }
 }

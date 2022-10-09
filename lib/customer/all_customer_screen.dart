@@ -37,8 +37,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                 color: Colors.black,
               ));
         }),
-        backgroundColor: Colors.white,
-        elevation: 0,
+
         title: Row(
           children: [
             const Text(
@@ -62,6 +61,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
         ),
       ),
       drawer: Drawer(
+        backgroundColor: const Color(0xFFE8C8D2),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -136,14 +136,14 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
             itemCount: Provider.of<CustomerView>(context).allCustomers.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
-                color: const Color(0xFFD6EFF2),
+                color: const Color(0xFFE8C8D2),
                 child: InkWell(
                   onLongPress: () {
                     {

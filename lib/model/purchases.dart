@@ -17,18 +17,19 @@ class Purchase {
   var amountPaid;
   List<PaymentSchedule> paymentSchedule = [];
 
-  Purchase({required this.customerID,
-    required this.documentReferencePurchase,
-    required this.vendorName,
-    required this.outstandingBalance,
-    required this.amountPaid,
-    required this.productName,
-    required this.productImage,
-    this.profitPercentage,
-    required this.purchaseAmount,
-    required this.sellingAmount,
-    this.totalProfit,
-    required this.purchaseDate});
+  Purchase(
+      {required this.customerID,
+      required this.documentReferencePurchase,
+      required this.vendorName,
+      required this.outstandingBalance,
+      required this.amountPaid,
+      required this.productName,
+      required this.productImage,
+      this.profitPercentage,
+      required this.purchaseAmount,
+      required this.sellingAmount,
+      this.totalProfit,
+      required this.purchaseDate});
 
   Future<void> getPaymentSchedule(String customerDocID) async {
     paymentSchedule = [];

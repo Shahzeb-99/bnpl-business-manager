@@ -35,7 +35,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   DateTime? orderDate;
   List<double> numberOfPayments = [6, 12, 18, 24, 30, 36];
   double? selectedPayment;
-bool modalHUD =false;
+  bool modalHUD = false;
+
   // ignore: no_leading_underscores_for_local_identifiers
   Vendor? _selectedVendorOption;
 
@@ -69,7 +70,7 @@ bool modalHUD =false;
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: const Color(0xFFD6EFF2),
+            backgroundColor: const Color(0xFFE8C8D2),
             title: const Text('Missing Fields'),
             content: SingleChildScrollView(
               child: ListBody(
@@ -127,7 +128,8 @@ bool modalHUD =false;
                       _selectedVendorOption == Vendor.newVendor
                           ? TextFormField(
                               controller: nameController,
-                              decoration: kDecoration.inputBox('Vendor Name', ''),
+                              decoration:
+                                  kDecoration.inputBox('Vendor Name', ''),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'This field is required';
@@ -152,12 +154,12 @@ bool modalHUD =false;
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                              color: const Color(0xFFD6EFF2),
+                              color: const Color(0xFFE8C8D2),
                               borderRadius: BorderRadius.circular(4)),
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              dropdownColor: const Color(0xFFD6EFF2),
+                              dropdownColor: const Color(0xFFE8C8D2),
                               value: selectedVendor,
                               items: vendorList.map((String items) {
                                 return DropdownMenuItem(
@@ -166,13 +168,13 @@ bool modalHUD =false;
                                 );
                               }).toList(),
                               onChanged:
-                              _selectedVendorOption == Vendor.existingVendor
-                                  ? (value) {
-                                setState(() {
-                                  selectedVendor = value!;
-                                });
-                              }
-                                  : null,
+                                  _selectedVendorOption == Vendor.existingVendor
+                                      ? (value) {
+                                          setState(() {
+                                            selectedVendor = value!;
+                                          });
+                                        }
+                                      : null,
                               hint: const Text('Select Vendor'),
                             ),
                           ),
@@ -193,7 +195,7 @@ bool modalHUD =false;
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFFD6EFF2),
+                                              color: const Color(0xFFE8C8D2),
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -221,7 +223,8 @@ bool modalHUD =false;
                                               orderDate;
                                             });
                                           },
-                                          icon: const Icon(Icons.date_range_rounded))
+                                          icon: const Icon(
+                                              Icons.date_range_rounded))
                                     ],
                                   ),
                                 ),
@@ -233,7 +236,7 @@ bool modalHUD =false;
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFFD6EFF2),
+                                              color: const Color(0xFFE8C8D2),
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -260,7 +263,8 @@ bool modalHUD =false;
                                               orderDate;
                                             });
                                           },
-                                          icon: const Icon(Icons.date_range_rounded))
+                                          icon: const Icon(
+                                              Icons.date_range_rounded))
                                     ],
                                   ),
                                 ),
@@ -268,19 +272,20 @@ bool modalHUD =false;
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: const Color(0xFFD6EFF2),
+                                        color: const Color(0xFFE8C8D2),
                                         borderRadius: BorderRadius.circular(4)),
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<double>(
-                                        dropdownColor: const Color(0xFFD6EFF2),
+                                        dropdownColor: const Color(0xFFE8C8D2),
                                         value: selectedPayment,
-                                        items:
-                                            numberOfPayments.map((double items) {
+                                        items: numberOfPayments
+                                            .map((double items) {
                                           return DropdownMenuItem(
                                             value: items,
-                                            child: Text(items.toInt().toString()),
+                                            child:
+                                                Text(items.toInt().toString()),
                                           );
                                         }).toList(),
                                         onChanged: (newValue) {
@@ -318,7 +323,7 @@ bool modalHUD =false;
                         child: ElevatedButton(
                           onPressed: () async {
                             setState(() {
-                              modalHUD=true;
+                              modalHUD = true;
                             });
                             if (formKey.currentState!.validate()) {
                               if (selectedPayment != null ||
@@ -340,12 +345,14 @@ bool modalHUD =false;
                                         .addProduct()
                                     : _selectedVendorOption == Vendor.newVendor
                                         ? await UpdateFirestore(
-                                                numberOfPayments: selectedPayment!,
+                                                numberOfPayments:
+                                                    selectedPayment!,
                                                 orderDate: orderDate!,
                                                 productSalePrice:
                                                     widget.productPurchasecost,
                                                 vendorName: nameController.text,
-                                                customerName: widget.customerName,
+                                                customerName:
+                                                    widget.customerName,
                                                 productCost: int.parse(
                                                     costController.text),
                                                 productName: widget.productName,
@@ -371,7 +378,7 @@ bool modalHUD =false;
                               }
                             }
                             setState(() {
-                              modalHUD=false;
+                              modalHUD = false;
                             });
                           },
                           child: const Text('Next'),
@@ -394,16 +401,16 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFFD6EFF2),
+      fillColor: const Color(0xFFE8C8D2),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

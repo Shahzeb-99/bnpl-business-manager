@@ -7,5 +7,10 @@ class DashboardData {
   int expenses;
 
   DashboardData(
-      {required this.expenses,required this.cashAvailable,required this.profit,required this.totalAmountPaid, required this.totalOutstandingBalance,required this.totalCost});
+      {required this.expenses,
+      required this.cashAvailable,
+      required this.profit,
+      required this.totalAmountPaid,
+      required this.totalOutstandingBalance,
+      required this.totalCost});
 }

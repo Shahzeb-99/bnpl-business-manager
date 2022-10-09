@@ -90,13 +90,11 @@ class Customers {
                   value.get('reference');
               await vendorDocumentReference.get().then(
                 (value) {
-
                   productCost = value.get('price');
                   productImage = value.get('image');
                 },
               );
               await vendorDocumentReference.parent.parent?.get().then((value) {
-
                 vendorName = value.get('name');
               });
             },

@@ -147,7 +147,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
   }
 
   bool checkToggle(int index) {
-    if (Provider.of<CustomerView>(context, listen: false).option==CustomerFilterOptions.oneMonth) {
+    if (Provider.of<CustomerView>(context, listen: false).option ==
+        CustomerFilterOptions.oneMonth) {
       return Provider.of<CustomerView>(context)
               .allCustomers[widget.index]
               .purchases[index]
@@ -155,13 +156,14 @@ class _CustomerProfileState extends State<CustomerProfile> {
               .compareTo(Timestamp.fromDate(
                   DateTime.now().subtract(const Duration(days: 30)))) >
           0;
-    } else if (Provider.of<CustomerView>(context, listen: false).option==CustomerFilterOptions.sixMonths) {
+    } else if (Provider.of<CustomerView>(context, listen: false).option ==
+        CustomerFilterOptions.sixMonths) {
       return Provider.of<CustomerView>(context)
-          .allCustomers[widget.index]
-          .purchases[index]
-          .purchaseDate
-          .compareTo(Timestamp.fromDate(
-          DateTime.now().subtract(const Duration(days: 180)))) >
+              .allCustomers[widget.index]
+              .purchases[index]
+              .purchaseDate
+              .compareTo(Timestamp.fromDate(
+                  DateTime.now().subtract(const Duration(days: 180)))) >
           0;
     } else {
       return true;

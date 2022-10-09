@@ -10,7 +10,8 @@ class PaymentSchedule {
   String customerdocID;
 
   PaymentSchedule(
-      {required this.remainingAmount,required this.paymentReference,
+      {required this.remainingAmount,
+      required this.paymentReference,
       required this.purchaseReference,
       required this.amount,
       required this.date,
@@ -21,8 +22,11 @@ class PaymentSchedule {
     purchaseReference
         .collection('payment_schedule')
         .doc(paymentReference)
-        .update({'date': date, 'isPaid': isPaid,'remainingAmount':remainingAmount});
-
+        .update({
+      'date': date,
+      'isPaid': isPaid,
+      'remainingAmount': remainingAmount
+    });
   }
 
   Future<void> updateBalance() async {
@@ -62,8 +66,6 @@ class PaymentSchedule {
       },
     );
   }
-
-
 
   Future<void> togglePayment() async {
     isPaid = !isPaid;
