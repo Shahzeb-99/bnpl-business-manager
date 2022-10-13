@@ -49,7 +49,6 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       drawer: Drawer(
-
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -565,43 +564,50 @@ class _DashboardState extends State<Dashboard> {
                                                   ),
                                                   IconButton(
                                                       onPressed: () async {
-                                                        setState(() {
-                                                          loading = true;
-                                                        });
-                                                        final cloud =
-                                                            FirebaseFirestore
-                                                                .instance;
-                                                        await cloud
-                                                            .collection(
-                                                                'financials')
-                                                            .doc('finance')
-                                                            .update({
-                                                          'cash_available':
-                                                              FieldValue.increment(
-                                                                  int.parse(widget
-                                                                      .moneyController
-                                                                      .text))
-                                                        }).whenComplete(() {
-                                                          Provider.of<DashboardView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .dashboardData
-                                                              .cashAvailable = Provider.of<
-                                                                          DashboardView>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .dashboardData
-                                                                  .cashAvailable +
-                                                              int.parse(widget
-                                                                  .moneyController
-                                                                  .text);
-                                                          widget.moneyController
-                                                              .clear();
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                        loading = false;
+                                                        if (widget
+                                                            .moneyController
+                                                            .text
+                                                            .isNotEmpty) {
+                                                          setState(() {
+                                                            loading = true;
+                                                          });
+                                                          final cloud =
+                                                              FirebaseFirestore
+                                                                  .instance;
+                                                          await cloud
+                                                              .collection(
+                                                                  'financials')
+                                                              .doc('finance')
+                                                              .update({
+                                                            'cash_available':
+                                                                FieldValue.increment(
+                                                                    int.parse(widget
+                                                                        .moneyController
+                                                                        .text))
+                                                          }).whenComplete(() {
+                                                            Provider.of<DashboardView>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .dashboardData
+                                                                .cashAvailable = Provider.of<
+                                                                            DashboardView>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .dashboardData
+                                                                    .cashAvailable +
+                                                                int.parse(widget
+                                                                    .moneyController
+                                                                    .text);
+                                                            widget
+                                                                .moneyController
+                                                                .clear();
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
+                                                          loading = false;
+                                                        }
                                                       },
                                                       icon: const Icon(
                                                           Icons.navigate_next))
@@ -634,34 +640,29 @@ class _DashboardState extends State<Dashboard> {
                                     height: 25,
                                   ),
                                   Expanded(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                      textBaseline:
-                                      TextBaseline.alphabetic,
-                                      children: [
-                                        Text(
-                                          Provider.of<DashboardView>(
-                                              context)
-                                              .dashboardData
-                                              .cashAvailable
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontSize: 30,
-                                              fontWeight:
-                                              FontWeight.w900),
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    children: [
+                                      Text(
+                                        Provider.of<DashboardView>(context)
+                                            .dashboardData
+                                            .cashAvailable
+                                            .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w900),
+                                      ),
+                                      const Text(
+                                        ' Rupees',
+                                        style: TextStyle(
+                                          color: Color(0xFF8D8E98),
                                         ),
-                                        const Text(
-                                          ' Rupees',
-                                          style: TextStyle(
-                                            color: Color(0xFF8D8E98),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  )
+                                      ),
+                                    ],
+                                  ))
                                 ],
                               ),
                             )),
@@ -819,34 +820,29 @@ class _DashboardState extends State<Dashboard> {
                                     height: 25,
                                   ),
                                   Expanded(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                      textBaseline:
-                                      TextBaseline.alphabetic,
-                                      children: [
-                                        Text(
-                                          Provider.of<DashboardView>(
-                                              context)
-                                              .dashboardData
-                                              .expenses
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontSize: 30,
-                                              fontWeight:
-                                              FontWeight.w900),
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    children: [
+                                      Text(
+                                        Provider.of<DashboardView>(context)
+                                            .dashboardData
+                                            .expenses
+                                            .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w900),
+                                      ),
+                                      const Text(
+                                        ' Rupees',
+                                        style: TextStyle(
+                                          color: Color(0xFF8D8E98),
                                         ),
-                                        const Text(
-                                          ' Rupees',
-                                          style: TextStyle(
-                                            color: Color(0xFF8D8E98),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  )
+                                      ),
+                                    ],
+                                  ))
                                 ],
                               ),
                             )),

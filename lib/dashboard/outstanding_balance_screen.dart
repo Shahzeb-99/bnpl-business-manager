@@ -25,7 +25,7 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
           children: [
             const Text(
               'Customers',
-              style: TextStyle(color: Colors.black, fontSize: 25),
+              style: TextStyle(  fontSize: 25),
             ),
             Expanded(
               child: Container(),
@@ -46,7 +46,7 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                       0
                   ? Card(
                       elevation: 5,
-                      color: Colors.white,
+                      color: const Color(0xFF2D2C3F),
                       child: InkWell(
                         onLongPress: () {
                           {
@@ -56,7 +56,7 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                               builder: (BuildContext context) {
                                 return Container(
                                   decoration: const BoxDecoration(
-                                      color: Colors.white,
+                                      color: const Color(0xFF2D2C3F),
                                       borderRadius: BorderRadius.vertical(
                                           top: Radius.circular(20))),
                                   height: 200,
