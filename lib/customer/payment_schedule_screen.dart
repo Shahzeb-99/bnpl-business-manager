@@ -39,7 +39,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
           children: [
             const Text(
               'Payment Schedule',
-              style: TextStyle(color: Colors.black, fontSize: 25),
+              style: TextStyle(  fontSize: 25),
             ),
             IconButton(
                 onPressed: () {
@@ -54,7 +54,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
                           decoration: const BoxDecoration(
-                              color: const Color(0xFFE8C8D2),
+                              color: Color(0xFF2D2C3F),
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(20))),
                           child: Padding(
@@ -93,7 +93,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                       ),
                                     ),
                                     IconButton(
-                                        splashColor: Colors.tealAccent,
+
                                         onPressed: () {
                                           if (moneyController.text.isNotEmpty) {
                                             int newPayment =
@@ -207,7 +207,7 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? Text(suffix) : null,
       filled: true,
-      fillColor: const Color(0xFFE8C8D2),
+      fillColor:Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(

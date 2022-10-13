@@ -16,7 +16,7 @@ class AddCustomerScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Add Customer',
-          style: TextStyle(color: Colors.black, fontSize: 25),
+          style: TextStyle(  fontSize: 25),
         ),
       ),
       body: Column(
@@ -72,7 +72,7 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFFE8C8D2),
+      fillColor: Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(

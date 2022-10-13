@@ -38,7 +38,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
               Provider.of<CustomerView>(context, listen: false)
                   .allCustomers[widget.index]
                   .name,
-              style: const TextStyle(color: Colors.black, fontSize: 25),
+              style: const TextStyle(  fontSize: 25),
             ),
             Expanded(child: Container()),
             CircleAvatar(
@@ -94,7 +94,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
               height: 10,
               child: Divider(
                 thickness: 1,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             Expanded(
@@ -134,9 +134,9 @@ class _CustomerProfileState extends State<CustomerProfile> {
                               )
                             : Container();
                       })
-                  : Center(
+                  : const Center(
                       child: CircularProgressIndicator(
-                        color: Colors.teal.shade300,
+                        color: Colors.white,
                       ),
                     ),
             )

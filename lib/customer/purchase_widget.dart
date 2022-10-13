@@ -32,7 +32,7 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFFE8C8D2),
+      color:Color(0xFF2D2C3F),
       child: InkWell(
         onTap: () {
           Navigator.push(

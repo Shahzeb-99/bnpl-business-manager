@@ -34,18 +34,18 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
               },
               icon: const Icon(
                 Icons.menu,
-                color: Colors.black,
+
               ));
         }),
 
 
         title: const Text(
           'Vendors',
-          style: TextStyle(color: Colors.black, fontSize: 25),
+          style: TextStyle(  fontSize: 25),
         ),
       ),
       drawer: Drawer(
-        backgroundColor: const Color(0xFFE8C8D2),
+
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -82,7 +82,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
-                color: const Color(0xFFE8C8D2),
+                color: const Color(0xFF2D2C3F),
                 child: InkWell(
                   onTap: () {
                     Navigator.push(

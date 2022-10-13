@@ -32,7 +32,7 @@ class _VendorProfileState extends State<VendorProfile> {
                 Provider.of<VendorView>(context, listen: false)
                     .allVendors[widget.index]
                     .name,
-                style: const TextStyle(color: Colors.black, fontSize: 25),
+                style: const TextStyle(  fontSize: 25),
               ),
               Expanded(child: Container()),
               CircleAvatar(
@@ -59,7 +59,7 @@ class _VendorProfileState extends State<VendorProfile> {
                 height: 10,
                 child: Divider(
                   thickness: 1,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               Expanded(
@@ -71,9 +71,9 @@ class _VendorProfileState extends State<VendorProfile> {
                         itemBuilder: (BuildContext context, int index) {
                           return allProducts[index];
                         })
-                    : Center(
+                    : const Center(
                         child: CircularProgressIndicator(
-                          color: Colors.teal.shade300,
+                          color: Colors.white,
                         ),
                       ),
               )

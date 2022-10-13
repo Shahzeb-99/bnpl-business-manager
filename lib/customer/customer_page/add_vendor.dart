@@ -70,7 +70,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: const Color(0xFFE8C8D2),
+            backgroundColor:  const Color(0xFF2D2C3F),
             title: const Text('Missing Fields'),
             content: SingleChildScrollView(
               child: ListBody(
@@ -97,7 +97,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       appBar: AppBar(
         title: const Text(
           'Add Vendor',
-          style: TextStyle(color: Colors.black, fontSize: 25),
+          style: TextStyle(  fontSize: 25),
         ),
       ),
       body: ModalProgressHUD(
@@ -154,12 +154,12 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                              color: const Color(0xFFE8C8D2),
+                              color: const Color(0xFF2D2C3F),
                               borderRadius: BorderRadius.circular(4)),
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              dropdownColor: const Color(0xFFE8C8D2),
+                              dropdownColor: const Color(0xFF2D2C3F),
                               value: selectedVendor,
                               items: vendorList.map((String items) {
                                 return DropdownMenuItem(
@@ -195,7 +195,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFFE8C8D2),
+                                              color: const Color(0xFF2D2C3F),
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -236,7 +236,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFFE8C8D2),
+                                              color:const Color(0xFF2D2C3F),
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -272,13 +272,13 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: const Color(0xFFE8C8D2),
+                                        color:const Color(0xFF2D2C3F),
                                         borderRadius: BorderRadius.circular(4)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<double>(
-                                        dropdownColor: const Color(0xFFE8C8D2),
+                                        dropdownColor:const Color(0xFF2D2C3F),
                                         value: selectedPayment,
                                         items: numberOfPayments
                                             .map((double items) {
@@ -401,7 +401,7 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFFE8C8D2),
+      fillColor: const Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(

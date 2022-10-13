@@ -34,7 +34,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               },
               icon: const Icon(
                 Icons.menu,
-                color: Colors.black,
+
               ));
         }),
 
@@ -42,7 +42,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           children: [
             const Text(
               'Customers',
-              style: TextStyle(color: Colors.black, fontSize: 25),
+              style: TextStyle(  fontSize: 25),
             ),
             Expanded(
               child: Container(),
@@ -61,7 +61,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
         ),
       ),
       drawer: Drawer(
-        backgroundColor: const Color(0xFFE8C8D2),
+
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -143,7 +143,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
-                color: const Color(0xFFE8C8D2),
+                color: Color(0xFF2D2C3F),
                 child: InkWell(
                   onLongPress: () {
                     {
@@ -153,7 +153,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                         builder: (BuildContext context) {
                           return Container(
                             decoration: const BoxDecoration(
-                                color: Color(0xFFD6EFF2),
+                                color: Color(0xFF2D2C3F),
                                 borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(20))),
                             height: 200,
@@ -185,7 +185,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                       );
                     }
                   },
-                  splashColor: Colors.teal.shade100,
+
                   onTap: () {
                     Navigator.push(
                         context,

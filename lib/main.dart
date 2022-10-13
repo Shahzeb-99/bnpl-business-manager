@@ -30,22 +30,25 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
-          theme: ThemeData.light().copyWith(
+          theme: ThemeData.dark().copyWith(
               primaryColor: const Color(0xFFE8C8D2),
-              colorScheme: const ColorScheme.light(
-                primary: Color(0xFFC45A81),
+              colorScheme: const ColorScheme.dark(
+                primary: Color(0xFF9898B0),
+                secondary: Color(0xFF2D2C3F),
               ),
               textTheme: GoogleFonts.poppinsTextTheme(
                 Theme.of(context).textTheme,
               ).apply(
-                bodyColor: Colors.black, //<-- SEE HERE
-                displayColor: Colors.black,
+                bodyColor: Colors.white, //<-- SEE HERE
+                displayColor: Colors.white,
               ),
-              scaffoldBackgroundColor: const Color(0xFF800000),
+              scaffoldBackgroundColor: const Color(0xFF1A1C33),
+              drawerTheme: const DrawerThemeData(backgroundColor: Color(0xFF2D2C3F),),
               appBarTheme: const AppBarTheme(
                 elevation: 3,
-                color: Color(0xFF800000),
-                iconTheme: IconThemeData(color: Colors.black),
+                color:  Color(0xFF1A1C33),
+                iconTheme: IconThemeData(color: Colors.white),
+
               ),
               buttonTheme:
                   const ButtonThemeData(textTheme: ButtonTextTheme.primary)),

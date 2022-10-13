@@ -41,16 +41,15 @@ class _DashboardState extends State<Dashboard> {
               },
               icon: const Icon(
                 Icons.menu,
-                color: Colors.black,
               ));
         }),
         title: const Text(
           'Dashboard',
-          style: TextStyle(color: Colors.black, fontSize: 25),
+          style: TextStyle(fontSize: 25),
         ),
       ),
       drawer: Drawer(
-        backgroundColor: const Color(0xFFE8C8D2),
+
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -142,7 +141,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFE8C8D2),
+                            color: const Color(0xFF2D2C3F),
                             child: InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -160,6 +159,7 @@ class _DashboardState extends State<Dashboard> {
                                           'Remaining Installments',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
+                                            color: Color(0xFFB6B8C0),
                                             fontSize: 20,
                                           ),
                                         ),
@@ -169,23 +169,70 @@ class _DashboardState extends State<Dashboard> {
                                       height: 25,
                                     ),
                                     Expanded(
-                                      child: Provider.of<DashboardView>(context)
-                                                  .option ==
-                                              DashboardFilterOptions.all
-                                          ? Text(
-                                              '${Provider.of<DashboardView>(context).dashboardData.totalOutstandingBalance.toString()} Rupees',
-                                            )
-                                          : Text(
-                                              '${Provider.of<DashboardView>(context).outstandingBalance} Rupees',
-                                            ),
-                                    )
+                                        child: Provider.of<DashboardView>(
+                                                        context)
+                                                    .option ==
+                                                DashboardFilterOptions.all
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.baseline,
+                                                textBaseline:
+                                                    TextBaseline.alphabetic,
+                                                children: [
+                                                  Text(
+                                                    Provider.of<DashboardView>(
+                                                            context)
+                                                        .dashboardData
+                                                        .totalOutstandingBalance
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontSize: 30,
+                                                        fontWeight:
+                                                            FontWeight.w900),
+                                                  ),
+                                                  const Text(
+                                                    ' Rupees',
+                                                    style: TextStyle(
+                                                      color: Color(0xFF8D8E98),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.baseline,
+                                                textBaseline:
+                                                    TextBaseline.alphabetic,
+                                                children: [
+                                                  Text(
+                                                    Provider.of<DashboardView>(
+                                                            context)
+                                                        .outstandingBalance
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontSize: 30,
+                                                        fontWeight:
+                                                            FontWeight.w900),
+                                                  ),
+                                                  const Text(
+                                                    ' Rupees',
+                                                    style: TextStyle(
+                                                      color: Color(0xFF8D8E98),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ))
                                   ],
                                 ))),
                       ),
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFE8C8D2),
+                            color: const Color(0xFF2D2C3F),
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -202,7 +249,10 @@ class _DashboardState extends State<Dashboard> {
                                       child: Text(
                                         'Recovery account',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 20),
+                                        style: TextStyle(
+                                          color: Color(0xFFB6B8C0),
+                                          fontSize: 20,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -210,16 +260,62 @@ class _DashboardState extends State<Dashboard> {
                                     height: 25,
                                   ),
                                   Expanded(
-                                    child: Provider.of<DashboardView>(context)
-                                                .option ==
-                                            DashboardFilterOptions.all
-                                        ? Text(
-                                            '${Provider.of<DashboardView>(context).dashboardData.totalAmountPaid.toString()} Rupees',
-                                          )
-                                        : Text(
-                                            '${Provider.of<DashboardView>(context).amount_paid} Rupees',
-                                          ),
-                                  )
+                                      child: Provider.of<DashboardView>(context)
+                                                  .option ==
+                                              DashboardFilterOptions.all
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.baseline,
+                                              textBaseline:
+                                                  TextBaseline.alphabetic,
+                                              children: [
+                                                Text(
+                                                  Provider.of<DashboardView>(
+                                                          context)
+                                                      .dashboardData
+                                                      .totalAmountPaid
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.w900),
+                                                ),
+                                                const Text(
+                                                  ' Rupees',
+                                                  style: TextStyle(
+                                                    color: Color(0xFF8D8E98),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.baseline,
+                                              textBaseline:
+                                                  TextBaseline.alphabetic,
+                                              children: [
+                                                Text(
+                                                  Provider.of<DashboardView>(
+                                                          context)
+                                                      .amount_paid
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.w900),
+                                                ),
+                                                const Text(
+                                                  ' Rupees',
+                                                  style: TextStyle(
+                                                    color: Color(0xFF8D8E98),
+                                                  ),
+                                                ),
+                                              ],
+                                            ))
                                 ],
                               ),
                             )),
@@ -236,7 +332,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFE8C8D2),
+                            color: const Color(0xFF2D2C3F),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -246,6 +342,7 @@ class _DashboardState extends State<Dashboard> {
                                       'Purchase account',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
+                                        color: Color(0xFFB6B8C0),
                                         fontSize: 20,
                                       ),
                                     ),
@@ -255,23 +352,69 @@ class _DashboardState extends State<Dashboard> {
                                   height: 25,
                                 ),
                                 Expanded(
-                                  child: Provider.of<DashboardView>(context)
-                                              .option ==
-                                          DashboardFilterOptions.all
-                                      ? Text(
-                                          '${Provider.of<DashboardView>(context).dashboardData.totalCost.toString()} Rupees',
-                                        )
-                                      : Text(
-                                          '${Provider.of<DashboardView>(context).total_cost} Rupees',
-                                        ),
-                                )
+                                    child: Provider.of<DashboardView>(context)
+                                                .option ==
+                                            DashboardFilterOptions.all
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.baseline,
+                                            textBaseline:
+                                                TextBaseline.alphabetic,
+                                            children: [
+                                              Text(
+                                                Provider.of<DashboardView>(
+                                                        context)
+                                                    .dashboardData
+                                                    .totalCost
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 30,
+                                                    fontWeight:
+                                                        FontWeight.w900),
+                                              ),
+                                              const Text(
+                                                ' Rupees',
+                                                style: TextStyle(
+                                                  color: Color(0xFF8D8E98),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.baseline,
+                                            textBaseline:
+                                                TextBaseline.alphabetic,
+                                            children: [
+                                              Text(
+                                                Provider.of<DashboardView>(
+                                                        context)
+                                                    .total_cost
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 30,
+                                                    fontWeight:
+                                                        FontWeight.w900),
+                                              ),
+                                              const Text(
+                                                ' Rupees',
+                                                style: TextStyle(
+                                                  color: Color(0xFF8D8E98),
+                                                ),
+                                              ),
+                                            ],
+                                          ))
                               ],
                             )),
                       ),
                       Expanded(
                         child: Card(
                           elevation: 5,
-                          color: const Color(0xFFE8C8D2),
+                          color: const Color(0xFF2D2C3F),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -280,7 +423,10 @@ class _DashboardState extends State<Dashboard> {
                                   child: Text(
                                     'Calculative profit',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(
+                                      color: Color(0xFFB6B8C0),
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -288,16 +434,63 @@ class _DashboardState extends State<Dashboard> {
                                 height: 25,
                               ),
                               Expanded(
-                                child: Provider.of<DashboardView>(context)
-                                            .option ==
-                                        DashboardFilterOptions.all
-                                    ? Text(
-                                        '${Provider.of<DashboardView>(context).dashboardData.profit.toString()} Rupees',
-                                      )
-                                    : Text(
-                                        '${Provider.of<DashboardView>(context).outstandingBalance + Provider.of<DashboardView>(context).amount_paid - Provider.of<DashboardView>(context).total_cost} Rupees',
-                                      ),
-                              )
+                                  child: Provider.of<DashboardView>(context)
+                                              .option ==
+                                          DashboardFilterOptions.all
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.alphabetic,
+                                          children: [
+                                            Text(
+                                              Provider.of<DashboardView>(
+                                                      context)
+                                                  .dashboardData
+                                                  .profit
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w900),
+                                            ),
+                                            const Text(
+                                              ' Rupees',
+                                              style: TextStyle(
+                                                color: Color(0xFF8D8E98),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.alphabetic,
+                                          children: [
+                                            Text(
+                                              Provider.of<DashboardView>(
+                                                          context)
+                                                      .outstandingBalance +
+                                                  Provider.of<DashboardView>(
+                                                          context)
+                                                      .amount_paid -
+                                                  Provider.of<DashboardView>(
+                                                          context)
+                                                      .total_cost,
+                                              style: const TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w900),
+                                            ),
+                                            const Text(
+                                              ' Rupees',
+                                              style: TextStyle(
+                                                color: Color(0xFF8D8E98),
+                                              ),
+                                            ),
+                                          ],
+                                        ))
                             ],
                           ),
                         ),
@@ -313,7 +506,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFE8C8D2),
+                            color: const Color(0xFF2D2C3F),
                             child: InkWell(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -327,7 +520,7 @@ class _DashboardState extends State<Dashboard> {
                                                 .viewInsets
                                                 .bottom),
                                         decoration: const BoxDecoration(
-                                            color: Color(0xFFE8C8D2),
+                                            color: Color(0xFF2D2C3F),
                                             borderRadius: BorderRadius.vertical(
                                                 top: Radius.circular(20))),
                                         child: Padding(
@@ -371,8 +564,6 @@ class _DashboardState extends State<Dashboard> {
                                                     ),
                                                   ),
                                                   IconButton(
-                                                      splashColor: const Color(
-                                                          0xFFE8C8D2),
                                                       onPressed: () async {
                                                         setState(() {
                                                           loading = true;
@@ -433,6 +624,7 @@ class _DashboardState extends State<Dashboard> {
                                         'Cash in Hand',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
+                                          color: Color(0xFFB6B8C0),
                                           fontSize: 20,
                                         ),
                                       ),
@@ -442,9 +634,33 @@ class _DashboardState extends State<Dashboard> {
                                     height: 25,
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      '${Provider.of<DashboardView>(context).dashboardData.cashAvailable.toString()} Rupees',
-                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                      textBaseline:
+                                      TextBaseline.alphabetic,
+                                      children: [
+                                        Text(
+                                          Provider.of<DashboardView>(
+                                              context)
+                                              .dashboardData
+                                              .cashAvailable
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 30,
+                                              fontWeight:
+                                              FontWeight.w900),
+                                        ),
+                                        const Text(
+                                          ' Rupees',
+                                          style: TextStyle(
+                                            color: Color(0xFF8D8E98),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                   )
                                 ],
                               ),
@@ -453,7 +669,7 @@ class _DashboardState extends State<Dashboard> {
                       Expanded(
                         child: Card(
                             elevation: 5,
-                            color: const Color(0xFFE8C8D2),
+                            color: const Color(0xFF2D2C3F),
                             child: InkWell(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -467,7 +683,7 @@ class _DashboardState extends State<Dashboard> {
                                                 .viewInsets
                                                 .bottom),
                                         decoration: const BoxDecoration(
-                                            color: Color(0xFFE8C8D2),
+                                            color: Color(0xFF2D2C3F),
                                             borderRadius: BorderRadius.vertical(
                                                 top: Radius.circular(20))),
                                         child: Padding(
@@ -593,6 +809,7 @@ class _DashboardState extends State<Dashboard> {
                                         'Expenses',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
+                                          color: Color(0xFFB6B8C0),
                                           fontSize: 20,
                                         ),
                                       ),
@@ -602,9 +819,33 @@ class _DashboardState extends State<Dashboard> {
                                     height: 25,
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      '${Provider.of<DashboardView>(context).dashboardData.expenses.toString()} Rupees',
-                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                      textBaseline:
+                                      TextBaseline.alphabetic,
+                                      children: [
+                                        Text(
+                                          Provider.of<DashboardView>(
+                                              context)
+                                              .dashboardData
+                                              .expenses
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 30,
+                                              fontWeight:
+                                              FontWeight.w900),
+                                        ),
+                                        const Text(
+                                          ' Rupees',
+                                          style: TextStyle(
+                                            color: Color(0xFF8D8E98),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                   )
                                 ],
                               ),
@@ -627,7 +868,7 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFFE8C8D2),
+      fillColor: const Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
