@@ -24,7 +24,7 @@ class AddVendorScreen extends StatefulWidget {
 }
 
 class _AddVendorScreenState extends State<AddVendorScreen> {
-  List<double> numberOfPayments = [6, 12, 18, 24, 30, 36];
+  List<double> numberOfPayments = [1,2,3,4,5,6,7,8,9,10,11,12];
   double? selectedPayment;
   List<String> vendorList = [];
   String selectedVendor = 'Select';

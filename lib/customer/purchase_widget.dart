@@ -45,7 +45,12 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
               ),
             ),
           ).whenComplete(
-              () => Provider.of<CustomerView>(context, listen: false).update());
+              () {
+                Provider.of<CustomerView>(context, listen: false).update();
+                setState(() {
+
+                });
+              });
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),

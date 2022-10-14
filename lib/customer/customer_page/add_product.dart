@@ -1,7 +1,7 @@
 import 'package:ecommerce_bnql/customer/customer_page/add_vendor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+enum ProfitSelection { percentage, lumpsum }
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({
     Key? key,
@@ -16,9 +16,11 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController profitController = TextEditingController();
+  final TextEditingController profitPercentageController = TextEditingController();
+  final TextEditingController profitLumpsumController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  ProfitSelection _selectedProfitOption = ProfitSelection.percentage;
 
   @override
   Widget build(BuildContext context) {
@@ -66,26 +68,78 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       },
                     ),
                   ),
+                  ListTile(
+                    title: const Text('Percentage Profit'),
+                    leading: Radio<ProfitSelection?>(
+                      value: ProfitSelection.percentage,
+                      groupValue: _selectedProfitOption,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedProfitOption = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  _selectedProfitOption == ProfitSelection.percentage
+                      ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      controller: profitPercentageController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration:
+                      kDecoration.inputBox('Profit Percentage', '%'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This field is required';
+                        }
+                        return null;
+                      },
+                    ),
+                  )
+                      : const Divider(),
+                  ListTile(
+                    title: const Text('Lump-sum Profit'),
+                    leading: Radio<ProfitSelection?>(
+                      value: ProfitSelection.lumpsum,
+                      groupValue: _selectedProfitOption,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedProfitOption = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  _selectedProfitOption == ProfitSelection.lumpsum
+                      ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      controller: profitLumpsumController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration:
+                      kDecoration.inputBox('Lump-sum Profit', 'PKR'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This field is required';
+                        }
+                        return null;
+                      },
+                    ),
+                  )
+                      : const Divider(),
                 ],
               )),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              onChanged: (value) {
-                setState(() {});
-              },
-              controller: profitController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: kDecoration.inputBox('Profit Percentage', '%'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'This field is required';
-                }
-                return null;
-              },
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -94,7 +148,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     borderRadius: BorderRadius.circular(4)),
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Text(
-                    'Total Selling Amount : ${getTotalProfit(price: priceController.text, percentage: profitController.text)}')),
+                    'Total Selling Amount : ${_selectedProfitOption == ProfitSelection.percentage ? getTotalPercentageProfit(price: priceController.text, percentage: profitPercentageController.text) : getTotalLumpsumProfit(price: priceController.text, profit: profitLumpsumController.text)}')),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -106,9 +160,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       MaterialPageRoute(
                           builder: (context) => AddVendorScreen(
                                 productName: nameController.text,
-                                productPurchasecost: getTotalProfit(
+                                productPurchasecost: _selectedProfitOption ==
+                                    ProfitSelection.percentage
+                                    ? getTotalPercentageProfit(
                                     price: priceController.text,
-                                    percentage: profitController.text),
+                                    percentage:
+                                    profitPercentageController.text)
+                                    : getTotalLumpsumProfit(
+                                    price: priceController.text,
+                                    profit: profitLumpsumController.text),
                                 customerName: widget.customerName,
                               )));
                 }
@@ -121,8 +181,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 }
-
-int getTotalProfit({required String price, required String percentage}) {
+int getTotalPercentageProfit(
+    {required String price, required String percentage}) {
   if (price.isNotEmpty && percentage.isNotEmpty) {
     double total =
         (int.parse(price) * (int.parse(percentage) / 100)) + int.parse(price);
@@ -133,10 +193,20 @@ int getTotalProfit({required String price, required String percentage}) {
   return 0;
 }
 
+int getTotalLumpsumProfit({required String price, required String profit}) {
+  if (price.isNotEmpty && profit.isNotEmpty) {
+    int total = int.parse(price) + int.parse(profit);
+
+    return total;
+  }
+
+  return 0;
+}
+
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
+      suffix: suffix.isNotEmpty ? Text(suffix) : null,
       filled: true,
       fillColor:const Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),
