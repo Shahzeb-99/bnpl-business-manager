@@ -29,7 +29,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
         index: widget.index, productIndex: widget.productIndex);
     super.initState();
   }
-
+  final formKey = GlobalKey<FormFieldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +39,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
           children: [
             const Text(
               'Payment Schedule',
-              style: TextStyle(  fontSize: 25),
+              style: TextStyle(fontSize: 25),
             ),
             IconButton(
                 onPressed: () {
@@ -49,6 +49,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                     backgroundColor: Colors.transparent,
                     context: context,
                     builder: (BuildContext context) {
+
                       return SingleChildScrollView(
                         child: Container(
                           padding: EdgeInsets.only(
@@ -60,10 +61,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(20),
                             child: Column(
-                              // mainAxisAlignment: MainAxisAlignment.start,
-                              // crossAxisAlignment:
-                              //     CrossAxisAlignment.stretch,
-                              //mainAxisSize: MainAxisSize.min,
+                          
                               children: [
                                 const Text(
                                   'Add Money',
@@ -76,6 +74,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                   children: [
                                     Expanded(
                                       child: TextFormField(
+                                        key: formKey,
                                         autofocus: true,
                                         controller: moneyController,
                                         keyboardType: TextInputType.number,
@@ -88,60 +87,155 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                           if (value == null || value.isEmpty) {
                                             return 'This field is required';
                                           }
+                                          else if(int.parse(value)>Provider.of<
+                                              CustomerView>(context,
+                                              listen: false)
+                                              .allCustomers[widget.index]
+                                              .purchases[widget.productIndex].outstandingBalance){
+
+                                            return 'Value greater than outstanding amount';
+
+                                          }
                                           return null;
                                         },
                                       ),
                                     ),
                                     IconButton(
-
                                         onPressed: () {
-                                          if (moneyController.text.isNotEmpty) {
-                                            int newPayment =
-                                                int.parse(moneyController.text);
-                                            moneyController.clear();
-                                            Provider.of<CustomerView>(context,
-                                                    listen: false)
-                                                .allCustomers[widget.index]
-                                                .purchases[widget.productIndex]
-                                                .updateCustomTransaction(
-                                                    amount: newPayment);
-                                            for (var payment in Provider.of<
+                                          if (formKey.currentState!.validate()) {
+                                            int index = 0;
+                                            int length = Provider.of<
                                                         CustomerView>(context,
                                                     listen: false)
                                                 .allCustomers[widget.index]
                                                 .purchases[widget.productIndex]
-                                                .paymentSchedule) {
-                                              setState(() {
-                                                if (!payment.isPaid) {
-                                                  if (newPayment >=
-                                                      payment.remainingAmount) {
+                                                .paymentSchedule
+                                                .length;
+                                            int newPayment =
+                                            int.parse(moneyController.text);
+
+                                            updateLocalState(context, newPayment);
+                                            Provider.of<
+                                                CustomerView>(context,
+                                                listen: false)
+                                                .allCustomers[widget.index].purchases[widget.productIndex].updateCustomTransaction(amount: newPayment);
+                                            
+
+                                            moneyController.clear();
+                                            
+                                            for (PaymentSchedule payment
+                                                in Provider.of<CustomerView>(
+                                                        context,
+                                                        listen: false)
+                                                    .allCustomers[widget.index]
+                                                    .purchases[
+                                                        widget.productIndex]
+                                                    .paymentSchedule) {
+                                            
+                                            
+                                              if (!payment.isPaid) {
+                                                if (newPayment <=
+                                                    payment.remainingAmount) {
+                                                  payment.remainingAmount -=
+                                                      newPayment;
+                                                  if (payment.remainingAmount ==
+                                                      0) {
                                                     payment.isPaid = true;
-                                                    newPayment = newPayment -
-                                                        payment.remainingAmount;
-                                                    payment.remainingAmount = 0;
-                                                  } else {
-                                                    payment.remainingAmount =
-                                                        payment.remainingAmount -
-                                                            newPayment;
-                                                    newPayment = 0;
+                                                  }
+                                                  payment.updateFirestore();
+                                                  newPayment = 0;
+                                                  break;
+                                                } else {
+                                                  newPayment =newPayment-
+                                                      payment.remainingAmount;
+                                                  payment.remainingAmount = 0;
+                                                  payment.isPaid = true;
+                                                  payment.updateFirestore();
+                                            
+                                                  index++;
+                                                  length--;
+                                                  print('length : $length');
+                                                  print('newPayment : $newPayment');
+                                            
+                                                  int roundedPayment =
+                                                      newPayment ~/ length;
+                                            
+                                                  for (index;
+                                                      index <
+                                                          Provider.of<CustomerView>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .allCustomers[
+                                                                  widget.index]
+                                                              .purchases[widget
+                                                                  .productIndex]
+                                                              .paymentSchedule
+                                                              .length;
+                                                      index++) {
+                                                    if (index !=
+                                                        Provider.of<CustomerView>(
+                                                                    context,
+                                                                    listen: false)
+                                                                .allCustomers[
+                                                                    widget.index]
+                                                                .purchases[widget
+                                                                    .productIndex]
+                                                                .paymentSchedule
+                                                                .length -
+                                                            1) {
+                                                      Provider.of<CustomerView>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .allCustomers[
+                                                                  widget.index]
+                                                              .purchases[widget
+                                                                  .productIndex]
+                                                              .paymentSchedule[index]
+                                                              .remainingAmount -=
+                                                          roundedPayment;
+                                                      newPayment -=
+                                                          roundedPayment;
+                                                      Provider.of<CustomerView>(
+                                                          context,
+                                                          listen: false)
+                                                          .allCustomers[
+                                                      widget.index]
+                                                          .purchases[widget
+                                                          .productIndex]
+                                                          .paymentSchedule[index].updateFirestore();
+                                                    } else {
+                                                      Provider.of<CustomerView>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .allCustomers[
+                                                                  widget.index]
+                                                              .purchases[widget
+                                                                  .productIndex]
+                                                              .paymentSchedule[index]
+                                                              .remainingAmount -=
+                                                          newPayment;
+                                                      newPayment=0;
+                                                      Provider.of<CustomerView>(
+                                                          context,
+                                                          listen: false)
+                                                          .allCustomers[
+                                                      widget.index]
+                                                          .purchases[widget
+                                                          .productIndex]
+                                                          .paymentSchedule[index].updateFirestore();
+                                                    }
                                                   }
                                                 }
-                                              });
-
-                                              payment.updateFirestore();
+                                              } else {
+                                                index++;
+                                                length--;
+                                              }
                                             }
-                                            if (newPayment > 0) {
-                                              Provider.of<CustomerView>(context,
-                                                      listen: false)
-                                                  .allCustomers[widget.index]
-                                                  .purchases[
-                                                      widget.productIndex]
-                                                  .updateCustomTransaction(
-                                                      amount: -newPayment);
-                                            }
+                                            Navigator.pop(context);
+                                            setState(() {
+                                            
+                                            });
                                           }
-
-                                          Navigator.pop(context);
                                         },
                                         icon: const Icon(Icons.navigate_next))
                                   ],
@@ -200,6 +294,30 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
       ),
     );
   }
+  void updateLocalState(BuildContext context, int amount){
+
+    Provider.of<
+        CustomerView>(context,
+        listen: false)
+        .allCustomers[widget.index]
+        .purchases[widget.productIndex]
+        .outstandingBalance-=amount;
+    Provider.of<
+        CustomerView>(context,
+        listen: false)
+        .allCustomers[widget.index]
+        .purchases[widget.productIndex]
+        .amountPaid+=amount;
+    Provider.of<
+        CustomerView>(context,
+        listen: false)
+        .allCustomers[widget.index].outstandingBalance -=amount;
+    Provider.of<
+        CustomerView>(context,
+        listen: false)
+        .allCustomers[widget.index].paidAmount +=amount;
+
+  }
 }
 
 class kDecoration {
@@ -207,7 +325,7 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? Text(suffix) : null,
       filled: true,
-      fillColor:Color(0xFF2D2C3F),
+      fillColor: Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
