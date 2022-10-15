@@ -44,6 +44,13 @@ class CustomerView extends ChangeNotifier {
         .getPaymentSchedule(allCustomers[index].documentID);
     notifyListeners();
   }
+  void getTransactionHistory(
+      {required int index, required int productIndex}) async {
+    await allCustomers[index]
+        .purchases[productIndex]
+        .getTransactionHistory(allCustomers[index].documentID);
+    notifyListeners();
+  }
 
   void update() {
     notifyListeners();

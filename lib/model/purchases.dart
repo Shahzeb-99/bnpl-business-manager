@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../customer/transaction_history_class.dart';
 import '/customer/payment_schedule_class.dart';
 
 class Purchase {
@@ -16,6 +17,7 @@ class Purchase {
   var outstandingBalance;
   var amountPaid;
   List<PaymentSchedule> paymentSchedule = [];
+  List<TransactionHistory> transactionHistory = [];
 
   Purchase(
       {required this.customerID,
@@ -55,6 +57,22 @@ class Purchase {
     });
   }
 
+  Future<void> getTransactionHistory(String customerDocID) async {
+    transactionHistory = [];
+    await documentReferencePurchase
+        .collection('transaction_history')
+        .orderBy('date', descending: false)
+        .get()
+        .then((value) {
+      for (var payment in value.docs) {
+        var amount = payment.get('amount');
+        Timestamp date = payment.get('date');
+
+        transactionHistory.add(TransactionHistory(amount: amount, date: date));
+      }
+    });
+  }
+
   updateCustomTransaction({required int amount}) async {
     final cloud = FirebaseFirestore.instance;
 
@@ -72,5 +90,14 @@ class Purchase {
       'outstanding_balance': FieldValue.increment(-amount),
       'cash_available': FieldValue.increment(amount),
     });
+  }
+
+  void addTransaction(int amount) {
+    documentReferencePurchase.collection('transaction_history').add(
+      {
+        'amount': amount,
+        'date': Timestamp.now(),
+      },
+    );
   }
 }

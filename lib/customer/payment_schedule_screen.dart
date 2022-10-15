@@ -1,5 +1,6 @@
 import 'package:ecommerce_bnql/customer/paymentScheduleWidget.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
+import 'package:ecommerce_bnql/customer/transaction_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,9 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
         index: widget.index, productIndex: widget.productIndex);
     super.initState();
   }
+
   final formKey = GlobalKey<FormFieldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +52,6 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                     backgroundColor: Colors.transparent,
                     context: context,
                     builder: (BuildContext context) {
-
                       return SingleChildScrollView(
                         child: Container(
                           padding: EdgeInsets.only(
@@ -61,7 +63,6 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(20),
                             child: Column(
-                          
                               children: [
                                 const Text(
                                   'Add Money',
@@ -86,15 +87,14 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
                                             return 'This field is required';
-                                          }
-                                          else if(int.parse(value)>Provider.of<
-                                              CustomerView>(context,
-                                              listen: false)
-                                              .allCustomers[widget.index]
-                                              .purchases[widget.productIndex].outstandingBalance){
-
+                                          } else if (int.parse(value) >
+                                              Provider.of<CustomerView>(context,
+                                                      listen: false)
+                                                  .allCustomers[widget.index]
+                                                  .purchases[
+                                                      widget.productIndex]
+                                                  .outstandingBalance) {
                                             return 'Value greater than outstanding amount';
-
                                           }
                                           return null;
                                         },
@@ -102,31 +102,48 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                     ),
                                     IconButton(
                                         onPressed: () {
-                                          if (formKey.currentState!.validate()) {
+                                          if (formKey.currentState!
+                                              .validate()) {
                                             if (Provider.of<CustomerView>(
-                                                context,
-                                                listen: false)
-                                                .allCustomers[
-                                            widget.index]
-                                                .purchases[widget
-                                                .productIndex].outstandingBalance-int.parse(moneyController.text)>500) {
+                                                            context,
+                                                            listen: false)
+                                                        .allCustomers[
+                                                            widget.index]
+                                                        .purchases[
+                                                            widget.productIndex]
+                                                        .outstandingBalance -
+                                                    int.parse(
+                                                        moneyController.text) >
+                                                500) {
+                                              Provider.of<CustomerView>(context,
+                                                      listen: false)
+                                                  .allCustomers[widget.index]
+                                                  .purchases[
+                                                      widget.productIndex]
+                                                  .addTransaction(int.parse(
+                                                      moneyController.text));
+
                                               int index = 0;
                                               int length = Provider.of<
                                                           CustomerView>(context,
                                                       listen: false)
                                                   .allCustomers[widget.index]
-                                                  .purchases[widget.productIndex]
+                                                  .purchases[
+                                                      widget.productIndex]
                                                   .paymentSchedule
                                                   .length;
-                                              int newPayment =
-                                              int.parse(moneyController.text);
+                                              int newPayment = int.parse(
+                                                  moneyController.text);
 
-                                              updateLocalState(context, newPayment);
-                                              Provider.of<
-                                                  CustomerView>(context,
-                                                  listen: false)
-                                                  .allCustomers[widget.index].purchases[widget.productIndex].updateCustomTransaction(amount: newPayment);
-
+                                              updateLocalState(
+                                                  context, newPayment);
+                                              Provider.of<CustomerView>(context,
+                                                      listen: false)
+                                                  .allCustomers[widget.index]
+                                                  .purchases[
+                                                      widget.productIndex]
+                                                  .updateCustomTransaction(
+                                                      amount: newPayment);
 
                                               moneyController.clear();
 
@@ -134,18 +151,18 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                   in Provider.of<CustomerView>(
                                                           context,
                                                           listen: false)
-                                                      .allCustomers[widget.index]
+                                                      .allCustomers[
+                                                          widget.index]
                                                       .purchases[
                                                           widget.productIndex]
                                                       .paymentSchedule) {
-
-
                                                 if (!payment.isPaid) {
                                                   if (newPayment <=
                                                       payment.remainingAmount) {
                                                     payment.remainingAmount -=
                                                         newPayment;
-                                                    if (payment.remainingAmount ==
+                                                    if (payment
+                                                            .remainingAmount ==
                                                         0) {
                                                       payment.isPaid = true;
                                                     }
@@ -153,7 +170,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                     newPayment = 0;
                                                     break;
                                                   } else {
-                                                    newPayment =newPayment-
+                                                    newPayment = newPayment -
                                                         payment.remainingAmount;
                                                     payment.remainingAmount = 0;
                                                     payment.isPaid = true;
@@ -162,7 +179,8 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                     index++;
                                                     length--;
                                                     print('length : $length');
-                                                    print('newPayment : $newPayment');
+                                                    print(
+                                                        'newPayment : $newPayment');
 
                                                     int roundedPayment =
                                                         newPayment ~/ length;
@@ -171,9 +189,11 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                         index <
                                                             Provider.of<CustomerView>(
                                                                     context,
-                                                                    listen: false)
+                                                                    listen:
+                                                                        false)
                                                                 .allCustomers[
-                                                                    widget.index]
+                                                                    widget
+                                                                        .index]
                                                                 .purchases[widget
                                                                     .productIndex]
                                                                 .paymentSchedule
@@ -182,9 +202,11 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                       if (index !=
                                                           Provider.of<CustomerView>(
                                                                       context,
-                                                                      listen: false)
+                                                                      listen:
+                                                                          false)
                                                                   .allCustomers[
-                                                                      widget.index]
+                                                                      widget
+                                                                          .index]
                                                                   .purchases[widget
                                                                       .productIndex]
                                                                   .paymentSchedule
@@ -197,19 +219,22 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                                     widget.index]
                                                                 .purchases[widget
                                                                     .productIndex]
-                                                                .paymentSchedule[index]
+                                                                .paymentSchedule[
+                                                                    index]
                                                                 .remainingAmount -=
                                                             roundedPayment;
                                                         newPayment -=
                                                             roundedPayment;
                                                         Provider.of<CustomerView>(
-                                                            context,
-                                                            listen: false)
+                                                                context,
+                                                                listen: false)
                                                             .allCustomers[
-                                                        widget.index]
+                                                                widget.index]
                                                             .purchases[widget
-                                                            .productIndex]
-                                                            .paymentSchedule[index].updateFirestore();
+                                                                .productIndex]
+                                                            .paymentSchedule[
+                                                                index]
+                                                            .updateFirestore();
                                                       } else {
                                                         Provider.of<CustomerView>(
                                                                     context,
@@ -218,18 +243,21 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                                     widget.index]
                                                                 .purchases[widget
                                                                     .productIndex]
-                                                                .paymentSchedule[index]
+                                                                .paymentSchedule[
+                                                                    index]
                                                                 .remainingAmount -=
                                                             newPayment;
-                                                        newPayment=0;
+                                                        newPayment = 0;
                                                         Provider.of<CustomerView>(
-                                                            context,
-                                                            listen: false)
+                                                                context,
+                                                                listen: false)
                                                             .allCustomers[
-                                                        widget.index]
+                                                                widget.index]
                                                             .purchases[widget
-                                                            .productIndex]
-                                                            .paymentSchedule[index].updateFirestore();
+                                                                .productIndex]
+                                                            .paymentSchedule[
+                                                                index]
+                                                            .updateFirestore();
                                                       }
                                                     }
                                                   }
@@ -239,35 +267,50 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                 }
                                               }
                                               Navigator.pop(context);
-                                              setState(() {
-
-                                              });
-                                            }else {
-                                              if (moneyController.text.isNotEmpty) {
-                                                int newPayment =
-                                                int.parse(moneyController.text);
+                                              setState(() {});
+                                            } else {
+                                              if (moneyController
+                                                  .text.isNotEmpty) {
+                                                Provider.of<CustomerView>(
+                                                        context,
+                                                        listen: false)
+                                                    .allCustomers[widget.index]
+                                                    .purchases[
+                                                        widget.productIndex]
+                                                    .addTransaction(int.parse(
+                                                        moneyController.text));
+                                                int newPayment = int.parse(
+                                                    moneyController.text);
                                                 moneyController.clear();
-                                                updateLocalState(context, newPayment);
-                                                Provider.of<CustomerView>(context,
-                                                    listen: false)
+                                                updateLocalState(
+                                                    context, newPayment);
+                                                Provider.of<CustomerView>(
+                                                        context,
+                                                        listen: false)
                                                     .allCustomers[widget.index]
-                                                    .purchases[widget.productIndex]
+                                                    .purchases[
+                                                        widget.productIndex]
                                                     .updateCustomTransaction(
-                                                    amount: newPayment);
+                                                        amount: newPayment);
                                                 for (var payment in Provider.of<
-                                                    CustomerView>(context,
-                                                    listen: false)
+                                                            CustomerView>(
+                                                        context,
+                                                        listen: false)
                                                     .allCustomers[widget.index]
-                                                    .purchases[widget.productIndex]
+                                                    .purchases[
+                                                        widget.productIndex]
                                                     .paymentSchedule) {
                                                   setState(() {
                                                     if (!payment.isPaid) {
                                                       if (newPayment >=
-                                                          payment.remainingAmount) {
+                                                          payment
+                                                              .remainingAmount) {
                                                         payment.isPaid = true;
                                                         newPayment = newPayment -
-                                                            payment.remainingAmount;
-                                                        payment.remainingAmount = 0;
+                                                            payment
+                                                                .remainingAmount;
+                                                        payment.remainingAmount =
+                                                            0;
                                                       } else {
                                                         payment.remainingAmount =
                                                             payment.remainingAmount -
@@ -284,7 +327,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                               Navigator.pop(context);
                                             }
                                           }
-                                          },
+                                        },
                                         icon: const Icon(Icons.navigate_next))
                                   ],
                                 ),
@@ -303,7 +346,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               'Product Name : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].productName}',
@@ -321,6 +364,20 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
             Text(
                 'Profit : ${Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].sellingAmount - Provider.of<CustomerView>(context).allCustomers[widget.index].purchases[widget.productIndex].purchaseAmount}',
                 style: const TextStyle(fontSize: 20)),
+            TextButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                  const Color(0xFF2D2C3F),
+                )),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TransactionHistoryScreen(
+                              productIndex: widget.productIndex,
+                              index: widget.index)));
+                },
+                child: const Text('Transaction History')),
             Expanded(
               child: ListView.builder(
                 physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
@@ -342,29 +399,22 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
       ),
     );
   }
-  void updateLocalState(BuildContext context, int amount){
 
-    Provider.of<
-        CustomerView>(context,
-        listen: false)
+  void updateLocalState(BuildContext context, int amount) {
+    Provider.of<CustomerView>(context, listen: false)
         .allCustomers[widget.index]
         .purchases[widget.productIndex]
-        .outstandingBalance-=amount;
-    Provider.of<
-        CustomerView>(context,
-        listen: false)
+        .outstandingBalance -= amount;
+    Provider.of<CustomerView>(context, listen: false)
         .allCustomers[widget.index]
         .purchases[widget.productIndex]
-        .amountPaid+=amount;
-    Provider.of<
-        CustomerView>(context,
-        listen: false)
-        .allCustomers[widget.index].outstandingBalance -=amount;
-    Provider.of<
-        CustomerView>(context,
-        listen: false)
-        .allCustomers[widget.index].paidAmount +=amount;
-
+        .amountPaid += amount;
+    Provider.of<CustomerView>(context, listen: false)
+        .allCustomers[widget.index]
+        .outstandingBalance -= amount;
+    Provider.of<CustomerView>(context, listen: false)
+        .allCustomers[widget.index]
+        .paidAmount += amount;
   }
 }
 
@@ -373,7 +423,7 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? Text(suffix) : null,
       filled: true,
-      fillColor: Color(0xFF2D2C3F),
+      fillColor: const Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
