@@ -11,7 +11,6 @@ class CustomerView extends ChangeNotifier {
   void getCustomers() async {
     allCustomers = [];
     final cloud = FirebaseFirestore.instance;
-    cloud.settings = const Settings(persistenceEnabled: true);
     await cloud.collection('customers').get().then(
       (value) async {
         if (value.docs.isNotEmpty) {

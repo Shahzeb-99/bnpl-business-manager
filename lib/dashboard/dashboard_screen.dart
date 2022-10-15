@@ -26,6 +26,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     Provider.of<DashboardView>(context, listen: false).getFinancials();
+    getAllData();
     super.initState();
   }
 
@@ -875,6 +876,18 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  Future<void> getAllData() async {
+    CollectionReference _collectionRef =
+    FirebaseFirestore.instance.collection('customers');
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    print(allData);
+
   }
 }
 
