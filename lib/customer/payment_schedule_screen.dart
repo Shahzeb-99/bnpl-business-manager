@@ -103,77 +103,73 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                     IconButton(
                                         onPressed: () {
                                           if (formKey.currentState!.validate()) {
-                                            int index = 0;
-                                            int length = Provider.of<
-                                                        CustomerView>(context,
-                                                    listen: false)
-                                                .allCustomers[widget.index]
-                                                .purchases[widget.productIndex]
-                                                .paymentSchedule
-                                                .length;
-                                            int newPayment =
-                                            int.parse(moneyController.text);
-
-                                            updateLocalState(context, newPayment);
-                                            Provider.of<
-                                                CustomerView>(context,
+                                            if (Provider.of<CustomerView>(
+                                                context,
                                                 listen: false)
-                                                .allCustomers[widget.index].purchases[widget.productIndex].updateCustomTransaction(amount: newPayment);
-                                            
+                                                .allCustomers[
+                                            widget.index]
+                                                .purchases[widget
+                                                .productIndex].outstandingBalance-int.parse(moneyController.text)>500) {
+                                              int index = 0;
+                                              int length = Provider.of<
+                                                          CustomerView>(context,
+                                                      listen: false)
+                                                  .allCustomers[widget.index]
+                                                  .purchases[widget.productIndex]
+                                                  .paymentSchedule
+                                                  .length;
+                                              int newPayment =
+                                              int.parse(moneyController.text);
 
-                                            moneyController.clear();
-                                            
-                                            for (PaymentSchedule payment
-                                                in Provider.of<CustomerView>(
-                                                        context,
-                                                        listen: false)
-                                                    .allCustomers[widget.index]
-                                                    .purchases[
-                                                        widget.productIndex]
-                                                    .paymentSchedule) {
-                                            
-                                            
-                                              if (!payment.isPaid) {
-                                                if (newPayment <=
-                                                    payment.remainingAmount) {
-                                                  payment.remainingAmount -=
-                                                      newPayment;
-                                                  if (payment.remainingAmount ==
-                                                      0) {
+                                              updateLocalState(context, newPayment);
+                                              Provider.of<
+                                                  CustomerView>(context,
+                                                  listen: false)
+                                                  .allCustomers[widget.index].purchases[widget.productIndex].updateCustomTransaction(amount: newPayment);
+
+
+                                              moneyController.clear();
+
+                                              for (PaymentSchedule payment
+                                                  in Provider.of<CustomerView>(
+                                                          context,
+                                                          listen: false)
+                                                      .allCustomers[widget.index]
+                                                      .purchases[
+                                                          widget.productIndex]
+                                                      .paymentSchedule) {
+
+
+                                                if (!payment.isPaid) {
+                                                  if (newPayment <=
+                                                      payment.remainingAmount) {
+                                                    payment.remainingAmount -=
+                                                        newPayment;
+                                                    if (payment.remainingAmount ==
+                                                        0) {
+                                                      payment.isPaid = true;
+                                                    }
+                                                    payment.updateFirestore();
+                                                    newPayment = 0;
+                                                    break;
+                                                  } else {
+                                                    newPayment =newPayment-
+                                                        payment.remainingAmount;
+                                                    payment.remainingAmount = 0;
                                                     payment.isPaid = true;
-                                                  }
-                                                  payment.updateFirestore();
-                                                  newPayment = 0;
-                                                  break;
-                                                } else {
-                                                  newPayment =newPayment-
-                                                      payment.remainingAmount;
-                                                  payment.remainingAmount = 0;
-                                                  payment.isPaid = true;
-                                                  payment.updateFirestore();
-                                            
-                                                  index++;
-                                                  length--;
-                                                  print('length : $length');
-                                                  print('newPayment : $newPayment');
-                                            
-                                                  int roundedPayment =
-                                                      newPayment ~/ length;
-                                            
-                                                  for (index;
-                                                      index <
-                                                          Provider.of<CustomerView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .allCustomers[
-                                                                  widget.index]
-                                                              .purchases[widget
-                                                                  .productIndex]
-                                                              .paymentSchedule
-                                                              .length;
-                                                      index++) {
-                                                    if (index !=
-                                                        Provider.of<CustomerView>(
+                                                    payment.updateFirestore();
+
+                                                    index++;
+                                                    length--;
+                                                    print('length : $length');
+                                                    print('newPayment : $newPayment');
+
+                                                    int roundedPayment =
+                                                        newPayment ~/ length;
+
+                                                    for (index;
+                                                        index <
+                                                            Provider.of<CustomerView>(
                                                                     context,
                                                                     listen: false)
                                                                 .allCustomers[
@@ -181,62 +177,114 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                                 .purchases[widget
                                                                     .productIndex]
                                                                 .paymentSchedule
-                                                                .length -
-                                                            1) {
-                                                      Provider.of<CustomerView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .allCustomers[
-                                                                  widget.index]
-                                                              .purchases[widget
-                                                                  .productIndex]
-                                                              .paymentSchedule[index]
-                                                              .remainingAmount -=
-                                                          roundedPayment;
-                                                      newPayment -=
-                                                          roundedPayment;
-                                                      Provider.of<CustomerView>(
-                                                          context,
-                                                          listen: false)
-                                                          .allCustomers[
-                                                      widget.index]
-                                                          .purchases[widget
-                                                          .productIndex]
-                                                          .paymentSchedule[index].updateFirestore();
-                                                    } else {
-                                                      Provider.of<CustomerView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .allCustomers[
-                                                                  widget.index]
-                                                              .purchases[widget
-                                                                  .productIndex]
-                                                              .paymentSchedule[index]
-                                                              .remainingAmount -=
-                                                          newPayment;
-                                                      newPayment=0;
-                                                      Provider.of<CustomerView>(
-                                                          context,
-                                                          listen: false)
-                                                          .allCustomers[
-                                                      widget.index]
-                                                          .purchases[widget
-                                                          .productIndex]
-                                                          .paymentSchedule[index].updateFirestore();
+                                                                .length;
+                                                        index++) {
+                                                      if (index !=
+                                                          Provider.of<CustomerView>(
+                                                                      context,
+                                                                      listen: false)
+                                                                  .allCustomers[
+                                                                      widget.index]
+                                                                  .purchases[widget
+                                                                      .productIndex]
+                                                                  .paymentSchedule
+                                                                  .length -
+                                                              1) {
+                                                        Provider.of<CustomerView>(
+                                                                    context,
+                                                                    listen: false)
+                                                                .allCustomers[
+                                                                    widget.index]
+                                                                .purchases[widget
+                                                                    .productIndex]
+                                                                .paymentSchedule[index]
+                                                                .remainingAmount -=
+                                                            roundedPayment;
+                                                        newPayment -=
+                                                            roundedPayment;
+                                                        Provider.of<CustomerView>(
+                                                            context,
+                                                            listen: false)
+                                                            .allCustomers[
+                                                        widget.index]
+                                                            .purchases[widget
+                                                            .productIndex]
+                                                            .paymentSchedule[index].updateFirestore();
+                                                      } else {
+                                                        Provider.of<CustomerView>(
+                                                                    context,
+                                                                    listen: false)
+                                                                .allCustomers[
+                                                                    widget.index]
+                                                                .purchases[widget
+                                                                    .productIndex]
+                                                                .paymentSchedule[index]
+                                                                .remainingAmount -=
+                                                            newPayment;
+                                                        newPayment=0;
+                                                        Provider.of<CustomerView>(
+                                                            context,
+                                                            listen: false)
+                                                            .allCustomers[
+                                                        widget.index]
+                                                            .purchases[widget
+                                                            .productIndex]
+                                                            .paymentSchedule[index].updateFirestore();
+                                                      }
                                                     }
                                                   }
+                                                } else {
+                                                  index++;
+                                                  length--;
                                                 }
-                                              } else {
-                                                index++;
-                                                length--;
                                               }
+                                              Navigator.pop(context);
+                                              setState(() {
+
+                                              });
+                                            }else {
+                                              if (moneyController.text.isNotEmpty) {
+                                                int newPayment =
+                                                int.parse(moneyController.text);
+                                                moneyController.clear();
+                                                updateLocalState(context, newPayment);
+                                                Provider.of<CustomerView>(context,
+                                                    listen: false)
+                                                    .allCustomers[widget.index]
+                                                    .purchases[widget.productIndex]
+                                                    .updateCustomTransaction(
+                                                    amount: newPayment);
+                                                for (var payment in Provider.of<
+                                                    CustomerView>(context,
+                                                    listen: false)
+                                                    .allCustomers[widget.index]
+                                                    .purchases[widget.productIndex]
+                                                    .paymentSchedule) {
+                                                  setState(() {
+                                                    if (!payment.isPaid) {
+                                                      if (newPayment >=
+                                                          payment.remainingAmount) {
+                                                        payment.isPaid = true;
+                                                        newPayment = newPayment -
+                                                            payment.remainingAmount;
+                                                        payment.remainingAmount = 0;
+                                                      } else {
+                                                        payment.remainingAmount =
+                                                            payment.remainingAmount -
+                                                                newPayment;
+                                                        newPayment = 0;
+                                                      }
+                                                    }
+                                                  });
+
+                                                  payment.updateFirestore();
+                                                }
+                                              }
+
+                                              Navigator.pop(context);
                                             }
-                                            Navigator.pop(context);
-                                            setState(() {
-                                            
-                                            });
                                           }
-                                        },
+                                          },
                                         icon: const Icon(Icons.navigate_next))
                                   ],
                                 ),

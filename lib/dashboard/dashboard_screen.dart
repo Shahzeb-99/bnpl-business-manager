@@ -186,10 +186,11 @@ class _DashboardState extends State<Dashboard> {
                                                         .dashboardData
                                                         .totalOutstandingBalance
                                                         .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 30,
-                                                        fontWeight:
-                                                            FontWeight.w900),
+                                                    style:  TextStyle(
+                                                        fontSize:Provider.of<DashboardView>(context)
+                                                            .dashboardData
+                                                            .totalOutstandingBalance<1000000? 30:20,
+                                                        fontWeight: FontWeight.w900),
                                                   ),
                                                   const Text(
                                                     ' Rupees',
@@ -212,10 +213,10 @@ class _DashboardState extends State<Dashboard> {
                                                             context)
                                                         .outstandingBalance
                                                         .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 30,
-                                                        fontWeight:
-                                                            FontWeight.w900),
+                                                    style:  TextStyle(
+                                                        fontSize:Provider.of<DashboardView>(context)
+                                                            .outstandingBalance<1000000? 30:20,
+                                                        fontWeight: FontWeight.w900),
                                                   ),
                                                   const Text(
                                                     ' Rupees',
@@ -276,10 +277,11 @@ class _DashboardState extends State<Dashboard> {
                                                       .dashboardData
                                                       .totalAmountPaid
                                                       .toString(),
-                                                  style: const TextStyle(
-                                                      fontSize: 30,
-                                                      fontWeight:
-                                                          FontWeight.w900),
+                                                  style:  TextStyle(
+                                                      fontSize:Provider.of<DashboardView>(context)
+                                                          .dashboardData
+                                                          .totalAmountPaid<1000000? 30:20,
+                                                      fontWeight: FontWeight.w900),
                                                 ),
                                                 const Text(
                                                   ' Rupees',
@@ -302,10 +304,10 @@ class _DashboardState extends State<Dashboard> {
                                                           context)
                                                       .amount_paid
                                                       .toString(),
-                                                  style: const TextStyle(
-                                                      fontSize: 30,
-                                                      fontWeight:
-                                                          FontWeight.w900),
+                                                  style:  TextStyle(
+                                                      fontSize:Provider.of<DashboardView>(context)
+                                                          .amount_paid<1000000? 30:20,
+                                                      fontWeight: FontWeight.w900),
                                                 ),
                                                 const Text(
                                                   ' Rupees',
@@ -368,10 +370,11 @@ class _DashboardState extends State<Dashboard> {
                                                     .dashboardData
                                                     .totalCost
                                                     .toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 30,
-                                                    fontWeight:
-                                                        FontWeight.w900),
+                                                style:  TextStyle(
+                                                    fontSize:Provider.of<DashboardView>(context)
+                                                        .dashboardData
+                                                        .totalCost<1000000? 30:20,
+                                                    fontWeight: FontWeight.w900),
                                               ),
                                               const Text(
                                                 ' Rupees',
@@ -393,10 +396,11 @@ class _DashboardState extends State<Dashboard> {
                                                 Provider.of<DashboardView>(
                                                         context)
                                                     .total_cost.toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 30,
-                                                    fontWeight:
-                                                        FontWeight.w900),
+                                                style:  TextStyle(
+                                                    fontSize:Provider.of<DashboardView>(context)
+                                                        .dashboardData
+                                                        .totalCost<1000000? 30:20,
+                                                    fontWeight: FontWeight.w900),
                                               ),
                                               const Text(
                                                 ' Rupees',
@@ -447,8 +451,10 @@ class _DashboardState extends State<Dashboard> {
                                                 .dashboardData
                                                 .profit
                                                 .toString(),
-                                            style: const TextStyle(
-                                                fontSize: 30,
+                                            style:  TextStyle(
+                                                fontSize:Provider.of<DashboardView>(context)
+                                                    .dashboardData
+                                                    .profit<1000000? 30:20,
                                                 fontWeight: FontWeight.w900),
                                           ),
                                           const Text(
@@ -478,8 +484,16 @@ class _DashboardState extends State<Dashboard> {
                                                           context)
                                                       .total_cost
                                             }',
-                                            style: const TextStyle(
-                                                fontSize: 30,
+                                            style:  TextStyle(
+                                                fontSize:Provider.of<DashboardView>(
+                                                    context)
+                                                    .outstandingBalance +
+                                                    Provider.of<DashboardView>(
+                                                        context)
+                                                        .amount_paid -
+                                                    Provider.of<DashboardView>(
+                                                        context)
+                                                        .total_cost<1000000? 30:20,
                                                 fontWeight: FontWeight.w900),
                                           ),
                                           const Text(
@@ -652,8 +666,10 @@ class _DashboardState extends State<Dashboard> {
                                             .dashboardData
                                             .cashAvailable
                                             .toString(),
-                                        style: const TextStyle(
-                                            fontSize: 30,
+                                        style:  TextStyle(
+                                            fontSize:Provider.of<DashboardView>(context)
+                                                .dashboardData
+                                                .cashAvailable<1000000? 30:20,
                                             fontWeight: FontWeight.w900),
                                       ),
                                       const Text(
@@ -832,8 +848,10 @@ class _DashboardState extends State<Dashboard> {
                                             .dashboardData
                                             .expenses
                                             .toString(),
-                                        style: const TextStyle(
-                                            fontSize: 30,
+                                        style:  TextStyle(
+                                            fontSize:Provider.of<DashboardView>(context)
+                                                .dashboardData
+                                                .expenses<1000000? 30:20,
                                             fontWeight: FontWeight.w900),
                                       ),
                                       const Text(
