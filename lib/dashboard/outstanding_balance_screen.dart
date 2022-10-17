@@ -1,4 +1,4 @@
-import 'package:ecommerce_bnql/customer/customer_page/customer_screen.dart';
+import 'package:ecommerce_bnql/dashboard/customer_screen_monthly.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +13,7 @@ class AllOutstandingBalance extends StatefulWidget {
 class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
   @override
   void initState() {
-    Provider.of<CustomerView>(context, listen: false).getCustomers();
+    Provider.of<CustomerView>(context, listen: false).getThisMonthCustomers();
     super.initState();
   }
 
@@ -38,13 +38,9 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider.of<CustomerView>(context).allCustomers.length,
+            itemCount: Provider.of<CustomerView>(context).thisMonthCustomers.length,
             itemBuilder: (BuildContext context, int index) {
-              return Provider.of<CustomerView>(context)
-                          .allCustomers[index]
-                          .outstandingBalance >
-                      0
-                  ? Card(
+              return Card(
                       elevation: 5,
                       color: const Color(0xFF2D2C3F),
                       child: InkWell(
@@ -72,13 +68,13 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                                             onPressed: () {
                                               Provider.of<CustomerView>(context,
                                                       listen: false)
-                                                  .allCustomers[index]
+                                                  .thisMonthCustomers[index]
                                                   .deleteCustomer();
                                               setState(() {
                                                 Provider.of<CustomerView>(
                                                         context,
                                                         listen: false)
-                                                    .allCustomers
+                                                    .thisMonthCustomers
                                                     .removeAt(index);
                                               });
                                               Navigator.pop(context);
@@ -96,7 +92,7 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      CustomerProfile(index: index)));
+                                      CustomerProfileMonthly(index: index)));
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -106,7 +102,7 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                                 backgroundImage: NetworkImage(
                                     Provider.of<CustomerView>(context,
                                             listen: false)
-                                        .allCustomers[index]
+                                        .thisMonthCustomers[index]
                                         .image),
                                 radius: 30,
                               ),
@@ -119,12 +115,12 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                                   Text(
                                     Provider.of<CustomerView>(context,
                                             listen: false)
-                                        .allCustomers[index]
+                                        .thisMonthCustomers[index]
                                         .name,
                                     style: kBoldText,
                                   ),
                                   Text(
-                                    'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstandingBalance} PKR',
+                                    'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).thisMonthCustomers[index].outstandingBalance} PKR',
                                   ),
                                 ],
                               )
@@ -132,8 +128,8 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                           ),
                         ),
                       ),
-                    )
-                  : Container();
+                    );
+
             },
           ),
         ),

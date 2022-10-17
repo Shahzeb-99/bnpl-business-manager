@@ -57,6 +57,32 @@ class Purchase {
     });
   }
 
+  Future<void> getPaymentScheduleMonthly(String customerDocID) async {
+    paymentSchedule = [];
+    await documentReferencePurchase
+        .collection('payment_schedule')
+        .orderBy('date', descending: false).where('date',
+        isLessThanOrEqualTo: DateTime(
+            DateTime.now().year, DateTime.now().month + 1, 0))
+        .get()
+        .then((value) {
+      for (var payment in value.docs) {
+        var amount = payment.get('amount');
+        Timestamp date = payment.get('date');
+        bool isPaid = payment.get('isPaid');
+
+        paymentSchedule.add(PaymentSchedule(
+            remainingAmount: payment.get('remainingAmount'),
+            amount: amount,
+            isPaid: isPaid,
+            date: date,
+            paymentReference: payment.id,
+            purchaseReference: documentReferencePurchase,
+            customerdocID: customerDocID));
+      }
+    });
+  }
+
   Future<void> getTransactionHistory(String customerDocID) async {
     transactionHistory = [];
     await documentReferencePurchase

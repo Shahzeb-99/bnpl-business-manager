@@ -19,7 +19,13 @@ class AllCustomersScreen extends StatefulWidget {
 class _AllCustomersScreenState extends State<AllCustomersScreen> {
   @override
   void initState() {
-    Provider.of<CustomerView>(context, listen: false).getCustomers();
+    if (Provider.of<CustomerView>(context, listen: false).option ==
+        CustomerFilterOptions.all) {
+      Provider.of<CustomerView>(context, listen: false).getCustomers();
+    } else {
+      Provider.of<CustomerView>(context, listen: false).getThisMonthCustomers();
+    }
+
     super.initState();
   }
 
@@ -34,15 +40,13 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               },
               icon: const Icon(
                 Icons.menu,
-
               ));
         }),
-
         title: Row(
           children: [
             const Text(
               'Customers',
-              style: TextStyle(  fontSize: 25),
+              style: TextStyle(fontSize: 25),
             ),
             Expanded(
               child: Container(),
@@ -61,7 +65,6 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
         ),
       ),
       drawer: Drawer(
-
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -139,53 +142,56 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider.of<CustomerView>(context).allCustomers.length,
+            itemCount: Provider.of<CustomerView>(context, listen: false)
+                        .option ==
+                    CustomerFilterOptions.all
+                ? Provider.of<CustomerView>(context).allCustomers.length
+                : Provider.of<CustomerView>(context).thisMonthCustomers.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
-                color: Color(0xFF2D2C3F),
+                color: const Color(0xFF2D2C3F),
                 child: InkWell(
                   onLongPress: () {
-                    {
-                      showModalBottomSheet<void>(
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Container(
-                            decoration: const BoxDecoration(
-                                color: Color(0xFF2D2C3F),
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20))),
-                            height: 200,
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ElevatedButton(
-                                      child: const Text('Delete Customer'),
-                                      onPressed: () {
-                                        Provider.of<CustomerView>(context,
-                                                listen: false)
-                                            .allCustomers[index]
-                                            .deleteCustomer();
-                                        setState(() {
-                                          Provider.of<CustomerView>(context,
-                                                  listen: false)
-                                              .allCustomers
-                                              .removeAt(index);
-                                        });
-                                        Navigator.pop(context);
-                                      }),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }
+                    // {
+                    //   showModalBottomSheet<void>(
+                    //     backgroundColor: Colors.transparent,
+                    //     context: context,
+                    //     builder: (BuildContext context) {
+                    //       return Container(
+                    //         decoration: const BoxDecoration(
+                    //             color: Color(0xFF2D2C3F),
+                    //             borderRadius: BorderRadius.vertical(
+                    //                 top: Radius.circular(20))),
+                    //         height: 200,
+                    //         child: Center(
+                    //           child: Column(
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             mainAxisSize: MainAxisSize.min,
+                    //             children: <Widget>[
+                    //               ElevatedButton(
+                    //                   child: const Text('Delete Customer'),
+                    //                   onPressed: () {
+                    //                     Provider.of<CustomerView>(context,
+                    //                             listen: false)
+                    //                         .allCustomers[index]
+                    //                         .deleteCustomer();
+                    //                     setState(() {
+                    //                       Provider.of<CustomerView>(context,
+                    //                               listen: false)
+                    //                           .allCustomers
+                    //                           .removeAt(index);
+                    //                     });
+                    //                     Navigator.pop(context);
+                    //                   }),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       );
+                    //     },
+                    //   );
+                    // }
                   },
-
                   onTap: () {
                     Navigator.push(
                         context,
@@ -200,8 +206,14 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                         CircleAvatar(
                           backgroundImage: NetworkImage(
                               Provider.of<CustomerView>(context, listen: false)
-                                  .allCustomers[index]
-                                  .image),
+                                          .option ==
+                                      CustomerFilterOptions.all
+                                  ? Provider.of<CustomerView>(context)
+                                      .allCustomers[index]
+                                      .image
+                                  : Provider.of<CustomerView>(context)
+                                      .thisMonthCustomers[index]
+                                      .image),
                           radius: 30,
                         ),
                         const SizedBox(
@@ -212,12 +224,18 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                           children: [
                             Text(
                               Provider.of<CustomerView>(context, listen: false)
-                                  .allCustomers[index]
-                                  .name,
+                                          .option ==
+                                      CustomerFilterOptions.all
+                                  ? Provider.of<CustomerView>(context)
+                                      .allCustomers[index]
+                                      .name
+                                  : Provider.of<CustomerView>(context)
+                                      .thisMonthCustomers[index]
+                                      .name,
                               style: kBoldText,
                             ),
                             Text(
-                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).allCustomers[index].outstandingBalance} PKR',
+                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).option == CustomerFilterOptions.all ? Provider.of<CustomerView>(context).allCustomers[index].outstandingBalance : Provider.of<CustomerView>(context).thisMonthCustomers[index].outstandingBalance} PKR',
                             ),
                           ],
                         )
