@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/customer/transaction_history_class.dart';
 
 class PaymentSchedule {
   int remainingAmount;
@@ -8,6 +9,7 @@ class PaymentSchedule {
   DocumentReference purchaseReference;
   String paymentReference;
   String customerdocID;
+  List<TransactionHistory> transactionHistory = [];
 
   PaymentSchedule(
       {required this.remainingAmount,
@@ -27,6 +29,18 @@ class PaymentSchedule {
       'isPaid': isPaid,
       'remainingAmount': remainingAmount
     });
+  }
+
+  Future<void> addTransaction({required int amount}) async {
+    if (amount>0) {
+      purchaseReference
+          .collection('payment_schedule')
+          .doc(paymentReference).collection('transactions')
+          .add({
+        'date': Timestamp.now(),
+        'remainingAmount': amount
+      });
+    }
   }
 
   Future<void> updateBalance() async {
@@ -71,5 +85,25 @@ class PaymentSchedule {
     isPaid = !isPaid;
     await updateFirestore();
     await updateBalance();
+  }
+
+  Future<void> getInstallmentTransactionHistory() async {
+    transactionHistory = [];
+    print('okg');
+    await purchaseReference
+        .collection('payment_schedule')
+        .doc(paymentReference).collection('transactions')
+        .orderBy('date', descending: false)
+        .get()
+        .then((value) {
+      for (var payment in value.docs) {
+        var amount = payment.get('remainingAmount');
+        Timestamp date = payment.get('date');
+
+        transactionHistory.add(TransactionHistory(amount: amount, date: date));
+      }
+    });
+
+
   }
 }

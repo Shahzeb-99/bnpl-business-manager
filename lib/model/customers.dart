@@ -117,6 +117,67 @@ class Customers {
     );
   }
 
+  Future<void> getAllPurchasesDashboardView() async {
+    purchases = [];
+    Timestamp purchaseDate;
+    final cloud = FirebaseFirestore.instance;
+    DocumentReference documentReference;
+    var outstandingBalance;
+    var paidAmount;
+    String productName = '';
+    var productSellingPrice;
+    var productCost;
+    String productImage = '';
+    String vendorName = '';
+
+    await cloud
+        .collection('customers')
+        .doc(documentID)
+        .collection('purchases')
+        .get()
+        .then(
+          (value) async {
+        for (var purchase in value.docs) {
+          documentReference = purchase.reference;
+          purchaseDate = purchase.get('purchaseDate');
+          outstandingBalance = purchase.get('outstanding_balance');
+          paidAmount = purchase.get('paid_amount');
+          DocumentReference productReference = purchase.get('product');
+          await productReference.get().then(
+                (value) async {
+              productName = value.get('name');
+              productSellingPrice = value.get('price');
+              DocumentReference vendorDocumentReference =
+              value.get('reference');
+              await vendorDocumentReference.get().then(
+                    (value) {
+                  productCost = value.get('price');
+                  productImage = value.get('image');
+                },
+              );
+              await vendorDocumentReference.parent.parent?.get().then((value) {
+                vendorName = value.get('name');
+              });
+            },
+          );
+
+          purchases.add(Purchase(
+            customerID: documentID,
+            purchaseDate: purchaseDate,
+            vendorName: vendorName,
+            outstandingBalance: outstandingBalance,
+            amountPaid: paidAmount,
+            productName: productName,
+            productImage: productImage,
+            purchaseAmount: productCost,
+            sellingAmount: productSellingPrice,
+            documentReferencePurchase: documentReference,
+          ));
+        }
+      },
+    );
+  }
+
   Future<void> getThisMonthPurchases() async {
     purchases = [];
     Timestamp purchaseDate;
@@ -138,25 +199,25 @@ class Customers {
         .then(
       (value) async {
         for (var purchase in value.docs) {
-           outstandingBalance=0;
-          for (var purchase in value.docs) {
-            print('loop2');
-            await purchase.reference
-                .collection('payment_schedule')
-                .where('date',
-                    isLessThanOrEqualTo: DateTime(
-                        DateTime.now().year, DateTime.now().month + 1, 0))
-                .get()
-                .then((value) {
-              print(DateTime(DateTime.now().year, DateTime.now().month + 1, 0));
-              for (var payment in value.docs) {
-                if (!payment.get('isPaid')) {
-                  outstandingBalance += payment.get('amount');
-                }
+          outstandingBalance = 0;
+
+          print('loop2');
+          await purchase.reference
+              .collection('payment_schedule')
+              .where('date',
+                  isLessThanOrEqualTo: DateTime(
+                      DateTime.now().year, DateTime.now().month + 1, 0))
+              .get()
+              .then((value) {
+
+            for (var payment in value.docs) {
+              if (!payment.get('isPaid')) {
+                outstandingBalance += payment.get('remainingAmount');
               }
-            });
-          }
-print(outstandingBalance);
+            }
+          });
+
+          print(outstandingBalance);
           if (outstandingBalance > 0) {
             documentReference = purchase.reference;
             purchaseDate = purchase.get('purchaseDate');

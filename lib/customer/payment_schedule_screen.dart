@@ -161,6 +161,8 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                       payment.remainingAmount) {
                                                     payment.remainingAmount -=
                                                         newPayment;
+                                                    payment.addTransaction(
+                                                        amount: newPayment);
                                                     if (payment
                                                             .remainingAmount ==
                                                         0) {
@@ -172,6 +174,9 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                   } else {
                                                     newPayment = newPayment -
                                                         payment.remainingAmount;
+                                                    payment.addTransaction(
+                                                        amount: payment
+                                                            .remainingAmount);
                                                     payment.remainingAmount = 0;
                                                     payment.isPaid = true;
                                                     payment.updateFirestore();
@@ -223,6 +228,17 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                                     index]
                                                                 .remainingAmount -=
                                                             roundedPayment;
+
+                                                        Provider.of<CustomerView>(
+                                                            context,
+                                                            listen: false)
+                                                            .allCustomers[
+                                                        widget.index]
+                                                            .purchases[widget
+                                                            .productIndex]
+                                                            .paymentSchedule[
+                                                        index].addTransaction(amount: roundedPayment);
+
                                                         newPayment -=
                                                             roundedPayment;
                                                         Provider.of<CustomerView>(
@@ -246,7 +262,19 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                                 .paymentSchedule[
                                                                     index]
                                                                 .remainingAmount -=
+
                                                             newPayment;
+
+                                                        Provider.of<CustomerView>(
+                                                            context,
+                                                            listen: false)
+                                                            .allCustomers[
+                                                        widget.index]
+                                                            .purchases[widget
+                                                            .productIndex]
+                                                            .paymentSchedule[
+                                                        index].addTransaction(amount: newPayment);
+
                                                         newPayment = 0;
                                                         Provider.of<CustomerView>(
                                                                 context,
@@ -309,12 +337,21 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                         newPayment = newPayment -
                                                             payment
                                                                 .remainingAmount;
+                                                        payment.addTransaction(
+                                                            amount: payment
+                                                                .remainingAmount);
                                                         payment.remainingAmount =
                                                             0;
+
+
+
                                                       } else {
                                                         payment.remainingAmount =
                                                             payment.remainingAmount -
                                                                 newPayment;
+
+                                                        payment.addTransaction(
+                                                            amount: newPayment);
                                                         newPayment = 0;
                                                       }
                                                     }

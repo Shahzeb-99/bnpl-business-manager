@@ -1,18 +1,19 @@
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
-import 'package:ecommerce_bnql/customer/transaction_history_screen.dart';
 import 'package:ecommerce_bnql/dashboard/payment_schedule_widget_monthly.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../view_model/viewmodel_customers.dart';
+import '../view_model/viewmodel_dashboard.dart';
+import 'dashboard_screen.dart';
 
 class PaymentScheduleScreenMonthly extends StatefulWidget {
   const PaymentScheduleScreenMonthly(
       {Key? key,
-        required this.paymentList,
-        required this.productIndex,
-        required this.index})
+      required this.paymentList,
+      required this.productIndex,
+      required this.index})
       : super(key: key);
 
   final List<PaymentSchedule> paymentList;
@@ -20,14 +21,22 @@ class PaymentScheduleScreenMonthly extends StatefulWidget {
   final int index;
 
   @override
-  State<PaymentScheduleScreenMonthly> createState() => _PaymentScheduleScreenMonthlyState();
+  State<PaymentScheduleScreenMonthly> createState() =>
+      _PaymentScheduleScreenMonthlyState();
 }
 
-class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMonthly> {
+class _PaymentScheduleScreenMonthlyState
+    extends State<PaymentScheduleScreenMonthly> {
   @override
   void initState() {
-    Provider.of<CustomerView>(context, listen: false).getPaymentScheduleMonthly(
-        index: widget.index, productIndex: widget.productIndex);
+    if (Provider.of<DashboardView>(context,listen: false).option!=DashboardFilterOptions.all) {
+      Provider.of<CustomerView>(context, listen: false).getPaymentScheduleMonthly(
+          index: widget.index, productIndex: widget.productIndex);
+    }else{
+
+      Provider.of<CustomerView>(context, listen: false).getAllPaymentScheduleDashboardView(
+          index: widget.index, productIndex: widget.productIndex);
+    }
     super.initState();
   }
 
@@ -47,7 +56,7 @@ class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMont
             IconButton(
                 onPressed: () {
                   final TextEditingController moneyController =
-                  TextEditingController();
+                      TextEditingController();
                   showModalBottomSheet<void>(
                     backgroundColor: Colors.transparent,
                     context: context,
@@ -89,10 +98,11 @@ class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMont
                                             return 'This field is required';
                                           } else if (int.parse(value) >
                                               Provider.of<CustomerView>(context,
-                                                  listen: false)
-                                                  .thisMonthCustomers[widget.index]
+                                                      listen: false)
+                                                  .thisMonthCustomers[
+                                                      widget.index]
                                                   .purchases[
-                                              widget.productIndex]
+                                                      widget.productIndex]
                                                   .outstandingBalance) {
                                             return 'Value greater than outstanding amount';
                                           }
@@ -105,64 +115,68 @@ class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMont
                                           if (formKey.currentState!
                                               .validate()) {
                                             if (Provider.of<CustomerView>(
-                                                context,
-                                                listen: false)
-                                                .thisMonthCustomers[
-                                            widget.index]
-                                                .purchases[
-                                            widget.productIndex]
-                                                .outstandingBalance -
-                                                int.parse(
-                                                    moneyController.text) >
+                                                            context,
+                                                            listen: false)
+                                                        .thisMonthCustomers[
+                                                            widget.index]
+                                                        .purchases[
+                                                            widget.productIndex]
+                                                        .outstandingBalance -
+                                                    int.parse(
+                                                        moneyController.text) >
                                                 500) {
                                               Provider.of<CustomerView>(context,
-                                                  listen: false)
-                                                  .thisMonthCustomers[widget.index]
+                                                      listen: false)
+                                                  .thisMonthCustomers[
+                                                      widget.index]
                                                   .purchases[
-                                              widget.productIndex]
+                                                      widget.productIndex]
                                                   .addTransaction(int.parse(
-                                                  moneyController.text));
+                                                      moneyController.text));
 
                                               int index = 0;
-                                              int length = Provider.of<
-                                                  CustomerView>(context,
-                                                  listen: false)
-                                                  .thisMonthCustomers[widget.index]
-                                                  .purchases[
-                                              widget.productIndex]
-                                                  .paymentSchedule
-                                                  .length;
+                                              int length =
+                                                  Provider.of<CustomerView>(
+                                                          context,
+                                                          listen: false)
+                                                      .thisMonthCustomers[
+                                                          widget.index]
+                                                      .purchases[
+                                                          widget.productIndex]
+                                                      .paymentSchedule
+                                                      .length;
                                               int newPayment = int.parse(
                                                   moneyController.text);
 
                                               updateLocalState(
                                                   context, newPayment);
                                               Provider.of<CustomerView>(context,
-                                                  listen: false)
-                                                  .thisMonthCustomers[widget.index]
+                                                      listen: false)
+                                                  .thisMonthCustomers[
+                                                      widget.index]
                                                   .purchases[
-                                              widget.productIndex]
+                                                      widget.productIndex]
                                                   .updateCustomTransaction(
-                                                  amount: newPayment);
+                                                      amount: newPayment);
 
                                               moneyController.clear();
 
                                               for (PaymentSchedule payment
-                                              in Provider.of<CustomerView>(
-                                                  context,
-                                                  listen: false)
-                                                  .thisMonthCustomers[
-                                              widget.index]
-                                                  .purchases[
-                                              widget.productIndex]
-                                                  .paymentSchedule) {
+                                                  in Provider.of<CustomerView>(
+                                                          context,
+                                                          listen: false)
+                                                      .thisMonthCustomers[
+                                                          widget.index]
+                                                      .purchases[
+                                                          widget.productIndex]
+                                                      .paymentSchedule) {
                                                 if (!payment.isPaid) {
                                                   if (newPayment <=
                                                       payment.remainingAmount) {
                                                     payment.remainingAmount -=
                                                         newPayment;
                                                     if (payment
-                                                        .remainingAmount ==
+                                                            .remainingAmount ==
                                                         0) {
                                                       payment.isPaid = true;
                                                     }
@@ -178,85 +192,81 @@ class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMont
 
                                                     index++;
                                                     length--;
-                                                    print('length : $length');
-                                                    print(
-                                                        'newPayment : $newPayment');
 
                                                     int roundedPayment =
                                                         newPayment ~/ length;
 
                                                     for (index;
-                                                    index <
-                                                        Provider.of<CustomerView>(
-                                                            context,
-                                                            listen:
-                                                            false)
-                                                            .thisMonthCustomers[
-                                                        widget
-                                                            .index]
-                                                            .purchases[widget
-                                                            .productIndex]
-                                                            .paymentSchedule
-                                                            .length;
-                                                    index++) {
+                                                        index <
+                                                            Provider.of<CustomerView>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .thisMonthCustomers[
+                                                                    widget
+                                                                        .index]
+                                                                .purchases[widget
+                                                                    .productIndex]
+                                                                .paymentSchedule
+                                                                .length;
+                                                        index++) {
                                                       if (index !=
                                                           Provider.of<CustomerView>(
-                                                              context,
-                                                              listen:
-                                                              false)
-                                                              .thisMonthCustomers[
-                                                          widget
-                                                              .index]
-                                                              .purchases[widget
-                                                              .productIndex]
-                                                              .paymentSchedule
-                                                              .length -
+                                                                      context,
+                                                                      listen:
+                                                                          false)
+                                                                  .thisMonthCustomers[
+                                                                      widget
+                                                                          .index]
+                                                                  .purchases[widget
+                                                                      .productIndex]
+                                                                  .paymentSchedule
+                                                                  .length -
                                                               1) {
                                                         Provider.of<CustomerView>(
-                                                            context,
-                                                            listen: false)
-                                                            .thisMonthCustomers[
-                                                        widget.index]
-                                                            .purchases[widget
-                                                            .productIndex]
-                                                            .paymentSchedule[
-                                                        index]
-                                                            .remainingAmount -=
+                                                                    context,
+                                                                    listen: false)
+                                                                .thisMonthCustomers[
+                                                                    widget.index]
+                                                                .purchases[widget
+                                                                    .productIndex]
+                                                                .paymentSchedule[
+                                                                    index]
+                                                                .remainingAmount -=
                                                             roundedPayment;
                                                         newPayment -=
                                                             roundedPayment;
                                                         Provider.of<CustomerView>(
-                                                            context,
-                                                            listen: false)
+                                                                context,
+                                                                listen: false)
                                                             .thisMonthCustomers[
-                                                        widget.index]
+                                                                widget.index]
                                                             .purchases[widget
-                                                            .productIndex]
+                                                                .productIndex]
                                                             .paymentSchedule[
-                                                        index]
+                                                                index]
                                                             .updateFirestore();
                                                       } else {
                                                         Provider.of<CustomerView>(
-                                                            context,
-                                                            listen: false)
+                                                                context,
+                                                                listen: false)
                                                             .thisMonthCustomers[
-                                                        widget.index]
+                                                                widget.index]
                                                             .purchases[widget
-                                                            .productIndex]
+                                                                .productIndex]
                                                             .paymentSchedule[
-                                                        index]
-                                                            .remainingAmount -=
-                                                            newPayment;
+                                                                index]
+                                                            .remainingAmount -= newPayment;
                                                         newPayment = 0;
                                                         Provider.of<CustomerView>(
-                                                            context,
-                                                            listen: false)
+                                                                context,
+                                                                listen: false)
                                                             .thisMonthCustomers[
-                                                        widget.index]
+                                                                widget.index]
                                                             .purchases[widget
-                                                            .productIndex]
+                                                                .productIndex]
                                                             .paymentSchedule[
-                                                        index]
+                                                                index]
                                                             .updateFirestore();
                                                       }
                                                     }
@@ -272,33 +282,36 @@ class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMont
                                               if (moneyController
                                                   .text.isNotEmpty) {
                                                 Provider.of<CustomerView>(
-                                                    context,
-                                                    listen: false)
-                                                    .thisMonthCustomers[widget.index]
+                                                        context,
+                                                        listen: false)
+                                                    .thisMonthCustomers[
+                                                        widget.index]
                                                     .purchases[
-                                                widget.productIndex]
+                                                        widget.productIndex]
                                                     .addTransaction(int.parse(
-                                                    moneyController.text));
+                                                        moneyController.text));
                                                 int newPayment = int.parse(
                                                     moneyController.text);
                                                 moneyController.clear();
                                                 updateLocalState(
                                                     context, newPayment);
                                                 Provider.of<CustomerView>(
-                                                    context,
-                                                    listen: false)
-                                                    .thisMonthCustomers[widget.index]
+                                                        context,
+                                                        listen: false)
+                                                    .thisMonthCustomers[
+                                                        widget.index]
                                                     .purchases[
-                                                widget.productIndex]
+                                                        widget.productIndex]
                                                     .updateCustomTransaction(
-                                                    amount: newPayment);
+                                                        amount: newPayment);
                                                 for (var payment in Provider.of<
-                                                    CustomerView>(
-                                                    context,
-                                                    listen: false)
-                                                    .thisMonthCustomers[widget.index]
+                                                            CustomerView>(
+                                                        context,
+                                                        listen: false)
+                                                    .thisMonthCustomers[
+                                                        widget.index]
                                                     .purchases[
-                                                widget.productIndex]
+                                                        widget.productIndex]
                                                     .paymentSchedule) {
                                                   setState(() {
                                                     if (!payment.isPaid) {
@@ -310,7 +323,7 @@ class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMont
                                                             payment
                                                                 .remainingAmount;
                                                         payment.remainingAmount =
-                                                        0;
+                                                            0;
                                                       } else {
                                                         payment.remainingAmount =
                                                             payment.remainingAmount -
@@ -364,20 +377,20 @@ class _PaymentScheduleScreenMonthlyState extends State<PaymentScheduleScreenMont
             Text(
                 'Profit : ${Provider.of<CustomerView>(context).thisMonthCustomers[widget.index].purchases[widget.productIndex].sellingAmount - Provider.of<CustomerView>(context).thisMonthCustomers[widget.index].purchases[widget.productIndex].purchaseAmount}',
                 style: const TextStyle(fontSize: 20)),
-            TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      const Color(0xFF2D2C3F),
-                    )),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TransactionHistoryScreen(
-                              productIndex: widget.productIndex,
-                              index: widget.index)));
-                },
-                child: const Text('Transaction History')),
+            // TextButton(
+            //     style: ButtonStyle(
+            //         backgroundColor: MaterialStateProperty.all(
+            //       const Color(0xFF2D2C3F),
+            //     )),
+            //     onPressed: () {
+            //       Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //               builder: (context) => TransactionHistoryScreen(
+            //                   productIndex: widget.productIndex,
+            //                   index: widget.index)));
+            //     },
+            //     child: const Text('Transaction History')),
             Expanded(
               child: ListView.builder(
                 physics: const ScrollPhysics(parent: BouncingScrollPhysics()),

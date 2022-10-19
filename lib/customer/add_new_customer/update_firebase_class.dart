@@ -27,6 +27,7 @@ class UpdateFirestore {
         'outstanding_balance': FieldValue.increment(productSalePrice),
         'total_cost': FieldValue.increment(productCost),
         'cash_available': FieldValue.increment(-productCost),
+        'total_profit':FieldValue.increment(productSalePrice-productCost),
       },
     );
 
@@ -115,6 +116,7 @@ class UpdateFirestore {
         'outstanding_balance': FieldValue.increment(productSalePrice),
         'total_cost': FieldValue.increment(productCost),
         'cash_available': FieldValue.increment(-productCost),
+        'total_profit':FieldValue.increment(productSalePrice-productCost),
       },
     );
 
@@ -236,6 +238,7 @@ class UpdateFirestore {
             {
               'outstanding_balance': FieldValue.increment(productSalePrice),
               'total_cost': FieldValue.increment(productCost),
+              'total_profit':FieldValue.increment(productSalePrice-productCost),
             },
           );
 
@@ -334,6 +337,7 @@ class UpdateFirestore {
         {
           'outstanding_balance': FieldValue.increment(productSalePrice),
           'total_cost': FieldValue.increment(productCost),
+          'total_profit':FieldValue.increment(productSalePrice-productCost),
         },
       );
 

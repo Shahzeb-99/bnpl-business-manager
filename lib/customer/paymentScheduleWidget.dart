@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/customer/payment_transaction_history_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +23,10 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color:Color(0xFF2D2C3F),
+      color: const Color(0xFF2D2C3F),
       child: InkWell(
 
-        onTap: () async {
+        onLongPress: () async {
           DateTime? newDate = await showDatePicker(
               initialDate: DateTime(
                   Provider
@@ -72,7 +73,12 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
               .purchases[widget.productIndex]
               .paymentSchedule[widget.paymentIndex]
               .updateFirestore();
-        },
+        }, onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>
+            PaymentTransactionHistoryScreen(index: widget.index,
+              productIndex: widget.productIndex,
+              paymentIndex: widget.paymentIndex,)));
+      },
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Row(

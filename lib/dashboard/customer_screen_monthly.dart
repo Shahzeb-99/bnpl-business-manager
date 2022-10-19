@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ecommerce_bnql/customer/customer_page/add_product.dart';
+import 'package:ecommerce_bnql/dashboard/dashboard_screen.dart';
 import 'package:ecommerce_bnql/dashboard/purchase_widget_monthly.dart';
+import 'package:ecommerce_bnql/view_model/viewmodel_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_model/viewmodel_customers.dart';
 
 class CustomerProfileMonthly extends StatefulWidget {
-  const CustomerProfileMonthly({Key? key, required this.index}) : super(key: key);
+  const CustomerProfileMonthly({Key? key, required this.index})
+      : super(key: key);
 
   final int index;
 
@@ -15,12 +17,16 @@ class CustomerProfileMonthly extends StatefulWidget {
 }
 
 class _CustomerProfileMonthlyState extends State<CustomerProfileMonthly> {
-
-
   @override
   void initState() {
-    Provider.of<CustomerView>(context, listen: false)
-        .getMonthlyPurchases(widget.index);
+    if (Provider.of<DashboardView>(context, listen: false).option !=
+        DashboardFilterOptions.all) {
+      Provider.of<CustomerView>(context, listen: false)
+          .getMonthlyPurchases(widget.index);
+    } else {
+      Provider.of<CustomerView>(context, listen: false)
+          .getAllPurchasesDashboardView(widget.index);
+    }
     super.initState();
   }
 
@@ -34,7 +40,7 @@ class _CustomerProfileMonthlyState extends State<CustomerProfileMonthly> {
               Provider.of<CustomerView>(context, listen: false)
                   .thisMonthCustomers[widget.index]
                   .name,
-              style: const TextStyle(  fontSize: 25),
+              style: const TextStyle(fontSize: 25),
             ),
             Expanded(child: Container()),
             CircleAvatar(
@@ -61,30 +67,11 @@ class _CustomerProfileMonthlyState extends State<CustomerProfileMonthly> {
             const SizedBox(
               height: 30,
             ),
-            Row(
-              children: [
-                Expanded(child: Container()),
-                const Text(
-                  'All Purchases',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Expanded(
-                    child: IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddProductScreen(
-                                  customerName: Provider.of<CustomerView>(
-                                          context,
-                                          listen: false)
-                                      .thisMonthCustomers[widget.index]
-                                      .name),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.add_rounded)))
-              ],
+            const Center(
+              child:  Text(
+                'All Purchases',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
             const SizedBox(
               height: 10,
@@ -107,26 +94,25 @@ class _CustomerProfileMonthlyState extends State<CustomerProfileMonthly> {
                           .length,
                       itemBuilder: (BuildContext context, int index) {
                         return PurchaseWidgetMonthly(
-                                image: Provider.of<CustomerView>(context)
-                                    .thisMonthCustomers[widget.index]
-                                    .purchases[index]
-                                    .productImage,
-                                name: Provider.of<CustomerView>(context)
-                                    .thisMonthCustomers[widget.index]
-                                    .purchases[index]
-                                    .productName,
-                                outstandingBalance:
-                                    Provider.of<CustomerView>(context)
-                                        .thisMonthCustomers[widget.index]
-                                        .purchases[index]
-                                        .outstandingBalance,
-                                amountPaid: Provider.of<CustomerView>(context)
-                                    .thisMonthCustomers[widget.index]
-                                    .purchases[index]
-                                    .amountPaid,
-                                productIndex: index,
-                                index: widget.index,
-                              );
+                          image: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .productImage,
+                          name: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .productName,
+                          outstandingBalance: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .outstandingBalance,
+                          amountPaid: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .amountPaid,
+                          productIndex: index,
+                          index: widget.index,
+                        );
                       })
                   : const Center(
                       child: CircularProgressIndicator(
@@ -139,5 +125,4 @@ class _CustomerProfileMonthlyState extends State<CustomerProfileMonthly> {
       ),
     );
   }
-
 }

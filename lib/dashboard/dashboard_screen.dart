@@ -25,7 +25,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
-    Provider.of<DashboardView>(context, listen: false).getFinancials();
+    Provider.of<DashboardView>(context, listen: false).getAllFinancials();
     getAllData();
     super.initState();
   }
@@ -84,7 +84,7 @@ class _DashboardState extends State<Dashboard> {
                         Provider.of<DashboardView>(context, listen: false)
                             .option = value!;
                         Provider.of<DashboardView>(context, listen: false)
-                            .getFinancials();
+                            .getAllFinancials();
                       });
                     },
                   ),
@@ -212,11 +212,11 @@ class _DashboardState extends State<Dashboard> {
                                                   Text(
                                                     Provider.of<DashboardView>(
                                                             context)
-                                                        .outstandingBalance
+                                                        .monthlyFinancials.totalOutstandingBalance
                                                         .toString(),
                                                     style:  TextStyle(
                                                         fontSize:Provider.of<DashboardView>(context)
-                                                            .outstandingBalance<1000000? 30:20,
+                                                            .monthlyFinancials.totalOutstandingBalance<1000000? 30:20,
                                                         fontWeight: FontWeight.w900),
                                                   ),
                                                   const Text(
@@ -303,11 +303,11 @@ class _DashboardState extends State<Dashboard> {
                                                 Text(
                                                   Provider.of<DashboardView>(
                                                           context)
-                                                      .amount_paid
+                                                      .monthlyFinancials.totalAmountPaid
                                                       .toString(),
                                                   style:  TextStyle(
                                                       fontSize:Provider.of<DashboardView>(context)
-                                                          .amount_paid<1000000? 30:20,
+                                                          .monthlyFinancials.totalAmountPaid<1000000? 30:20,
                                                       fontWeight: FontWeight.w900),
                                                 ),
                                                 const Text(
@@ -396,7 +396,7 @@ class _DashboardState extends State<Dashboard> {
                                               Text(
                                                 Provider.of<DashboardView>(
                                                         context)
-                                                    .total_cost.toString(),
+                                                    .monthlyFinancials.totalCost.toString(),
                                                 style:  TextStyle(
                                                     fontSize:Provider.of<DashboardView>(context)
                                                         .dashboardData
@@ -477,24 +477,12 @@ class _DashboardState extends State<Dashboard> {
                                             '${
                                               Provider.of<DashboardView>(
                                                           context)
-                                                      .outstandingBalance +
-                                                  Provider.of<DashboardView>(
-                                                          context)
-                                                      .amount_paid -
-                                                  Provider.of<DashboardView>(
-                                                          context)
-                                                      .total_cost
+                                                  .monthlyFinancials.profit
                                             }',
                                             style:  TextStyle(
                                                 fontSize:Provider.of<DashboardView>(
                                                     context)
-                                                    .outstandingBalance +
-                                                    Provider.of<DashboardView>(
-                                                        context)
-                                                        .amount_paid -
-                                                    Provider.of<DashboardView>(
-                                                        context)
-                                                        .total_cost<1000000? 30:20,
+                                                    .monthlyFinancials.profit<1000000? 30:20,
                                                 fontWeight: FontWeight.w900),
                                           ),
                                           const Text(
@@ -580,6 +568,7 @@ class _DashboardState extends State<Dashboard> {
                                                   ),
                                                   IconButton(
                                                       onPressed: () async {
+                                                        print(widget.moneyController.text);
                                                         if (widget
                                                             .moneyController
                                                             .text
@@ -622,7 +611,9 @@ class _DashboardState extends State<Dashboard> {
                                                             Navigator.pop(
                                                                 context);
                                                           });
-                                                          loading = false;
+                                                          setState(() {
+                                                            loading = false;
+                                                          });
                                                         }
                                                       },
                                                       icon: const Icon(

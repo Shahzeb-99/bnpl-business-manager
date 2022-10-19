@@ -23,7 +23,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
         CustomerFilterOptions.all) {
       Provider.of<CustomerView>(context, listen: false).getCustomers();
     } else {
-      Provider.of<CustomerView>(context, listen: false).getThisMonthCustomers();
+      //Provider.of<CustomerView>(context, listen: false).getThisMonthCustomers();
     }
 
     super.initState();
@@ -93,45 +93,45 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                     ),
                   ],
                 ),
-                ListTile(
-                  title: const Text('All Time'),
-                  leading: Radio<CustomerFilterOptions?>(
-                    value: CustomerFilterOptions.all,
-                    groupValue: Provider.of<CustomerView>(context).option,
-                    onChanged: (value) {
-                      setState(() {
-                        Provider.of<CustomerView>(context, listen: false)
-                            .option = value!;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Last Month'),
-                  leading: Radio<CustomerFilterOptions?>(
-                    value: CustomerFilterOptions.oneMonth,
-                    groupValue: Provider.of<CustomerView>(context).option,
-                    onChanged: (value) {
-                      setState(() {
-                        Provider.of<CustomerView>(context, listen: false)
-                            .option = value!;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Last Six Months'),
-                  leading: Radio<CustomerFilterOptions?>(
-                    value: CustomerFilterOptions.sixMonths,
-                    groupValue: Provider.of<CustomerView>(context).option,
-                    onChanged: (value) {
-                      setState(() {
-                        Provider.of<CustomerView>(context, listen: false)
-                            .option = value!;
-                      });
-                    },
-                  ),
-                ),
+                // ListTile(
+                //   title: const Text('All Time'),
+                //   leading: Radio<CustomerFilterOptions?>(
+                //     value: CustomerFilterOptions.all,
+                //     groupValue: Provider.of<CustomerView>(context).option,
+                //     onChanged: (value) {
+                //       setState(() {
+                //         Provider.of<CustomerView>(context, listen: false)
+                //             .option = value!;
+                //       });
+                //     },
+                //   ),
+                // ),
+                // ListTile(
+                //   title: const Text('Last Month'),
+                //   leading: Radio<CustomerFilterOptions?>(
+                //     value: CustomerFilterOptions.oneMonth,
+                //     groupValue: Provider.of<CustomerView>(context).option,
+                //     onChanged: (value) {
+                //       setState(() {
+                //         Provider.of<CustomerView>(context, listen: false)
+                //             .option = value!;
+                //       });
+                //     },
+                //   ),
+                // ),
+                // ListTile(
+                //   title: const Text('Last Six Months'),
+                //   leading: Radio<CustomerFilterOptions?>(
+                //     value: CustomerFilterOptions.sixMonths,
+                //     groupValue: Provider.of<CustomerView>(context).option,
+                //     onChanged: (value) {
+                //       setState(() {
+                //         Provider.of<CustomerView>(context, listen: false)
+                //             .option = value!;
+                //       });
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
