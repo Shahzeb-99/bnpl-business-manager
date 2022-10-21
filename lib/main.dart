@@ -1,9 +1,9 @@
-import 'package:ecommerce_bnql/dashboard/dashboard_screen.dart';
-import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
-import 'package:ecommerce_bnql/view_model/viewmodel_dashboard.dart';
-import 'package:ecommerce_bnql/view_model/viewmodel_vendors.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'company_panel/dashboard/dashboard_screen.dart';
+import 'company_panel/view_model/viewmodel_customers.dart';
+import 'company_panel/view_model/viewmodel_dashboard.dart';
+import 'company_panel/view_model/viewmodel_vendors.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -43,12 +43,13 @@ class MyApp extends StatelessWidget {
                 displayColor: Colors.white,
               ),
               scaffoldBackgroundColor: const Color(0xFF1A1C33),
-              drawerTheme: const DrawerThemeData(backgroundColor: Color(0xFF2D2C3F),),
+              drawerTheme: const DrawerThemeData(
+                backgroundColor: Color(0xFF2D2C3F),
+              ),
               appBarTheme: const AppBarTheme(
                 elevation: 3,
-                color:  Color(0xFF1A1C33),
+                color: Color(0xFF1A1C33),
                 iconTheme: IconThemeData(color: Colors.white),
-
               ),
               buttonTheme:
                   const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
