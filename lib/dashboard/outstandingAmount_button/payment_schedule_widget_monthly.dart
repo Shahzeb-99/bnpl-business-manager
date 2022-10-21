@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
@@ -15,14 +17,16 @@ class PaymentScheduleWidgetMonthly extends StatefulWidget {
   final int paymentIndex;
 
   @override
-  State<PaymentScheduleWidgetMonthly> createState() => _PaymentScheduleWidgetMonthlyState();
+  State<PaymentScheduleWidgetMonthly> createState() =>
+      _PaymentScheduleWidgetMonthlyState();
 }
 
-class _PaymentScheduleWidgetMonthlyState extends State<PaymentScheduleWidgetMonthly> {
+class _PaymentScheduleWidgetMonthlyState
+    extends State<PaymentScheduleWidgetMonthly> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color:const Color(0xFF2D2C3F),
+      color: const Color(0xFF2D2C3F),
       child: InkWell(
 
         onTap: () async {

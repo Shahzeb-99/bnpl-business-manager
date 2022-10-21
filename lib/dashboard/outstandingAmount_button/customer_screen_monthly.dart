@@ -1,28 +1,28 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_bnql/dashboard/dashboard_screen.dart';
-import 'package:ecommerce_bnql/dashboard/purchase_widget_monthly.dart';
+import 'package:ecommerce_bnql/dashboard/outstandingAmount_button/purchase_widget_monthly.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../view_model/viewmodel_customers.dart';
+import '../../../view_model/viewmodel_customers.dart';
 
-class CustomerProfileMonthly extends StatefulWidget {
-  const CustomerProfileMonthly({Key? key, required this.index})
+class CustomerProfileMonthlyOutstanding extends StatefulWidget {
+  const CustomerProfileMonthlyOutstanding({Key? key, required this.index})
       : super(key: key);
 
   final int index;
 
   @override
-  State<CustomerProfileMonthly> createState() => _CustomerProfileMonthlyState();
+  State<CustomerProfileMonthlyOutstanding> createState() => _CustomerProfileMonthlyOutstandingState();
 }
 
-class _CustomerProfileMonthlyState extends State<CustomerProfileMonthly> {
+class _CustomerProfileMonthlyOutstandingState extends State<CustomerProfileMonthlyOutstanding> {
   @override
   void initState() {
     if (Provider.of<DashboardView>(context, listen: false).option !=
         DashboardFilterOptions.all) {
       Provider.of<CustomerView>(context, listen: false)
-          .getMonthlyPurchases(widget.index);
+          .getMonthlyPurchasesOutstanding(widget.index);
     } else {
       Provider.of<CustomerView>(context, listen: false)
           .getAllPurchasesDashboardView(widget.index);
@@ -93,7 +93,7 @@ class _CustomerProfileMonthlyState extends State<CustomerProfileMonthly> {
                           .purchases
                           .length,
                       itemBuilder: (BuildContext context, int index) {
-                        return PurchaseWidgetMonthly(
+                        return PurchaseWidgetMonthlyOutstanding(
                           image: Provider.of<CustomerView>(context)
                               .thisMonthCustomers[widget.index]
                               .purchases[index]

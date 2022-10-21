@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/customer/payment_transaction_history_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';

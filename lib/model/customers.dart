@@ -1,5 +1,8 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/model/purchases.dart';
+import 'package:ecommerce_bnql/dashboard/dashboard_screen.dart';
 
 class Customers {
   Customers(
@@ -136,7 +139,7 @@ class Customers {
         .collection('purchases')
         .get()
         .then(
-          (value) async {
+      (value) async {
         for (var purchase in value.docs) {
           documentReference = purchase.reference;
           purchaseDate = purchase.get('purchaseDate');
@@ -144,13 +147,13 @@ class Customers {
           paidAmount = purchase.get('paid_amount');
           DocumentReference productReference = purchase.get('product');
           await productReference.get().then(
-                (value) async {
+            (value) async {
               productName = value.get('name');
               productSellingPrice = value.get('price');
               DocumentReference vendorDocumentReference =
-              value.get('reference');
+                  value.get('reference');
               await vendorDocumentReference.get().then(
-                    (value) {
+                (value) {
                   productCost = value.get('price');
                   productImage = value.get('image');
                 },
@@ -178,7 +181,7 @@ class Customers {
     );
   }
 
-  Future<void> getThisMonthPurchases() async {
+  Future<void> getThisMonthPurchasesOutstanding() async {
     purchases = [];
     Timestamp purchaseDate;
     final cloud = FirebaseFirestore.instance;
@@ -201,7 +204,6 @@ class Customers {
         for (var purchase in value.docs) {
           outstandingBalance = 0;
 
-          print('loop2');
           await purchase.reference
               .collection('payment_schedule')
               .where('date',
@@ -209,7 +211,6 @@ class Customers {
                       DateTime.now().year, DateTime.now().month + 1, 0))
               .get()
               .then((value) {
-
             for (var payment in value.docs) {
               if (!payment.get('isPaid')) {
                 outstandingBalance += payment.get('remainingAmount');
@@ -217,8 +218,89 @@ class Customers {
             }
           });
 
-          print(outstandingBalance);
           if (outstandingBalance > 0) {
+            documentReference = purchase.reference;
+            purchaseDate = purchase.get('purchaseDate');
+            paidAmount = purchase.get('paid_amount');
+            DocumentReference productReference = purchase.get('product');
+            await productReference.get().then(
+              (value) async {
+                productName = value.get('name');
+                productSellingPrice = value.get('price');
+                DocumentReference vendorDocumentReference =
+                    value.get('reference');
+                await vendorDocumentReference.get().then(
+                  (value) {
+                    productCost = value.get('price');
+                    productImage = value.get('image');
+                  },
+                );
+                await vendorDocumentReference.parent.parent
+                    ?.get()
+                    .then((value) {
+                  vendorName = value.get('name');
+                });
+              },
+            );
+
+            purchases.add(Purchase(
+              customerID: documentID,
+              purchaseDate: purchaseDate,
+              vendorName: vendorName,
+              outstandingBalance: outstandingBalance,
+              amountPaid: paidAmount,
+              productName: productName,
+              productImage: productImage,
+              purchaseAmount: productCost,
+              sellingAmount: productSellingPrice,
+              documentReferencePurchase: documentReference,
+            ));
+          }
+        }
+      },
+    );
+  }
+
+  Future<void> getThisMonthPurchasesRecovery(
+      {required DashboardFilterOptions option}) async {
+    purchases = [];
+    Timestamp purchaseDate;
+    final cloud = FirebaseFirestore.instance;
+    DocumentReference documentReference;
+    var outstandingBalance;
+    var paidAmount;
+    String productName = '';
+    var productSellingPrice;
+    var productCost;
+    String productImage = '';
+    String vendorName = '';
+
+    await cloud
+        .collection('customers')
+        .doc(documentID)
+        .collection('purchases')
+        .get()
+        .then(
+      (value) async {
+        for (var purchase in value.docs) {
+          outstandingBalance = 0;
+          paidAmount = 0;
+
+          await purchase.reference
+              .collection('transaction_history')
+              .where('date',
+                  isLessThanOrEqualTo: option != DashboardFilterOptions.all
+                      ? DateTime(
+                          DateTime.now().year, DateTime.now().month + 1, 0)
+                      : DateTime(2100))
+              .get()
+              .then((value) {
+            for (var transaction in value.docs) {
+              paidAmount += transaction.get('amount');
+            }
+          });
+
+          if (paidAmount > 0) {
             documentReference = purchase.reference;
             purchaseDate = purchase.get('purchaseDate');
             paidAmount = purchase.get('paid_amount');

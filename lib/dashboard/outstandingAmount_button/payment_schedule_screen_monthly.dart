@@ -1,15 +1,17 @@
+// ignore_for_file: camel_case_types
+
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
-import 'package:ecommerce_bnql/dashboard/payment_schedule_widget_monthly.dart';
+import 'package:ecommerce_bnql/dashboard/outstandingAmount_button/payment_schedule_widget_monthly.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../view_model/viewmodel_customers.dart';
-import '../view_model/viewmodel_dashboard.dart';
-import 'dashboard_screen.dart';
+import '../../view_model/viewmodel_customers.dart';
+import '../../view_model/viewmodel_dashboard.dart';
+import '../dashboard_screen.dart';
 
-class PaymentScheduleScreenMonthly extends StatefulWidget {
-  const PaymentScheduleScreenMonthly(
+class PaymentScheduleScreenMonthlyOutstanding extends StatefulWidget {
+  const PaymentScheduleScreenMonthlyOutstanding(
       {Key? key,
       required this.paymentList,
       required this.productIndex,
@@ -21,21 +23,23 @@ class PaymentScheduleScreenMonthly extends StatefulWidget {
   final int index;
 
   @override
-  State<PaymentScheduleScreenMonthly> createState() =>
-      _PaymentScheduleScreenMonthlyState();
+  State<PaymentScheduleScreenMonthlyOutstanding> createState() =>
+      _PaymentScheduleScreenMonthlyOutstandingState();
 }
 
-class _PaymentScheduleScreenMonthlyState
-    extends State<PaymentScheduleScreenMonthly> {
+class _PaymentScheduleScreenMonthlyOutstandingState
+    extends State<PaymentScheduleScreenMonthlyOutstanding> {
   @override
   void initState() {
-    if (Provider.of<DashboardView>(context,listen: false).option!=DashboardFilterOptions.all) {
-      Provider.of<CustomerView>(context, listen: false).getPaymentScheduleMonthly(
-          index: widget.index, productIndex: widget.productIndex);
-    }else{
-
-      Provider.of<CustomerView>(context, listen: false).getAllPaymentScheduleDashboardView(
-          index: widget.index, productIndex: widget.productIndex);
+    if (Provider.of<DashboardView>(context, listen: false).option !=
+        DashboardFilterOptions.all) {
+      Provider.of<CustomerView>(context, listen: false)
+          .getPaymentScheduleMonthlyOutstanding(
+              index: widget.index, productIndex: widget.productIndex);
+    } else {
+      Provider.of<CustomerView>(context, listen: false)
+          .getAllPaymentScheduleDashboardView(
+              index: widget.index, productIndex: widget.productIndex);
     }
     super.initState();
   }
@@ -175,6 +179,8 @@ class _PaymentScheduleScreenMonthlyState
                                                       payment.remainingAmount) {
                                                     payment.remainingAmount -=
                                                         newPayment;
+                                                    payment.addTransaction(
+                                                        amount: newPayment);
                                                     if (payment
                                                             .remainingAmount ==
                                                         0) {
@@ -186,6 +192,9 @@ class _PaymentScheduleScreenMonthlyState
                                                   } else {
                                                     newPayment = newPayment -
                                                         payment.remainingAmount;
+                                                    payment.addTransaction(
+                                                        amount: payment
+                                                            .remainingAmount);
                                                     payment.remainingAmount = 0;
                                                     payment.isPaid = true;
                                                     payment.updateFirestore();
@@ -234,6 +243,18 @@ class _PaymentScheduleScreenMonthlyState
                                                                     index]
                                                                 .remainingAmount -=
                                                             roundedPayment;
+                                                        Provider.of<CustomerView>(
+                                                                context,
+                                                                listen: false)
+                                                            .thisMonthCustomers[
+                                                                widget.index]
+                                                            .purchases[widget
+                                                                .productIndex]
+                                                            .paymentSchedule[
+                                                                index]
+                                                            .addTransaction(
+                                                                amount:
+                                                                    roundedPayment);
                                                         newPayment -=
                                                             roundedPayment;
                                                         Provider.of<CustomerView>(
@@ -257,6 +278,18 @@ class _PaymentScheduleScreenMonthlyState
                                                             .paymentSchedule[
                                                                 index]
                                                             .remainingAmount -= newPayment;
+                                                        Provider.of<CustomerView>(
+                                                                context,
+                                                                listen: false)
+                                                            .thisMonthCustomers[
+                                                                widget.index]
+                                                            .purchases[widget
+                                                                .productIndex]
+                                                            .paymentSchedule[
+                                                                index]
+                                                            .addTransaction(
+                                                                amount:
+                                                                    newPayment);
                                                         newPayment = 0;
                                                         Provider.of<CustomerView>(
                                                                 context,
@@ -322,12 +355,17 @@ class _PaymentScheduleScreenMonthlyState
                                                         newPayment = newPayment -
                                                             payment
                                                                 .remainingAmount;
+                                                        payment.addTransaction(
+                                                            amount: payment
+                                                                .remainingAmount);
                                                         payment.remainingAmount =
                                                             0;
                                                       } else {
                                                         payment.remainingAmount =
                                                             payment.remainingAmount -
                                                                 newPayment;
+                                                        payment.addTransaction(
+                                                            amount: newPayment);
                                                         newPayment = 0;
                                                       }
                                                     }

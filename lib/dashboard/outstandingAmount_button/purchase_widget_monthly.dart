@@ -1,11 +1,11 @@
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
-import 'package:ecommerce_bnql/dashboard/payment_schedule_screen_monthly.dart';
+import 'package:ecommerce_bnql/dashboard/outstandingAmount_button/payment_schedule_screen_monthly.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PurchaseWidgetMonthly extends StatefulWidget {
-  const PurchaseWidgetMonthly(
+class PurchaseWidgetMonthlyOutstanding extends StatefulWidget {
+  const PurchaseWidgetMonthlyOutstanding(
       {Key? key,
         required this.image,
         required this.name,
@@ -23,10 +23,10 @@ class PurchaseWidgetMonthly extends StatefulWidget {
   final int amountPaid;
 
   @override
-  State<PurchaseWidgetMonthly> createState() => _PurchaseWidgetMonthlyState();
+  State<PurchaseWidgetMonthlyOutstanding> createState() => _PurchaseWidgetMonthlyOutstandingState();
 }
 
-class _PurchaseWidgetMonthlyState extends State<PurchaseWidgetMonthly> {
+class _PurchaseWidgetMonthlyOutstandingState extends State<PurchaseWidgetMonthlyOutstanding> {
   List<PaymentSchedule> paymentList = [];
 
   @override
@@ -38,7 +38,7 @@ class _PurchaseWidgetMonthlyState extends State<PurchaseWidgetMonthly> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PaymentScheduleScreenMonthly(
+              builder: (context) => PaymentScheduleScreenMonthlyOutstanding(
                 paymentList: paymentList,
                 productIndex: widget.productIndex,
                 index: widget.index,

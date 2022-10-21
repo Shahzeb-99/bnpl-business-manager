@@ -89,7 +89,7 @@ class PaymentSchedule {
 
   Future<void> getInstallmentTransactionHistory() async {
     transactionHistory = [];
-    print('okg');
+
     await purchaseReference
         .collection('payment_schedule')
         .doc(paymentReference).collection('transactions')

@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:ecommerce_bnql/customer/paymentScheduleWidget.dart';
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/customer/transaction_history_screen.dart';
@@ -183,9 +185,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
 
                                                     index++;
                                                     length--;
-                                                    print('length : $length');
-                                                    print(
-                                                        'newPayment : $newPayment');
+
 
                                                     int roundedPayment =
                                                         newPayment ~/ length;

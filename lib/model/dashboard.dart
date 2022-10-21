@@ -39,6 +39,8 @@ class DashboardData {
   Future<void> getMonthlyFinancials({required bool isThisMonth}) async {
     // outstandingBalance = 0;
     // amount_paid = 0;
+    totalOutstandingBalance = 0;
+    totalAmountPaid = 0;
     profit = 0;
     num amountPaidMonthly = 0;
     num outstandingBalanceMonthly = 0;
@@ -46,7 +48,7 @@ class DashboardData {
     final cloud = FirebaseFirestore.instance;
 
     await cloud.collection('customers').get().then(
-      (value)  {
+      (value) {
         for (var customer in value.docs) {
           customer.reference
               .collection('purchases')
@@ -54,39 +56,37 @@ class DashboardData {
                   isLessThanOrEqualTo: DateTime(
                       DateTime.now().year, DateTime.now().month + 1, 0))
               .where('purchaseDate',
-                  isGreaterThanOrEqualTo:
-                      isThisMonth?DateTime(DateTime.now().year, DateTime.now().month, 1):DateTime(DateTime.now().year, DateTime.now().month-5, 1))
+                  isGreaterThanOrEqualTo: isThisMonth
+                      ? DateTime(DateTime.now().year, DateTime.now().month, 1)
+                      : DateTime(
+                          DateTime.now().year, DateTime.now().month - 5, 1))
               .get()
-              .then((value)  {
+              .then((value) {
             for (var purchase in value.docs) {
               outstandingBalanceMonthly += purchase.get('outstanding_balance');
               amountPaidMonthly += purchase.get('paid_amount');
               DocumentReference product = purchase.get('product');
-               product.get().then(
+              product.get().then(
                 (value) {
                   DocumentReference vendorProductRef = value.get('reference');
                   vendorProductRef.get().then(
                     (value) {
                       totalCost += value.get('price');
-                      profit = outstandingBalanceMonthly + amountPaidMonthly - totalCost;
-
+                      profit = outstandingBalanceMonthly +
+                          amountPaidMonthly -
+                          totalCost;
                     },
                   );
                 },
               );
             }
-
           });
         }
-
       },
-
     );
-
-
   }
 
-  Future<void> getThisMonthCustomers() async {
+  Future<void> getThisMonthCustomers({required bool isThisMonth}) async {
     totalOutstandingBalance = 0;
     totalAmountPaid = 0;
 
@@ -95,26 +95,42 @@ class DashboardData {
 
     await cloud.collection('customers').get().then((value) async {
       for (var customers in value.docs) {
-
         await customers.reference
             .collection('purchases')
             .get()
             .then((value) async {
           for (var purchase in value.docs) {
-
             await purchase.reference
                 .collection('payment_schedule')
                 .where('date',
                     isLessThanOrEqualTo: DateTime(
                         DateTime.now().year, DateTime.now().month + 1, 0))
                 .get()
-                .then((value) {
+                .then((value)  {
               for (var payment in value.docs) {
                 totalOutstandingBalance += payment.get('remainingAmount');
-                totalAmountPaid +=
-                    payment.get('amount') - payment.get('remainingAmount');
               }
             });
+          }
+          for(var purchase in value.docs){
+
+            await purchase.reference.collection('transaction_history').where('date',
+                isLessThanOrEqualTo: DateTime(
+                    DateTime.now().year, DateTime.now().month + 1, 0))
+                .where('date',
+                isGreaterThanOrEqualTo: isThisMonth
+                    ? DateTime(
+                    DateTime.now().year, DateTime.now().month, 1)
+                    : DateTime(DateTime.now().year,
+                    DateTime.now().month - 5, 1)).get().then((value) {
+
+              for(var transaction  in value.docs){
+                totalAmountPaid+=transaction.get('amount');
+
+                }
+
+            });
+
           }
         });
       }

@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, no_leading_underscores_for_local_identifiers
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/customer/add_new_customer/update_firebase_class.dart';
 import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
@@ -37,7 +39,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   double? selectedPayment;
   bool modalHUD = false;
 
-  // ignore: no_leading_underscores_for_local_identifiers
+
   Vendor? _selectedVendorOption;
 
   @override

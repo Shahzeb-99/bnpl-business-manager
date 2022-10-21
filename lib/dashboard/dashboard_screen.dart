@@ -1,7 +1,9 @@
+// ignore_for_file: camel_case_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
-import 'package:ecommerce_bnql/dashboard/amount_spend_screen.dart';
-import 'package:ecommerce_bnql/dashboard/outstanding_balance_screen.dart';
+import 'package:ecommerce_bnql/dashboard/amountPaid_button/amount_spend_screen.dart';
+import 'package:ecommerce_bnql/dashboard/outstandingAmount_button/outstanding_balance_screen.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +28,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     Provider.of<DashboardView>(context, listen: false).getAllFinancials();
-    getAllData();
+
     super.initState();
   }
 
@@ -44,9 +46,53 @@ class _DashboardState extends State<Dashboard> {
                 Icons.menu,
               ));
         }),
-        title: const Text(
-          'Dashboard',
-          style: TextStyle(fontSize: 25),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Dashboard',
+              style: TextStyle(fontSize: 25),
+            ),
+            IconButton(
+              splashRadius: 25,
+              onPressed: () async {
+                if (Provider.of<DashboardView>(context, listen: false).option ==
+                    DashboardFilterOptions.all) {
+                  setState(() {
+                    loading = true;
+                  });
+                  await Provider.of<DashboardView>(context, listen: false)
+                      .getAllFinancials();
+                  setState(() {
+                    loading = false;
+                  });
+                } else if (Provider.of<DashboardView>(context, listen: false)
+                        .option ==
+                    DashboardFilterOptions.sixMonths) {
+                  setState(() {
+                    loading = true;
+                  });
+                  await Provider.of<DashboardView>(context, listen: false)
+                      .getMonthlyFinancials();
+                  setState(() {
+                    loading = false;
+                  });
+                } else if (Provider.of<DashboardView>(context, listen: false)
+                        .option ==
+                    DashboardFilterOptions.oneMonth) {
+                  setState(() {
+                    loading = true;
+                  });
+                  await Provider.of<DashboardView>(context, listen: false)
+                      .getMonthlyFinancials();
+                  setState(() {
+                    loading = false;
+                  });
+                }
+              },
+              icon: const Icon(Icons.refresh_rounded),
+            )
+          ],
         ),
       ),
       drawer: Drawer(
@@ -79,13 +125,16 @@ class _DashboardState extends State<Dashboard> {
                   leading: Radio<DashboardFilterOptions?>(
                     value: DashboardFilterOptions.all,
                     groupValue: Provider.of<DashboardView>(context).option,
-                    onChanged: (value) {
+                    onChanged: (value) async {
+                      Navigator.pop(context);
+                      loading = true;
                       setState(() {
                         Provider.of<DashboardView>(context, listen: false)
                             .option = value!;
-                        Provider.of<DashboardView>(context, listen: false)
-                            .getAllFinancials();
                       });
+                      await Provider.of<DashboardView>(context, listen: false)
+                          .getAllFinancials();
+                      loading = false;
                     },
                   ),
                 ),
@@ -94,13 +143,17 @@ class _DashboardState extends State<Dashboard> {
                   leading: Radio<DashboardFilterOptions?>(
                     value: DashboardFilterOptions.oneMonth,
                     groupValue: Provider.of<DashboardView>(context).option,
-                    onChanged: (value) {
+                    onChanged: (value) async {
+                      Navigator.pop(context);
+                      loading = true;
                       setState(() {
                         Provider.of<DashboardView>(context, listen: false)
                             .option = value!;
-                        Provider.of<DashboardView>(context, listen: false)
-                            .getMonthlyFinancials();
                       });
+                      await Provider.of<DashboardView>(context, listen: false)
+                          .getMonthlyFinancials();
+
+                      loading = false;
                     },
                   ),
                 ),
@@ -109,13 +162,17 @@ class _DashboardState extends State<Dashboard> {
                   leading: Radio<DashboardFilterOptions?>(
                     value: DashboardFilterOptions.sixMonths,
                     groupValue: Provider.of<DashboardView>(context).option,
-                    onChanged: (value) {
+                    onChanged: (value) async {
+                      Navigator.pop(context);
+                      loading = true;
                       setState(() {
                         Provider.of<DashboardView>(context, listen: false)
                             .option = value!;
-                        Provider.of<DashboardView>(context, listen: false)
-                            .getMonthlyFinancials();
                       });
+                      await Provider.of<DashboardView>(context, listen: false)
+                          .getMonthlyFinancials();
+
+                      loading = false;
                     },
                   ),
                 ),
@@ -126,6 +183,8 @@ class _DashboardState extends State<Dashboard> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: loading,
+        blur: 5,
+        color: Colors.transparent,
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -187,11 +246,17 @@ class _DashboardState extends State<Dashboard> {
                                                         .dashboardData
                                                         .totalOutstandingBalance
                                                         .toString(),
-                                                    style:  TextStyle(
-                                                        fontSize:Provider.of<DashboardView>(context)
-                                                            .dashboardData
-                                                            .totalOutstandingBalance<1000000? 30:20,
-                                                        fontWeight: FontWeight.w900),
+                                                    style: TextStyle(
+                                                        fontSize: Provider.of<
+                                                                            DashboardView>(
+                                                                        context)
+                                                                    .dashboardData
+                                                                    .totalOutstandingBalance <
+                                                                1000000
+                                                            ? 30
+                                                            : 20,
+                                                        fontWeight:
+                                                            FontWeight.w900),
                                                   ),
                                                   const Text(
                                                     ' Rupees',
@@ -212,12 +277,20 @@ class _DashboardState extends State<Dashboard> {
                                                   Text(
                                                     Provider.of<DashboardView>(
                                                             context)
-                                                        .monthlyFinancials.totalOutstandingBalance
+                                                        .monthlyFinancials
+                                                        .totalOutstandingBalance
                                                         .toString(),
-                                                    style:  TextStyle(
-                                                        fontSize:Provider.of<DashboardView>(context)
-                                                            .monthlyFinancials.totalOutstandingBalance<1000000? 30:20,
-                                                        fontWeight: FontWeight.w900),
+                                                    style: TextStyle(
+                                                        fontSize: Provider.of<
+                                                                            DashboardView>(
+                                                                        context)
+                                                                    .monthlyFinancials
+                                                                    .totalOutstandingBalance <
+                                                                1000000
+                                                            ? 30
+                                                            : 20,
+                                                        fontWeight:
+                                                            FontWeight.w900),
                                                   ),
                                                   const Text(
                                                     ' Rupees',
@@ -278,11 +351,17 @@ class _DashboardState extends State<Dashboard> {
                                                       .dashboardData
                                                       .totalAmountPaid
                                                       .toString(),
-                                                  style:  TextStyle(
-                                                      fontSize:Provider.of<DashboardView>(context)
-                                                          .dashboardData
-                                                          .totalAmountPaid<1000000? 30:20,
-                                                      fontWeight: FontWeight.w900),
+                                                  style: TextStyle(
+                                                      fontSize: Provider.of<
+                                                                          DashboardView>(
+                                                                      context)
+                                                                  .dashboardData
+                                                                  .totalAmountPaid <
+                                                              1000000
+                                                          ? 30
+                                                          : 20,
+                                                      fontWeight:
+                                                          FontWeight.w900),
                                                 ),
                                                 const Text(
                                                   ' Rupees',
@@ -303,12 +382,20 @@ class _DashboardState extends State<Dashboard> {
                                                 Text(
                                                   Provider.of<DashboardView>(
                                                           context)
-                                                      .monthlyFinancials.totalAmountPaid
+                                                      .monthlyFinancials
+                                                      .totalAmountPaid
                                                       .toString(),
-                                                  style:  TextStyle(
-                                                      fontSize:Provider.of<DashboardView>(context)
-                                                          .monthlyFinancials.totalAmountPaid<1000000? 30:20,
-                                                      fontWeight: FontWeight.w900),
+                                                  style: TextStyle(
+                                                      fontSize: Provider.of<
+                                                                          DashboardView>(
+                                                                      context)
+                                                                  .monthlyFinancials
+                                                                  .totalAmountPaid <
+                                                              1000000
+                                                          ? 30
+                                                          : 20,
+                                                      fontWeight:
+                                                          FontWeight.w900),
                                                 ),
                                                 const Text(
                                                   ' Rupees',
@@ -371,11 +458,17 @@ class _DashboardState extends State<Dashboard> {
                                                     .dashboardData
                                                     .totalCost
                                                     .toString(),
-                                                style:  TextStyle(
-                                                    fontSize:Provider.of<DashboardView>(context)
-                                                        .dashboardData
-                                                        .totalCost<1000000? 30:20,
-                                                    fontWeight: FontWeight.w900),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Provider.of<DashboardView>(
+                                                                        context)
+                                                                    .dashboardData
+                                                                    .totalCost <
+                                                                1000000
+                                                            ? 30
+                                                            : 20,
+                                                    fontWeight:
+                                                        FontWeight.w900),
                                               ),
                                               const Text(
                                                 ' Rupees',
@@ -396,12 +489,20 @@ class _DashboardState extends State<Dashboard> {
                                               Text(
                                                 Provider.of<DashboardView>(
                                                         context)
-                                                    .monthlyFinancials.totalCost.toString(),
-                                                style:  TextStyle(
-                                                    fontSize:Provider.of<DashboardView>(context)
-                                                        .dashboardData
-                                                        .totalCost<1000000? 30:20,
-                                                    fontWeight: FontWeight.w900),
+                                                    .monthlyFinancials
+                                                    .totalCost
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Provider.of<DashboardView>(
+                                                                        context)
+                                                                    .dashboardData
+                                                                    .totalCost <
+                                                                1000000
+                                                            ? 30
+                                                            : 20,
+                                                    fontWeight:
+                                                        FontWeight.w900),
                                               ),
                                               const Text(
                                                 ' Rupees',
@@ -452,10 +553,15 @@ class _DashboardState extends State<Dashboard> {
                                                 .dashboardData
                                                 .profit
                                                 .toString(),
-                                            style:  TextStyle(
-                                                fontSize:Provider.of<DashboardView>(context)
-                                                    .dashboardData
-                                                    .profit<1000000? 30:20,
+                                            style: TextStyle(
+                                                fontSize:
+                                                    Provider.of<DashboardView>(
+                                                                    context)
+                                                                .dashboardData
+                                                                .profit <
+                                                            1000000
+                                                        ? 30
+                                                        : 20,
                                                 fontWeight: FontWeight.w900),
                                           ),
                                           const Text(
@@ -474,15 +580,16 @@ class _DashboardState extends State<Dashboard> {
                                         textBaseline: TextBaseline.alphabetic,
                                         children: [
                                           Text(
-                                            '${
-                                              Provider.of<DashboardView>(
-                                                          context)
-                                                  .monthlyFinancials.profit
-                                            }',
-                                            style:  TextStyle(
-                                                fontSize:Provider.of<DashboardView>(
-                                                    context)
-                                                    .monthlyFinancials.profit<1000000? 30:20,
+                                            '${Provider.of<DashboardView>(context).monthlyFinancials.profit}',
+                                            style: TextStyle(
+                                                fontSize:
+                                                    Provider.of<DashboardView>(
+                                                                    context)
+                                                                .monthlyFinancials
+                                                                .profit <
+                                                            1000000
+                                                        ? 30
+                                                        : 20,
                                                 fontWeight: FontWeight.w900),
                                           ),
                                           const Text(
@@ -568,7 +675,7 @@ class _DashboardState extends State<Dashboard> {
                                                   ),
                                                   IconButton(
                                                       onPressed: () async {
-                                                        print(widget.moneyController.text);
+
                                                         if (widget
                                                             .moneyController
                                                             .text
@@ -658,10 +765,15 @@ class _DashboardState extends State<Dashboard> {
                                             .dashboardData
                                             .cashAvailable
                                             .toString(),
-                                        style:  TextStyle(
-                                            fontSize:Provider.of<DashboardView>(context)
-                                                .dashboardData
-                                                .cashAvailable<1000000? 30:20,
+                                        style: TextStyle(
+                                            fontSize:
+                                                Provider.of<DashboardView>(
+                                                                context)
+                                                            .dashboardData
+                                                            .cashAvailable <
+                                                        1000000
+                                                    ? 30
+                                                    : 20,
                                             fontWeight: FontWeight.w900),
                                       ),
                                       const Text(
@@ -840,10 +952,15 @@ class _DashboardState extends State<Dashboard> {
                                             .dashboardData
                                             .expenses
                                             .toString(),
-                                        style:  TextStyle(
-                                            fontSize:Provider.of<DashboardView>(context)
-                                                .dashboardData
-                                                .expenses<1000000? 30:20,
+                                        style: TextStyle(
+                                            fontSize:
+                                                Provider.of<DashboardView>(
+                                                                context)
+                                                            .dashboardData
+                                                            .expenses <
+                                                        1000000
+                                                    ? 30
+                                                    : 20,
                                             fontWeight: FontWeight.w900),
                                       ),
                                       const Text(
@@ -869,17 +986,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Future<void> getAllData() async {
-    CollectionReference _collectionRef =
-    FirebaseFirestore.instance.collection('customers');
-    QuerySnapshot querySnapshot = await _collectionRef.get();
 
-    // Get data from docs and convert map to List
-    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-
-    print(allData);
-
-  }
 }
 
 class kDecoration {

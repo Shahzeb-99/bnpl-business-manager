@@ -1,4 +1,4 @@
-import 'package:ecommerce_bnql/dashboard/customer_screen_monthly.dart';
+import 'package:ecommerce_bnql/dashboard/outstandingAmount_button/customer_screen_monthly.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_dashboard.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class AllOutstandingBalance extends StatefulWidget {
 class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
   @override
   void initState() {
-    Provider.of<CustomerView>(context, listen: false).getThisMonthCustomers(
+    Provider.of<CustomerView>(context, listen: false).getThisMonthCustomersOutstanding(
         option: Provider.of<DashboardView>(context, listen: false).option);
     super.initState();
   }
@@ -55,7 +55,7 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                         builder: (BuildContext context) {
                           return Container(
                             decoration: const BoxDecoration(
-                                color: const Color(0xFF2D2C3F),
+                                color: Color(0xFF2D2C3F),
                                 borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(20))),
                             height: 200,
@@ -92,7 +92,7 @@ class _AllOutstandingBalanceState extends State<AllOutstandingBalance> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                CustomerProfileMonthly(index: index)));
+                                CustomerProfileMonthlyOutstanding(index: index)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

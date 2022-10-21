@@ -20,19 +20,19 @@ class DashboardView extends ChangeNotifier {
       cashAvailable: 0,
       expenses: 0);
 
-
   DashboardFilterOptions option = DashboardFilterOptions.all;
 
-  void getAllFinancials() async {
+  Future<void> getAllFinancials() async {
     await dashboardData.getAllFinancials();
     notifyListeners();
   }
 
-  void getMonthlyFinancials() async {
-    await monthlyFinancials.getMonthlyFinancials(isThisMonth: option == DashboardFilterOptions.oneMonth?true:false);
-    await monthlyFinancials.getThisMonthCustomers();
+  Future<void> getMonthlyFinancials() async {
+    await monthlyFinancials.getMonthlyFinancials(
+        isThisMonth: option == DashboardFilterOptions.oneMonth ? true : false);
+    await monthlyFinancials.getThisMonthCustomers(
+        isThisMonth: option == DashboardFilterOptions.oneMonth ? true : false);
+
     notifyListeners();
   }
-
-
 }

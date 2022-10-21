@@ -1,18 +1,18 @@
 import 'package:ecommerce_bnql/customer/payment_schedule_class.dart';
-import 'package:ecommerce_bnql/customer/payment_schedule_screen.dart';
+import 'package:ecommerce_bnql/dashboard/amountPaid_button/payment_schedule_screen_monthly.dart';
 import 'package:ecommerce_bnql/view_model/viewmodel_customers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PurchaseWidget extends StatefulWidget {
-  const PurchaseWidget(
+class PurchaseWidgetMonthlyRecovery extends StatefulWidget {
+  const PurchaseWidgetMonthlyRecovery(
       {Key? key,
-      required this.image,
-      required this.name,
-      required this.outstandingBalance,
-      required this.amountPaid,
-      required this.productIndex,
-      required this.index})
+        required this.image,
+        required this.name,
+        required this.outstandingBalance,
+        required this.amountPaid,
+        required this.productIndex,
+        required this.index})
       : super(key: key);
 
   final int productIndex;
@@ -23,10 +23,10 @@ class PurchaseWidget extends StatefulWidget {
   final int amountPaid;
 
   @override
-  State<PurchaseWidget> createState() => _PurchaseWidgetState();
+  State<PurchaseWidgetMonthlyRecovery> createState() => _PurchaseWidgetMonthlyRecoveryState();
 }
 
-class _PurchaseWidgetState extends State<PurchaseWidget> {
+class _PurchaseWidgetMonthlyRecoveryState extends State<PurchaseWidgetMonthlyRecovery> {
   List<PaymentSchedule> paymentList = [];
 
   @override
@@ -38,14 +38,14 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PaymentScheduleScreen(
+              builder: (context) => PaymentScheduleScreenMonthlyRecovery(
                 paymentList: paymentList,
                 productIndex: widget.productIndex,
                 index: widget.index,
               ),
             ),
           ).whenComplete(
-              () {
+                  () {
                 Provider.of<CustomerView>(context, listen: false).update();
                 setState(() {
 
@@ -58,7 +58,7 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
             children: [
               Container(
                 decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(500)),
+                BoxDecoration(borderRadius: BorderRadius.circular(500)),
                 height: MediaQuery.of(context).size.height * 0.10,
                 width: MediaQuery.of(context).size.height * 0.10,
                 child: Image.network(
@@ -76,8 +76,7 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                     widget.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                      'Outstanding Balance : ${widget.outstandingBalance} PKR'),
+
                   Text('Amount Paid : ${widget.amountPaid} PKR'),
                 ],
               )
