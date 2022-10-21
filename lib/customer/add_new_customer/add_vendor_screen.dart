@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers, camel_case_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/customer/add_new_customer/update_firebase_class.dart';
 import 'package:ecommerce_bnql/customer/all_customer_screen.dart';
@@ -68,7 +70,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor:Color(0xFF2D2C3F),
+            backgroundColor:const Color(0xFF2D2C3F),
             title: const Text('Missing Fields'),
             content: SingleChildScrollView(
               child: ListBody(

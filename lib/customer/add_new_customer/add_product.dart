@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:ecommerce_bnql/customer/add_new_customer/add_vendor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
