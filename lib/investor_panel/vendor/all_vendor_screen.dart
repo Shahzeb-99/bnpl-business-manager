@@ -1,12 +1,13 @@
-import 'package:ecommerce_bnql/company_panel/vendor/vendor_screen.dart';
+import 'package:ecommerce_bnql/investor_panel/vendor/vendor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
+import '../../company_panel/dashboard/dashboard_screen.dart';
+import '../../investor_panel/customer/all_customer_screen.dart';
 import '../../investor_panel/dashboard/dashboard_screen.dart';
-import '../customer/all_customer_screen.dart';
-import '../dashboard/dashboard_screen.dart';
-import '../view_model/viewmodel_vendors.dart';
+import '../../investor_panel/view_model/viewmodel_vendors.dart';
+
 
 class AllVendorScreen extends StatefulWidget {
   const AllVendorScreen({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
 
   @override
   void initState() {
-    Provider.of<VendorView>(context, listen: false).getVendors();
+    Provider.of<VendorViewInvestor>(context, listen: false).getVendors();
     super.initState();
   }
 
@@ -53,10 +54,17 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Center(
+                    child: Text(
+                      'Investor Panel',
+                      style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                const SizedBox(height: 20,),
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => DashboardCompany()));
+                        MaterialPageRoute(builder: (context) => DashboardInvestor()));
                   },
                   child: const Text('Dashboard'),
                 ),
@@ -70,13 +78,15 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                   child: const Text('Customers'),
                 ),
                 Expanded(child: Container()),
-                OutlinedButton(child: const Text('Switch to Investor Account'), onPressed: (){
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DashboardInvestor()),
-                          (route) => false);
-                })
+                OutlinedButton(
+                    child: const Text('Switch to Company Account'),
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DashboardCompany()),
+                              (route) => false);
+                    })
               ],
             ),
           ),
@@ -87,7 +97,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
           padding: const EdgeInsets.symmetric(vertical:10,horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider.of<VendorView>(context).allVendors.length,
+            itemCount: Provider.of<VendorViewInvestor>(context).allVendors.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
@@ -106,7 +116,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                       children: [
                         CircleAvatar(
                           backgroundImage: NetworkImage(
-                              Provider.of<VendorView>(context, listen: false)
+                              Provider.of<VendorViewInvestor>(context, listen: false)
                                   .allVendors[index]
                                   .image),
                           radius: 30,
@@ -120,13 +130,13 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                Provider.of<VendorView>(context, listen: false)
+                                Provider.of<VendorViewInvestor>(context, listen: false)
                                     .allVendors[index]
                                     .name,
                                 style: kBoldText,
                               ),
                               Text(
-                                Provider.of<VendorView>(context)
+                                Provider.of<VendorViewInvestor>(context)
                                     .allVendors[index]
                                     .address,
                                 softWrap: true,

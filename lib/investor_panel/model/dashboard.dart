@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'expenses.dart';
-
 class DashboardData {
   num totalOutstandingBalance;
   num totalAmountPaid;
@@ -9,7 +7,6 @@ class DashboardData {
   num profit;
   int cashAvailable;
   int expenses;
-  List<Expenses> expensesList = [];
 
   DashboardData(
       {required this.expenses,
@@ -19,24 +16,6 @@ class DashboardData {
       required this.totalOutstandingBalance,
       required this.totalCost});
 
-  Future<void> getAllExpenses() async {
-    expensesList = [];
-
-    FirebaseFirestore.instance
-        .collection('financials')
-        .doc('finance')
-        .collection('expenses')
-        .get()
-        .then((value) {
-      for (var expense in value.docs) {
-        final num amount = expense.get('amount');
-        final Timestamp date = expense.get('time');
-        final String description = expense.get('description');
-        expensesList.add(Expenses(amount: amount, date: date, description: description));
-      }
-    });
-  }
-
   Future<void> getAllFinancials() async {
     totalCost = 0;
     totalOutstandingBalance = 0;
@@ -45,7 +24,7 @@ class DashboardData {
 
     final cloud = FirebaseFirestore.instance;
 
-    await cloud.collection('financials').get().then((value) {
+    await cloud.collection('investorFinancials').get().then((value) {
       if (value.docs.isNotEmpty) {
         totalOutstandingBalance = value.docs[0].get('outstanding_balance');
         totalAmountPaid = value.docs[0].get('amount_paid');
@@ -68,7 +47,7 @@ class DashboardData {
     totalCost = 0;
     final cloud = FirebaseFirestore.instance;
 
-    await cloud.collection('customers').get().then(
+    await cloud.collection('investorCustomers').get().then(
       (value) {
         for (var customer in value.docs) {
           customer.reference
@@ -114,7 +93,7 @@ class DashboardData {
     final cloud = FirebaseFirestore.instance;
     cloud.settings.persistenceEnabled;
 
-    await cloud.collection('customers').get().then((value) async {
+    await cloud.collection('investorCustomers').get().then((value) async {
       for (var customers in value.docs) {
         await customers.reference
             .collection('purchases')
@@ -127,29 +106,31 @@ class DashboardData {
                     isLessThanOrEqualTo: DateTime(
                         DateTime.now().year, DateTime.now().month + 1, 0))
                 .get()
-                .then((value) {
+                .then((value)  {
               for (var payment in value.docs) {
                 totalOutstandingBalance += payment.get('remainingAmount');
               }
             });
           }
-          for (var purchase in value.docs) {
-            await purchase.reference
-                .collection('transaction_history')
+          for(var purchase in value.docs){
+
+            await purchase.reference.collection('transaction_history').where('date',
+                isLessThanOrEqualTo: DateTime(
+                    DateTime.now().year, DateTime.now().month + 1, 0))
                 .where('date',
-                    isLessThanOrEqualTo: DateTime(
-                        DateTime.now().year, DateTime.now().month + 1, 0))
-                .where('date',
-                    isGreaterThanOrEqualTo: isThisMonth
-                        ? DateTime(DateTime.now().year, DateTime.now().month, 1)
-                        : DateTime(
-                            DateTime.now().year, DateTime.now().month - 5, 1))
-                .get()
-                .then((value) {
-              for (var transaction in value.docs) {
-                totalAmountPaid += transaction.get('amount');
-              }
+                isGreaterThanOrEqualTo: isThisMonth
+                    ? DateTime(
+                    DateTime.now().year, DateTime.now().month, 1)
+                    : DateTime(DateTime.now().year,
+                    DateTime.now().month - 5, 1)).get().then((value) {
+
+              for(var transaction  in value.docs){
+                totalAmountPaid+=transaction.get('amount');
+
+                }
+
             });
+
           }
         });
       }

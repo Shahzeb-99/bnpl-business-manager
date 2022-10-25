@@ -1,38 +1,36 @@
 // ignore_for_file: camel_case_types
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_bnql/company_panel/dashboard/expenses_screen.dart';
-import 'package:ecommerce_bnql/investor_panel/dashboard/dashboard_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ecommerce_bnql/company_panel/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import '../customer/all_customer_screen.dart';
-import '../vendor/all_vendor_screen.dart';
-import '../view_model/viewmodel_dashboard.dart';
-import 'amountPaid_button/amount_spend_screen.dart';
-import 'outstandingAmount_button/outstanding_balance_screen.dart';
+
+import '../../investor_panel/customer/all_customer_screen.dart';
+import '../../investor_panel/dashboard/amountPaid_button/amount_spend_screen.dart';
+import '../../investor_panel/dashboard/outstandingAmount_button/outstanding_balance_screen.dart';
+import '../../investor_panel/vendor/all_vendor_screen.dart';
+import '../../investor_panel/view_model/viewmodel_dashboard.dart';
 
 enum DashboardFilterOptions { all, oneMonth, sixMonths }
 
-class DashboardCompany extends StatefulWidget {
-  DashboardCompany({Key? key}) : super(key: key);
+class DashboardInvestor extends StatefulWidget {
+  DashboardInvestor({Key? key}) : super(key: key);
 
   final TextEditingController moneyController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
 
   @override
-  State<DashboardCompany> createState() => _DashboardCompanyState();
+  State<DashboardInvestor> createState() => _DashboardInvestorState();
 }
 
-class _DashboardCompanyState extends State<DashboardCompany> {
+class _DashboardInvestorState extends State<DashboardInvestor> {
   bool loading = false;
 
   @override
   void initState() {
-    Provider.of<DashboardView>(context, listen: false).getAllFinancials();
-
+    Provider.of<DashboardViewInvestor>(context, listen: false)
+        .getAllFinancials();
     super.initState();
   }
 
@@ -53,44 +51,47 @@ class _DashboardCompanyState extends State<DashboardCompany> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
-              child: Text(
-                'Dashboard Company',
-                overflow: TextOverflow.fade,
-                style: TextStyle(fontSize: 25),
-              ),
+            const Text(
+              'Dashboard Investor',
+              style: TextStyle(fontSize: 25),
             ),
             IconButton(
               splashRadius: 25,
               onPressed: () async {
-                if (Provider.of<DashboardView>(context, listen: false).option ==
+                if (Provider.of<DashboardViewInvestor>(context, listen: false)
+                        .option ==
                     DashboardFilterOptions.all) {
                   setState(() {
                     loading = true;
                   });
-                  await Provider.of<DashboardView>(context, listen: false)
+                  await Provider.of<DashboardViewInvestor>(context,
+                          listen: false)
                       .getAllFinancials();
                   setState(() {
                     loading = false;
                   });
-                } else if (Provider.of<DashboardView>(context, listen: false)
+                } else if (Provider.of<DashboardViewInvestor>(context,
+                            listen: false)
                         .option ==
                     DashboardFilterOptions.sixMonths) {
                   setState(() {
                     loading = true;
                   });
-                  await Provider.of<DashboardView>(context, listen: false)
+                  await Provider.of<DashboardViewInvestor>(context,
+                          listen: false)
                       .getMonthlyFinancials();
                   setState(() {
                     loading = false;
                   });
-                } else if (Provider.of<DashboardView>(context, listen: false)
+                } else if (Provider.of<DashboardViewInvestor>(context,
+                            listen: false)
                         .option ==
                     DashboardFilterOptions.oneMonth) {
                   setState(() {
                     loading = true;
                   });
-                  await Provider.of<DashboardView>(context, listen: false)
+                  await Provider.of<DashboardViewInvestor>(context,
+                          listen: false)
                       .getMonthlyFinancials();
                   setState(() {
                     loading = false;
@@ -109,6 +110,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Center(
+                    child: Text(
+                  'Investor Panel',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                )),
+                const SizedBox(
+                  height: 20,
+                ),
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(
@@ -131,15 +140,18 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   title: const Text('All Time'),
                   leading: Radio<DashboardFilterOptions?>(
                     value: DashboardFilterOptions.all,
-                    groupValue: Provider.of<DashboardView>(context).option,
+                    groupValue:
+                        Provider.of<DashboardViewInvestor>(context).option,
                     onChanged: (value) async {
                       Navigator.pop(context);
                       loading = true;
                       setState(() {
-                        Provider.of<DashboardView>(context, listen: false)
+                        Provider.of<DashboardViewInvestor>(context,
+                                listen: false)
                             .option = value!;
                       });
-                      await Provider.of<DashboardView>(context, listen: false)
+                      await Provider.of<DashboardViewInvestor>(context,
+                              listen: false)
                           .getAllFinancials();
                       loading = false;
                     },
@@ -149,15 +161,18 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   title: const Text('Last Month'),
                   leading: Radio<DashboardFilterOptions?>(
                     value: DashboardFilterOptions.oneMonth,
-                    groupValue: Provider.of<DashboardView>(context).option,
+                    groupValue:
+                        Provider.of<DashboardViewInvestor>(context).option,
                     onChanged: (value) async {
                       Navigator.pop(context);
                       loading = true;
                       setState(() {
-                        Provider.of<DashboardView>(context, listen: false)
+                        Provider.of<DashboardViewInvestor>(context,
+                                listen: false)
                             .option = value!;
                       });
-                      await Provider.of<DashboardView>(context, listen: false)
+                      await Provider.of<DashboardViewInvestor>(context,
+                              listen: false)
                           .getMonthlyFinancials();
 
                       loading = false;
@@ -168,15 +183,18 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   title: const Text('Last Six Months'),
                   leading: Radio<DashboardFilterOptions?>(
                     value: DashboardFilterOptions.sixMonths,
-                    groupValue: Provider.of<DashboardView>(context).option,
+                    groupValue:
+                        Provider.of<DashboardViewInvestor>(context).option,
                     onChanged: (value) async {
                       Navigator.pop(context);
                       loading = true;
                       setState(() {
-                        Provider.of<DashboardView>(context, listen: false)
+                        Provider.of<DashboardViewInvestor>(context,
+                                listen: false)
                             .option = value!;
                       });
-                      await Provider.of<DashboardView>(context, listen: false)
+                      await Provider.of<DashboardViewInvestor>(context,
+                              listen: false)
                           .getMonthlyFinancials();
 
                       loading = false;
@@ -185,12 +203,12 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                 ),
                 Expanded(child: Container()),
                 OutlinedButton(
-                    child: const Text('Switch to Investor Account'),
+                    child: const Text('Switch to Company Account'),
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DashboardInvestor()),
+                              builder: (context) => DashboardCompany()),
                           (route) => false);
                     })
               ],
@@ -245,78 +263,85 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                       height: 25,
                                     ),
                                     Expanded(
-                                        child: Provider.of<DashboardView>(
-                                                        context)
-                                                    .option ==
-                                                DashboardFilterOptions.all
-                                            ? Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.baseline,
-                                                textBaseline:
-                                                    TextBaseline.alphabetic,
-                                                children: [
-                                                  Text(
-                                                    Provider.of<DashboardView>(
+                                        child:
+                                            Provider.of<DashboardViewInvestor>(
                                                             context)
-                                                        .dashboardData
-                                                        .totalOutstandingBalance
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        fontSize: Provider.of<
-                                                                            DashboardView>(
-                                                                        context)
-                                                                    .dashboardData
-                                                                    .totalOutstandingBalance <
-                                                                1000000
-                                                            ? 30
-                                                            : 20,
-                                                        fontWeight:
-                                                            FontWeight.w900),
-                                                  ),
-                                                  const Text(
-                                                    ' Rupees',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF8D8E98),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            : Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.baseline,
-                                                textBaseline:
-                                                    TextBaseline.alphabetic,
-                                                children: [
-                                                  Text(
-                                                    Provider.of<DashboardView>(
-                                                            context)
-                                                        .monthlyFinancials
-                                                        .totalOutstandingBalance
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        fontSize: Provider.of<
-                                                                            DashboardView>(
-                                                                        context)
-                                                                    .monthlyFinancials
-                                                                    .totalOutstandingBalance <
-                                                                1000000
-                                                            ? 30
-                                                            : 20,
-                                                        fontWeight:
-                                                            FontWeight.w900),
-                                                  ),
-                                                  const Text(
-                                                    ' Rupees',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF8D8E98),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ))
+                                                        .option ==
+                                                    DashboardFilterOptions.all
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .baseline,
+                                                    textBaseline:
+                                                        TextBaseline.alphabetic,
+                                                    children: [
+                                                      Text(
+                                                        Provider.of<DashboardViewInvestor>(
+                                                                context)
+                                                            .dashboardData
+                                                            .totalOutstandingBalance
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: Provider.of<DashboardViewInvestor>(
+                                                                            context)
+                                                                        .dashboardData
+                                                                        .totalOutstandingBalance <
+                                                                    1000000
+                                                                ? 30
+                                                                : 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w900),
+                                                      ),
+                                                      const Text(
+                                                        ' Rupees',
+                                                        style: TextStyle(
+                                                          color:
+                                                              Color(0xFF8D8E98),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .baseline,
+                                                    textBaseline:
+                                                        TextBaseline.alphabetic,
+                                                    children: [
+                                                      Text(
+                                                        Provider.of<DashboardViewInvestor>(
+                                                                context)
+                                                            .monthlyFinancials
+                                                            .totalOutstandingBalance
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: Provider.of<DashboardViewInvestor>(
+                                                                            context)
+                                                                        .monthlyFinancials
+                                                                        .totalOutstandingBalance <
+                                                                    1000000
+                                                                ? 30
+                                                                : 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w900),
+                                                      ),
+                                                      const Text(
+                                                        ' Rupees',
+                                                        style: TextStyle(
+                                                          color:
+                                                              Color(0xFF8D8E98),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ))
                                   ],
                                 ))),
                       ),
@@ -351,7 +376,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                     height: 25,
                                   ),
                                   Expanded(
-                                      child: Provider.of<DashboardView>(context)
+                                      child: Provider.of<DashboardViewInvestor>(
+                                                      context)
                                                   .option ==
                                               DashboardFilterOptions.all
                                           ? Row(
@@ -363,14 +389,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                   TextBaseline.alphabetic,
                                               children: [
                                                 Text(
-                                                  Provider.of<DashboardView>(
+                                                  Provider.of<DashboardViewInvestor>(
                                                           context)
                                                       .dashboardData
                                                       .totalAmountPaid
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontSize: Provider.of<
-                                                                          DashboardView>(
+                                                                          DashboardViewInvestor>(
                                                                       context)
                                                                   .dashboardData
                                                                   .totalAmountPaid <
@@ -397,14 +423,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                   TextBaseline.alphabetic,
                                               children: [
                                                 Text(
-                                                  Provider.of<DashboardView>(
+                                                  Provider.of<DashboardViewInvestor>(
                                                           context)
                                                       .monthlyFinancials
                                                       .totalAmountPaid
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontSize: Provider.of<
-                                                                          DashboardView>(
+                                                                          DashboardViewInvestor>(
                                                                       context)
                                                                   .monthlyFinancials
                                                                   .totalAmountPaid <
@@ -458,7 +484,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                   height: 25,
                                 ),
                                 Expanded(
-                                    child: Provider.of<DashboardView>(context)
+                                    child: Provider.of<DashboardViewInvestor>(
+                                                    context)
                                                 .option ==
                                             DashboardFilterOptions.all
                                         ? Row(
@@ -470,14 +497,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                 TextBaseline.alphabetic,
                                             children: [
                                               Text(
-                                                Provider.of<DashboardView>(
+                                                Provider.of<DashboardViewInvestor>(
                                                         context)
                                                     .dashboardData
                                                     .totalCost
                                                     .toString(),
                                                 style: TextStyle(
                                                     fontSize:
-                                                        Provider.of<DashboardView>(
+                                                        Provider.of<DashboardViewInvestor>(
                                                                         context)
                                                                     .dashboardData
                                                                     .totalCost <
@@ -504,14 +531,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                 TextBaseline.alphabetic,
                                             children: [
                                               Text(
-                                                Provider.of<DashboardView>(
+                                                Provider.of<DashboardViewInvestor>(
                                                         context)
                                                     .monthlyFinancials
                                                     .totalCost
                                                     .toString(),
                                                 style: TextStyle(
                                                     fontSize:
-                                                        Provider.of<DashboardView>(
+                                                        Provider.of<DashboardViewInvestor>(
                                                                         context)
                                                                     .dashboardData
                                                                     .totalCost <
@@ -555,7 +582,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                 height: 25,
                               ),
                               Expanded(
-                                child: Provider.of<DashboardView>(context)
+                                child: Provider.of<DashboardViewInvestor>(
+                                                context)
                                             .option ==
                                         DashboardFilterOptions.all
                                     ? Row(
@@ -566,13 +594,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                         textBaseline: TextBaseline.alphabetic,
                                         children: [
                                           Text(
-                                            Provider.of<DashboardView>(context)
+                                            Provider.of<DashboardViewInvestor>(
+                                                    context)
                                                 .dashboardData
                                                 .profit
                                                 .toString(),
                                             style: TextStyle(
                                                 fontSize:
-                                                    Provider.of<DashboardView>(
+                                                    Provider.of<DashboardViewInvestor>(
                                                                     context)
                                                                 .dashboardData
                                                                 .profit <
@@ -597,10 +626,10 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                         textBaseline: TextBaseline.alphabetic,
                                         children: [
                                           Text(
-                                            '${Provider.of<DashboardView>(context).monthlyFinancials.profit}',
+                                            '${Provider.of<DashboardViewInvestor>(context).monthlyFinancials.profit}',
                                             style: TextStyle(
                                                 fontSize:
-                                                    Provider.of<DashboardView>(
+                                                    Provider.of<DashboardViewInvestor>(
                                                                     context)
                                                                 .monthlyFinancials
                                                                 .profit <
@@ -704,7 +733,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                                   .instance;
                                                           await cloud
                                                               .collection(
-                                                                  'financials')
+                                                                  'investorFinancials')
                                                               .doc('finance')
                                                               .update({
                                                             'cash_available':
@@ -713,13 +742,13 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                                         .moneyController
                                                                         .text))
                                                           }).whenComplete(() {
-                                                            Provider.of<DashboardView>(
+                                                            Provider.of<DashboardViewInvestor>(
                                                                     context,
                                                                     listen:
                                                                         false)
                                                                 .dashboardData
                                                                 .cashAvailable = Provider.of<
-                                                                            DashboardView>(
+                                                                            DashboardViewInvestor>(
                                                                         context,
                                                                         listen:
                                                                             false)
@@ -777,13 +806,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                     textBaseline: TextBaseline.alphabetic,
                                     children: [
                                       Text(
-                                        Provider.of<DashboardView>(context)
+                                        Provider.of<DashboardViewInvestor>(
+                                                context)
                                             .dashboardData
                                             .cashAvailable
                                             .toString(),
                                         style: TextStyle(
                                             fontSize:
-                                                Provider.of<DashboardView>(
+                                                Provider.of<DashboardViewInvestor>(
                                                                 context)
                                                             .dashboardData
                                                             .cashAvailable <
@@ -809,10 +839,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                             elevation: 5,
                             color: const Color(0xFF2D2C3F),
                             child: InkWell(
-                              onLongPress: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>const ExpensesScreen( )));},
                               onTap: () {
                                 showModalBottomSheet<void>(
-                                  isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
                                   context: context,
                                   builder: (BuildContext context) {
@@ -829,137 +857,109 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(20),
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            // mainAxisAlignment: MainAxisAlignment.start,
+                                            // crossAxisAlignment:
+                                            //     CrossAxisAlignment.stretch,
+                                            //mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              const Center(
-                                                child: Text(
-                                                  'Expenses',
-                                                  style:
-                                                      TextStyle(fontSize: 25),
-                                                ),
+                                              const Text(
+                                                'Add Expenses',
+                                                style: TextStyle(fontSize: 25),
                                               ),
                                               const SizedBox(
                                                 height: 15,
                                               ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
-                                                child: TextFormField(
-                                                  autofocus: true,
-                                                  controller:
-                                                      widget.moneyController,
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly
-                                                  ],
-                                                  decoration:
-                                                      kDecoration.inputBox(
-                                                          'Amount', 'PKR'),
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return 'This field is required';
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                              ),
-                                              TextFormField(
-                                                maxLines: 5,
-                                                autofocus: true,
-                                                controller: widget
-                                                    .descriptionController,
-                                                keyboardType:
-                                                    TextInputType.text,
-                                                decoration:
-                                                    kDecoration.inputBox(
-                                                        'Description', ''),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Please add a description for expense';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                              OutlinedButton(
-                                                  onPressed: () async {
-                                                    if (widget.moneyController
-                                                        .text.isNotEmpty) {
-                                                      setState(() {
-                                                        loading = true;
-                                                      });
-                                                      final cloud =
-                                                          FirebaseFirestore
-                                                              .instance;
-                                                      await cloud
-                                                          .collection(
-                                                              'financials')
-                                                          .doc('finance')
-                                                          .update({
-                                                        'cash_available':
-                                                            FieldValue.increment(
-                                                                -int.parse(widget
-                                                                    .moneyController
-                                                                    .text)),
-                                                        'expenses': FieldValue
-                                                            .increment(
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: TextFormField(
+                                                      autofocus: true,
+                                                      controller: widget
+                                                          .moneyController,
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly
+                                                      ],
+                                                      decoration:
+                                                          kDecoration.inputBox(
+                                                              'Amount', 'PKR'),
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return 'This field is required';
+                                                        }
+                                                        return null;
+                                                      },
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        final cloud =
+                                                            FirebaseFirestore
+                                                                .instance;
+                                                        cloud
+                                                            .collection(
+                                                                'investorFinancials')
+                                                            .doc('finance')
+                                                            .update(
+                                                          {
+                                                            'expenses': FieldValue
+                                                                .increment(int
+                                                                    .parse(widget
+                                                                        .moneyController
+                                                                        .text)),
+                                                            'cash_available': FieldValue
+                                                                .increment(-int
+                                                                    .parse(widget
+                                                                        .moneyController
+                                                                        .text))
+                                                          },
+                                                        ).whenComplete(
+                                                          () {
+                                                            Provider.of<DashboardViewInvestor>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .dashboardData
+                                                                .expenses = Provider.of<
+                                                                            DashboardViewInvestor>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .dashboardData
+                                                                    .expenses +
                                                                 int.parse(widget
                                                                     .moneyController
-                                                                    .text))
-                                                      }).whenComplete(() {
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                'financials')
-                                                            .doc('finance')
-                                                            .collection(
-                                                                'expenses')
-                                                            .add({
-                                                          'amount': int.parse(
-                                                              widget
-                                                                  .moneyController
-                                                                  .text),
-                                                          'time':
-                                                              Timestamp.now(),
-                                                          'description': widget
-                                                              .descriptionController
-                                                              .text
-                                                        });
-                                                        Provider.of<DashboardView>(
+                                                                    .text);
+                                                            Provider.of<DashboardViewInvestor>(
                                                                     context,
-                                                                    listen: false)
+                                                                    listen:
+                                                                        false)
                                                                 .dashboardData
-                                                                .cashAvailable -=
-                                                            int.parse(widget
+                                                                .cashAvailable = Provider.of<
+                                                                            DashboardViewInvestor>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .dashboardData
+                                                                    .cashAvailable -
+                                                                int.parse(widget
+                                                                    .moneyController
+                                                                    .text);
+                                                            widget
                                                                 .moneyController
-                                                                .text);
-                                                        Provider.of<DashboardView>(
-                                                                    context,
-                                                                    listen: false)
-                                                                .dashboardData
-                                                                .expenses +=
-                                                            int.parse(widget
-                                                                .moneyController
-                                                                .text);
-                                                        widget.moneyController
-                                                            .clear();
-                                                        widget.descriptionController.clear();
-                                                        Navigator.pop(context);
-                                                      });
-                                                      setState(() {
-                                                        loading = false;
-                                                      });
-                                                    }
-                                                  },
-                                                  child:
-                                                      const Text('Add Expense'))
+                                                                .clear();
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        );
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.navigate_next))
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -994,13 +994,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                     textBaseline: TextBaseline.alphabetic,
                                     children: [
                                       Text(
-                                        Provider.of<DashboardView>(context)
+                                        Provider.of<DashboardViewInvestor>(
+                                                context)
                                             .dashboardData
                                             .expenses
                                             .toString(),
                                         style: TextStyle(
                                             fontSize:
-                                                Provider.of<DashboardView>(
+                                                Provider.of<DashboardViewInvestor>(
                                                                 context)
                                                             .dashboardData
                                                             .expenses <

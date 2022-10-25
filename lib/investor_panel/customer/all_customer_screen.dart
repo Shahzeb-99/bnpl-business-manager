@@ -1,12 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../company_panel/dashboard/dashboard_screen.dart';
+import '../../investor_panel/customer/customer_page/customer_screen.dart';
+import '../../investor_panel/vendor/all_vendor_screen.dart';
 import '../../investor_panel/dashboard/dashboard_screen.dart';
-import '../dashboard/dashboard_screen.dart';
-import '../vendor/all_vendor_screen.dart';
-import '../view_model/viewmodel_customers.dart';
-import 'add_new_customer/add_customer_screen.dart';
-import 'customer_page/customer_screen.dart';
+import '../../investor_panel/customer/add_new_customer/add_customer_screen.dart';
+import '../../investor_panel/view_model/viewmodel_customers.dart';
 
 enum CustomerFilterOptions { all, oneMonth, sixMonths }
 
@@ -20,9 +20,9 @@ class AllCustomersScreen extends StatefulWidget {
 class _AllCustomersScreenState extends State<AllCustomersScreen> {
   @override
   void initState() {
-    if (Provider.of<CustomerView>(context, listen: false).option ==
+    if (Provider.of<CustomerViewInvestor>(context, listen: false).option ==
         CustomerFilterOptions.all) {
-      Provider.of<CustomerView>(context, listen: false).getCustomers();
+      Provider.of<CustomerViewInvestor>(context, listen: false).getCustomers();
     } else {
       //Provider.of<CustomerView>(context, listen: false).getThisMonthCustomers();
     }
@@ -72,12 +72,20 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Center(
+                    child: Text(
+                  'Investor Panel',
+                  style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                )),
+               const SizedBox(height: 20,),
+
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DashboardCompany()));
+                            builder: (context) => DashboardInvestor()));
                   },
                   child: const Text('Dashboard'),
                 ),
@@ -91,13 +99,16 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                   child: const Text('Vendors'),
                 ),
                 Expanded(child: Container()),
-                OutlinedButton(child: const Text('Switch to Investor Account'), onPressed: (){
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DashboardInvestor()),
-                          (route) => false);
-                })
+                OutlinedButton(
+                    child: const Text('Switch to Company Account'),
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DashboardCompany()),
+                              (route) => false);
+                    })
+
               ],
             ),
           ),
@@ -108,11 +119,13 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider.of<CustomerView>(context, listen: false)
+            itemCount: Provider.of<CustomerViewInvestor>(context, listen: false)
                         .option ==
                     CustomerFilterOptions.all
-                ? Provider.of<CustomerView>(context).allCustomers.length
-                : Provider.of<CustomerView>(context).thisMonthCustomers.length,
+                ? Provider.of<CustomerViewInvestor>(context).allCustomers.length
+                : Provider.of<CustomerViewInvestor>(context)
+                    .thisMonthCustomers
+                    .length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
@@ -171,13 +184,14 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                       children: [
                         CircleAvatar(
                           backgroundImage: NetworkImage(
-                              Provider.of<CustomerView>(context, listen: false)
+                              Provider.of<CustomerViewInvestor>(context,
+                                              listen: false)
                                           .option ==
                                       CustomerFilterOptions.all
-                                  ? Provider.of<CustomerView>(context)
+                                  ? Provider.of<CustomerViewInvestor>(context)
                                       .allCustomers[index]
                                       .image
-                                  : Provider.of<CustomerView>(context)
+                                  : Provider.of<CustomerViewInvestor>(context)
                                       .thisMonthCustomers[index]
                                       .image),
                           radius: 30,
@@ -189,19 +203,20 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              Provider.of<CustomerView>(context, listen: false)
+                              Provider.of<CustomerViewInvestor>(context,
+                                              listen: false)
                                           .option ==
                                       CustomerFilterOptions.all
-                                  ? Provider.of<CustomerView>(context)
+                                  ? Provider.of<CustomerViewInvestor>(context)
                                       .allCustomers[index]
                                       .name
-                                  : Provider.of<CustomerView>(context)
+                                  : Provider.of<CustomerViewInvestor>(context)
                                       .thisMonthCustomers[index]
                                       .name,
                               style: kBoldText,
                             ),
                             Text(
-                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).option == CustomerFilterOptions.all ? Provider.of<CustomerView>(context).allCustomers[index].outstandingBalance : Provider.of<CustomerView>(context).thisMonthCustomers[index].outstandingBalance} PKR',
+                              'Outstanding Balance : ${Provider.of<CustomerViewInvestor>(context, listen: false).option == CustomerFilterOptions.all ? Provider.of<CustomerViewInvestor>(context).allCustomers[index].outstandingBalance : Provider.of<CustomerViewInvestor>(context).thisMonthCustomers[index].outstandingBalance} PKR',
                             ),
                           ],
                         )

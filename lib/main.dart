@@ -1,3 +1,4 @@
+import 'package:ecommerce_bnql/investor_panel/view_model/viewmodel_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'company_panel/dashboard/dashboard_screen.dart';
@@ -7,6 +8,9 @@ import 'company_panel/view_model/viewmodel_vendors.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import 'investor_panel/view_model/viewmodel_customers.dart';
+import 'investor_panel/view_model/viewmodel_vendors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +30,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => VendorView()),
         ChangeNotifierProvider(create: (context) => CustomerView()),
         ChangeNotifierProvider(create: (context) => DashboardView()),
+        ChangeNotifierProvider(create: (context)=>DashboardViewInvestor()),
+        ChangeNotifierProvider(create: (context)=>VendorViewInvestor()),
+        ChangeNotifierProvider(create: (context)=>CustomerViewInvestor()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -53,7 +60,7 @@ class MyApp extends StatelessWidget {
               ),
               buttonTheme:
                   const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
-          home: Dashboard()),
+          home: DashboardCompany()),
     );
   }
 }

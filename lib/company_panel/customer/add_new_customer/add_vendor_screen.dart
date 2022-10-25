@@ -343,7 +343,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             productCost:
                                                 int.parse(costController.text),
                                             productName: widget.productName,
-                                            firstPaymnetDate: firstPaymentDate!)
+                                            firstPaymentDate: firstPaymentDate!)
                                         .addCustomerToExistingVendor()
                                     : _selectedVendorOption == Vendor.newVendor
                                         ? await UpdateFirestore(
@@ -361,7 +361,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                                 productCost: int.parse(
                                                     costController.text),
                                                 productName: widget.productName,
-                                                firstPaymnetDate:
+                                                firstPaymentDate:
                                                     firstPaymentDate!)
                                             .addCustomerToNewVendor()
                                         : false;

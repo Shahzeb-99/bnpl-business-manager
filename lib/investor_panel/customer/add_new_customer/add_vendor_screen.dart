@@ -1,13 +1,12 @@
-// ignore_for_file: camel_case_types, no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers, camel_case_types
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:ecommerce_bnql/investor_panel//customer/add_new_customer/update_firebase_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../add_new_customer/update_firebase_class.dart';
-import '../all_customer_screen.dart';
+import '../../../investor_panel/customer/all_customer_screen.dart';
 
 enum Vendor { newVendor, existingVendor }
 
@@ -28,29 +27,30 @@ class AddVendorScreen extends StatefulWidget {
 }
 
 class _AddVendorScreenState extends State<AddVendorScreen> {
+  List<double> numberOfPayments = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  double? selectedPayment;
   List<String> vendorList = [];
   String selectedVendor = 'Select';
   bool loading = false;
   var cashInHand = 0;
   final TextEditingController costController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController investorProfitController =
+      TextEditingController();
+
   final formKey = GlobalKey<FormState>();
+  Vendor? _selectedVendorOption;
   DateTime? firstPaymentDate;
   DateTime? orderDate;
-  List<double> numberOfPayments = [1,2,3,4,5,6,7,8,9,10,11,12];
-  double? selectedPayment;
   bool modalHUD = false;
-
-
-  Vendor? _selectedVendorOption;
 
   @override
   void initState() {
     final cloud = FirebaseFirestore.instance;
-    cloud.collection('financials').doc('finance').get().then((value) {
+    cloud.collection('investorFinancials').doc('finance').get().then((value) {
       cashInHand = value.get('cash_available');
     });
-    cloud.collection('vendors').get().then(
+    cloud.collection('investorVendors').get().then(
       (value) {
         for (var vendor in value.docs) {
           final String name = vendor.get('name');
@@ -74,7 +74,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor:  const Color(0xFF2D2C3F),
+            backgroundColor: const Color(0xFF2D2C3F),
             title: const Text('Missing Fields'),
             content: SingleChildScrollView(
               child: ListBody(
@@ -101,7 +101,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       appBar: AppBar(
         title: const Text(
           'Add Vendor',
-          style: TextStyle(  fontSize: 25),
+          style: TextStyle(fontSize: 25),
         ),
       ),
       body: ModalProgressHUD(
@@ -118,7 +118,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ListTile(
-                        title: const Text('New Vendor'),
+                        title: const Text('New Investor'),
                         leading: Radio<Vendor?>(
                           value: Vendor.newVendor,
                           groupValue: _selectedVendorOption,
@@ -240,7 +240,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color:const Color(0xFF2D2C3F),
+                                              color: const Color(0xFF2D2C3F),
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -276,13 +276,13 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color:const Color(0xFF2D2C3F),
+                                        color: const Color(0xFF2D2C3F),
                                         borderRadius: BorderRadius.circular(4)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<double>(
-                                        dropdownColor:const Color(0xFF2D2C3F),
+                                        dropdownColor: const Color(0xFF2D2C3F),
                                         value: selectedPayment,
                                         items: numberOfPayments
                                             .map((double items) {
@@ -300,6 +300,27 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                         hint: const Text('Number of Payments'),
                                       ),
                                     ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: TextFormField(
+                                    controller: investorProfitController,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    decoration: kDecoration.inputBox(
+                                        'Investor Profit Percentage', '%'),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'This field is required';
+                                      } else if (int.parse(
+                                              investorProfitController.text) >
+                                          100) {
+                                        return 'Percentage should not be greater than 100';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
                                 TextFormField(
@@ -336,6 +357,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 bool status = _selectedVendorOption ==
                                         Vendor.existingVendor
                                     ? await UpdateFirestore(
+                                            investorProfitPercentage: double.parse(
+                                                investorProfitController.text),
                                             numberOfPayments: selectedPayment!,
                                             orderDate: orderDate!,
                                             productSalePrice:
@@ -345,24 +368,30 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             productCost:
                                                 int.parse(costController.text),
                                             productName: widget.productName,
-                                            firstPaymentDate: firstPaymentDate!)
-                                        .addProduct()
+                                            firstPaymnetDate: firstPaymentDate!)
+                                        .addCustomerToExistingVendor()
                                     : _selectedVendorOption == Vendor.newVendor
                                         ? await UpdateFirestore(
+                                                investorProfitPercentage:
+                                                    double.parse(
+                                                        investorProfitController
+                                                            .text),
                                                 numberOfPayments:
                                                     selectedPayment!,
                                                 orderDate: orderDate!,
                                                 productSalePrice:
                                                     widget.productPurchasecost,
-                                                vendorName: nameController.text,
+                                                vendorName: nameController
+                                                        .text.isNotEmpty
+                                                    ? nameController.text
+                                                    : 'No Name',
                                                 customerName:
                                                     widget.customerName,
                                                 productCost: int.parse(
                                                     costController.text),
                                                 productName: widget.productName,
-                                                firstPaymentDate:
-                                                    firstPaymentDate!)
-                                            .addProductToNewVendor()
+                                                firstPaymnetDate: firstPaymentDate!)
+                                            .addCustomerToNewVendor()
                                         : false;
 
                                 if (!mounted) return;
@@ -403,7 +432,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
+      suffix: suffix.isNotEmpty ? Text(suffix) : null,
       filled: true,
       fillColor: const Color(0xFF2D2C3F),
       border: const OutlineInputBorder(),

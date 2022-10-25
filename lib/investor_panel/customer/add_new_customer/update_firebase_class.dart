@@ -1,40 +1,49 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UpdateFirestore {
+  double investorProfitPercentage;
   String vendorName;
   String productName;
   int productCost;
   int productSalePrice;
   String customerName;
-  DateTime firstPaymentDate;
+  DateTime firstPaymnetDate;
   DateTime orderDate;
   double numberOfPayments;
 
   UpdateFirestore(
-      {required this.numberOfPayments,
+      {required this.investorProfitPercentage,
+      required this.numberOfPayments,
       required this.orderDate,
       required this.productSalePrice,
       required this.vendorName,
       required this.customerName,
       required this.productCost,
       required this.productName,
-      required this.firstPaymentDate});
+      required this.firstPaymnetDate});
 
   Future<bool> addCustomerToExistingVendor() async {
+    int companyProfit = ((productSalePrice-productCost)-(productSalePrice - productCost) * (investorProfitPercentage/100)).toInt();
+    productCost = productCost + (companyProfit);
+
     final cloud = FirebaseFirestore.instance;
-    cloud.collection('financials').doc('finance').update(
+    cloud.collection('investorFinancials').doc('finance').update(
       {
         'outstanding_balance': FieldValue.increment(productSalePrice),
         'total_cost': FieldValue.increment(productCost),
         'cash_available': FieldValue.increment(-productCost),
-        'total_profit':FieldValue.increment(productSalePrice-productCost),
+        'total_profit': FieldValue.increment(productSalePrice - productCost),
       },
+    );
+    cloud.collection('financials').doc('finance').update(
+      {'investor_profit': FieldValue.increment(companyProfit)},
     );
 
     DocumentReference vendorReference;
 
-    final vendorQuery =
-        cloud.collection('vendors').where('name', isEqualTo: vendorName);
+    final vendorQuery = cloud
+        .collection('investorVendors')
+        .where('name', isEqualTo: vendorName);
     vendorQuery.get().then(
       (value) async {
         vendorReference = value.docs[0].reference;
@@ -54,7 +63,7 @@ class UpdateFirestore {
             'reference': vendorDocumentReference
           },
         );
-        final newCustomerReference = await cloud.collection('customers').add(
+        final newCustomerReference = await cloud.collection('InvesotCustomers').add(
           {
             'name': customerName,
             'outstanding_balance': productSalePrice,
@@ -63,7 +72,7 @@ class UpdateFirestore {
           },
         );
         final purchaseReference = await cloud
-            .collection('customers')
+            .collection('investorCustomers')
             .doc(newCustomerReference.id)
             .collection('purchases')
             .add(
@@ -72,6 +81,7 @@ class UpdateFirestore {
             'outstanding_balance': productSalePrice,
             'paid_amount': 0,
             'purchaseDate': Timestamp.fromDate(orderDate),
+            'companyProfit':companyProfit,
           },
         );
 
@@ -79,10 +89,10 @@ class UpdateFirestore {
         final double lastPayment =
             productSalePrice - productPayment.toInt() * numberOfPayments;
         final double lastPayment2 = productPayment.toInt() + lastPayment;
-        var timeNow = firstPaymentDate;
+        var timeNow = firstPaymnetDate;
         for (var i = 1; i < numberOfPayments + 1; i++) {
           await cloud
-              .collection('customers')
+              .collection('investorCustomers')
               .doc(newCustomerReference.id)
               .collection('purchases')
               .doc(purchaseReference.id)
@@ -110,19 +120,23 @@ class UpdateFirestore {
 
   Future<bool> addCustomerToNewVendor() async {
     final cloud = FirebaseFirestore.instance;
-
-    cloud.collection('financials').doc('finance').update(
+    int companyProfit = ((productSalePrice-productCost)-(productSalePrice - productCost) * (investorProfitPercentage/100)).toInt();
+    productCost = productCost + (companyProfit);
+    cloud.collection('investorFinancials').doc('finance').update(
       {
         'outstanding_balance': FieldValue.increment(productSalePrice),
         'total_cost': FieldValue.increment(productCost),
         'cash_available': FieldValue.increment(-productCost),
-        'total_profit':FieldValue.increment(productSalePrice-productCost),
+        'total_profit': FieldValue.increment(productSalePrice - productCost),
       },
+    );
+    cloud.collection('financials').doc('finance').update(
+      {'investor_profit': FieldValue.increment(companyProfit)},
     );
 
     DocumentReference vendorReference;
 
-    vendorReference = await cloud.collection('vendors').add({
+    vendorReference = await cloud.collection('investorVendors').add({
       'name': vendorName,
       'address': 'Address',
       'city': 'City',
@@ -145,7 +159,8 @@ class UpdateFirestore {
         'reference': vendorDocumentReference
       },
     );
-    final newCustomerReference = await cloud.collection('customers').add(
+    final newCustomerReference =
+        await cloud.collection('investorCustomers').add(
       {
         'name': customerName,
         'outstanding_balance': productSalePrice,
@@ -154,7 +169,7 @@ class UpdateFirestore {
       },
     );
     final purchaseReference = await cloud
-        .collection('customers')
+        .collection('investorCustomers')
         .doc(newCustomerReference.id)
         .collection('purchases')
         .add(
@@ -163,6 +178,7 @@ class UpdateFirestore {
         'outstanding_balance': productSalePrice,
         'paid_amount': 0,
         'purchaseDate': Timestamp.fromDate(orderDate),
+        'companyProfit':companyProfit,
       },
     );
 
@@ -171,10 +187,10 @@ class UpdateFirestore {
         productSalePrice - productPayment.toInt() * numberOfPayments;
     final double lastPayment2 = productPayment.toInt() + lastPayment;
 
-    var timeNow = firstPaymentDate;
+    var timeNow = firstPaymnetDate;
     for (var i = 1; i < numberOfPayments + 1; i++) {
       await cloud
-          .collection('customers')
+          .collection('investorCustomers')
           .doc(newCustomerReference.id)
           .collection('purchases')
           .doc(purchaseReference.id)
@@ -201,14 +217,24 @@ class UpdateFirestore {
 
   Future<bool> addProduct() async {
     final cloud = FirebaseFirestore.instance;
+
+    int companyProfit = ((productSalePrice-productCost)-(productSalePrice - productCost) * (investorProfitPercentage/100)).toInt();
+    productCost = productCost + (companyProfit);
+
     cloud
-        .collection('financials')
+        .collection('investorFinancials')
         .doc('finance')
         .update({'cash_available': FieldValue.increment(-productCost)});
+
+    cloud.collection('financials').doc('finance').update(
+      {'investor_profit': FieldValue.increment(companyProfit)},
+    );
+
     DocumentReference vendorReference;
 
-    final vendorQuery =
-        cloud.collection('vendors').where('name', isEqualTo: vendorName);
+    final vendorQuery = cloud
+        .collection('investorVendors')
+        .where('name', isEqualTo: vendorName);
     vendorQuery.get().then(
       (value) async {
         vendorReference = value.docs[0].reference;
@@ -230,15 +256,16 @@ class UpdateFirestore {
         );
 
         await cloud
-            .collection('customers')
+            .collection('investorCustomers')
             .where('name', isEqualTo: customerName)
             .get()
             .then((value) async {
-          cloud.collection('financials').doc('finance').update(
+          cloud.collection('investorFinancials').doc('finance').update(
             {
               'outstanding_balance': FieldValue.increment(productSalePrice),
               'total_cost': FieldValue.increment(productCost),
-              'total_profit':FieldValue.increment(productSalePrice-productCost),
+              'total_profit':
+                  FieldValue.increment(productSalePrice - productCost),
             },
           );
 
@@ -248,7 +275,7 @@ class UpdateFirestore {
             },
           );
           final purchaseReference = await cloud
-              .collection('customers')
+              .collection('investorCustomers')
               .doc(value.docs[0].id)
               .collection('purchases')
               .add(
@@ -257,6 +284,7 @@ class UpdateFirestore {
               'outstanding_balance': productSalePrice,
               'paid_amount': 0,
               'purchaseDate': Timestamp.fromDate(orderDate),
+              'companyProfit':companyProfit,
             },
           );
 
@@ -264,10 +292,10 @@ class UpdateFirestore {
           final double lastPayment =
               productSalePrice - productPayment.toInt() * numberOfPayments;
           final double lastPayment2 = productPayment.toInt() + lastPayment;
-          var timeNow = firstPaymentDate;
+          var timeNow = firstPaymnetDate;
           for (var i = 1; i < numberOfPayments + 1; i++) {
             await cloud
-                .collection('customers')
+                .collection('investorCustomers')
                 .doc(value.docs[0].id)
                 .collection('purchases')
                 .doc(purchaseReference.id)
@@ -296,15 +324,21 @@ class UpdateFirestore {
 
   Future<bool> addProductToNewVendor() async {
     final cloud = FirebaseFirestore.instance;
+    int companyProfit = ((productSalePrice-productCost)-(productSalePrice - productCost) * (investorProfitPercentage/100)).toInt();
+    productCost = productCost + (companyProfit);
 
     cloud
-        .collection('financials')
+        .collection('investorFinancials')
         .doc('finance')
         .update({'cash_available': FieldValue.increment(-productCost)});
 
+    cloud.collection('financials').doc('finance').update(
+      {'investor_profit': FieldValue.increment(companyProfit)},
+    );
+
     DocumentReference vendorReference;
 
-    vendorReference = await cloud.collection('vendors').add({
+    vendorReference = await cloud.collection('investorVendors').add({
       'name': vendorName,
       'address': 'Address',
       'city': 'City',
@@ -329,15 +363,15 @@ class UpdateFirestore {
     );
 
     await cloud
-        .collection('customers')
+        .collection('investorCustomers')
         .where('name', isEqualTo: customerName)
         .get()
         .then((value) async {
-      cloud.collection('financials').doc('finance').update(
+      cloud.collection('investorFinancials').doc('finance').update(
         {
           'outstanding_balance': FieldValue.increment(productSalePrice),
           'total_cost': FieldValue.increment(productCost),
-          'total_profit':FieldValue.increment(productSalePrice-productCost),
+          'total_profit': FieldValue.increment(productSalePrice - productCost),
         },
       );
 
@@ -347,7 +381,7 @@ class UpdateFirestore {
         },
       );
       final purchaseReference = await cloud
-          .collection('customers')
+          .collection('investorCustomers')
           .doc(value.docs[0].id)
           .collection('purchases')
           .add(
@@ -356,6 +390,7 @@ class UpdateFirestore {
           'outstanding_balance': productSalePrice,
           'paid_amount': 0,
           'purchaseDate': Timestamp.fromDate(orderDate),
+          'companyProfit':companyProfit,
         },
       );
 
@@ -363,10 +398,10 @@ class UpdateFirestore {
       final double lastPayment =
           productSalePrice - productPayment.toInt() * numberOfPayments;
       final double lastPayment2 = productPayment.toInt() + lastPayment;
-      var timeNow = firstPaymentDate;
+      var timeNow = firstPaymnetDate;
       for (var i = 1; i < numberOfPayments + 1; i++) {
         await cloud
-            .collection('customers')
+            .collection('investorCustomers')
             .doc(value.docs[0].id)
             .collection('purchases')
             .doc(purchaseReference.id)

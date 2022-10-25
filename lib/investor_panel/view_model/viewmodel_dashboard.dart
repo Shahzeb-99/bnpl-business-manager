@@ -1,10 +1,12 @@
 
 import 'package:flutter/material.dart';
 
-import '../dashboard/dashboard_screen.dart';
-import '../model/dashboard.dart';
+import '../../investor_panel/dashboard/dashboard_screen.dart';
+import '../../investor_panel/model/dashboard.dart';
 
-class DashboardView extends ChangeNotifier {
+
+
+class DashboardViewInvestor extends ChangeNotifier {
   DashboardData dashboardData = DashboardData(
       totalAmountPaid: 0,
       totalOutstandingBalance: 0,
@@ -35,12 +37,5 @@ class DashboardView extends ChangeNotifier {
         isThisMonth: option == DashboardFilterOptions.oneMonth ? true : false);
 
     notifyListeners();
-  }
-
-  Future<void> getExpenses() async {
-
-   await dashboardData.getAllExpenses();
-   notifyListeners();
-
   }
 }
