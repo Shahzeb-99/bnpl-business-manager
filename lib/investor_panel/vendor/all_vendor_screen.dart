@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_bnql/investor_panel/vendor/vendor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +8,6 @@ import '../../company_panel/dashboard/dashboard_screen.dart';
 import '../../investor_panel/customer/all_customer_screen.dart';
 import '../../investor_panel/dashboard/dashboard_screen.dart';
 import '../../investor_panel/view_model/viewmodel_vendors.dart';
-
 
 class AllVendorScreen extends StatefulWidget {
   const AllVendorScreen({Key? key}) : super(key: key);
@@ -36,18 +36,14 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
               },
               icon: const Icon(
                 Icons.menu,
-
               ));
         }),
-
-
         title: const Text(
           'Vendors',
-          style: TextStyle(  fontSize: 25),
+          style: TextStyle(fontSize: 25),
         ),
       ),
       drawer: Drawer(
-
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -56,15 +52,18 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
               children: [
                 const Center(
                     child: Text(
-                      'Investor Panel',
-                      style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )),
-                const SizedBox(height: 20,),
+                  'Investor Panel',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                )),
+                const SizedBox(
+                  height: 20,
+                ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => DashboardInvestor()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DashboardInvestor()));
                   },
                   child: const Text('Dashboard'),
                 ),
@@ -85,7 +84,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => DashboardCompany()),
-                              (route) => false);
+                          (route) => false);
                     })
               ],
             ),
@@ -94,10 +93,11 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical:10,horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-            itemCount: Provider.of<VendorViewInvestor>(context).allVendors.length,
+            itemCount:
+                Provider.of<VendorViewInvestor>(context).allVendors.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 elevation: 5,
@@ -109,17 +109,14 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                         MaterialPageRoute(
                             builder: (context) => VendorProfile(index: index)));
                   },
-
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              Provider.of<VendorViewInvestor>(context, listen: false)
-                                  .allVendors[index]
-                                  .image),
-                          radius: 30,
+                        CachedNetworkImage(
+                          imageUrl: 'https://i.stack.imgur.com/mwFzF.png',
+                          height: 60,
+                          width: 60,
                         ),
                         const SizedBox(
                           width: 20,
@@ -130,17 +127,21 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                Provider.of<VendorViewInvestor>(context, listen: false)
-                                    .allVendors[index]
-                                    .name,
-                                style: kBoldText,
-                              ),
-                              Text(
                                 Provider.of<VendorViewInvestor>(context)
                                     .allVendors[index]
-                                    .address,
+                                    .name,
+                                style: const TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.bold),
                                 softWrap: true,
-                              )
+                              ),
+                              Text(
+                                'Opening Balance : ${Provider.of<VendorViewInvestor>(context).allVendors[index].openingBalance.toString()}',
+                                softWrap: true,
+                              ),
+                              Text(
+                                'Current Balance : ${Provider.of<VendorViewInvestor>(context).allVendors[index].currentBalance.toString()}',
+                                softWrap: true,
+                              ),
                             ],
                           ),
                         )

@@ -6,23 +6,23 @@ import '../../investor_panel/model/vendors.dart';
 
 
 class VendorViewInvestor extends ChangeNotifier {
-  List<Vendors> allVendors = [];
+  List<Investors> allVendors = [];
 
   void getVendors() async {
     allVendors = [];
     final cloud = FirebaseFirestore.instance;
-    await cloud.collection('investorVendors').get().then(
+    await cloud.collection('investors').get().then(
       (value) async {
         if (value.docs.isNotEmpty) {
-          for (var vendor in value.docs) {
-            Vendors newVendor = Vendors(
-              name: vendor.get('name'),
-              image: vendor.get('image'),
-              documentID: vendor.id,
-              address: vendor.get('address'),
-              city: vendor.get('city'),
+          for (var investor in value.docs) {
+            Investors investors = Investors(
+              name: investor.get('name'),
+              openingBalance: investor.get('openingBalance'),
+              currentBalance: investor.get('currentBalance'),
+                investorReference: investor.reference
+
             );
-            allVendors.add(newVendor);
+            allVendors.add(investors);
             notifyListeners();
           }
         }

@@ -1,14 +1,14 @@
-class Vendors {
-  Vendors(
-      {required this.city,
-      required this.address,
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Investors {
+  Investors(
+      {required this.investorReference,
+      required this.openingBalance,
       required this.name,
-      required this.image,
-      required this.documentID});
+      required this.currentBalance});
 
   final String name;
-  final String image;
-  final String documentID;
-  final String address;
-  final String city;
+  num currentBalance;
+  num openingBalance;
+  DocumentReference investorReference;
 }

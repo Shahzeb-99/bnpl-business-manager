@@ -29,12 +29,14 @@ class AddVendorScreen extends StatefulWidget {
 class _AddVendorScreenState extends State<AddVendorScreen> {
   List<double> numberOfPayments = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   double? selectedPayment;
-  List<String> vendorList = [];
-  String selectedVendor = 'Select';
+  List<String> investorList = [];
+  String investorVendor = 'Select';
   bool loading = false;
   var cashInHand = 0;
   final TextEditingController costController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController openingBalanceController =
+      TextEditingController();
   final TextEditingController investorProfitController =
       TextEditingController();
 
@@ -50,12 +52,12 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
     cloud.collection('investorFinancials').doc('finance').get().then((value) {
       cashInHand = value.get('cash_available');
     });
-    cloud.collection('investorVendors').get().then(
+    cloud.collection('investors').get().then(
       (value) {
-        for (var vendor in value.docs) {
-          final String name = vendor.get('name');
-          vendorList.add(name);
-          selectedVendor = vendorList.first;
+        for (var investor in value.docs) {
+          final String name = investor.get('name');
+          investorList.add(name);
+          investorVendor = investorList.first;
         }
         setState(() {
           loading = true;
@@ -130,16 +132,34 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                         ),
                       ),
                       _selectedVendorOption == Vendor.newVendor
-                          ? TextFormField(
-                              controller: nameController,
-                              decoration:
-                                  kDecoration.inputBox('Vendor Name', ''),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'This field is required';
-                                }
-                                return null;
-                              },
+                          ? Column(
+                              children: [
+                                TextFormField(
+                                  controller: nameController,
+                                  decoration:
+                                      kDecoration.inputBox('Investor Name', ''),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This field is required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                TextFormField(
+                                  controller: openingBalanceController,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  decoration: kDecoration.inputBox(
+                                      'Opening Balance', 'PKR'),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This field is required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ],
                             )
                           : const Divider(),
                       ListTile(
@@ -164,8 +184,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               dropdownColor: const Color(0xFF2D2C3F),
-                              value: selectedVendor,
-                              items: vendorList.map((String items) {
+                              value: investorVendor,
+                              items: investorList.map((String items) {
                                 return DropdownMenuItem(
                                   value: items,
                                   child: Text(items),
@@ -175,7 +195,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   _selectedVendorOption == Vendor.existingVendor
                                       ? (value) {
                                           setState(() {
-                                            selectedVendor = value!;
+                                            investorVendor = value!;
                                           });
                                         }
                                       : null,
@@ -357,41 +377,51 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 bool status = _selectedVendorOption ==
                                         Vendor.existingVendor
                                     ? await UpdateFirestore(
-                                            investorProfitPercentage: double.parse(
-                                                investorProfitController.text),
+                                            investorProfitPercentage:
+                                                double.parse(
+                                                    investorProfitController
+                                                        .text),
                                             numberOfPayments: selectedPayment!,
                                             orderDate: orderDate!,
                                             productSalePrice:
                                                 widget.productPurchasecost,
-                                            vendorName: selectedVendor,
+                                            vendorName: investorVendor,
                                             customerName: widget.customerName,
                                             productCost:
                                                 int.parse(costController.text),
                                             productName: widget.productName,
-                                            firstPaymnetDate: firstPaymentDate!)
-                                        .addCustomerToExistingVendor()
+                                            firstPaymnetDate: firstPaymentDate!,
+                                            openingBalance:_selectedVendorOption ==
+                                                Vendor.newVendor? int.parse(
+                                                openingBalanceController.text):0,
+                                            investorName: investorVendor)
+                                        .addCustomerToExistingInvestor()
                                     : _selectedVendorOption == Vendor.newVendor
                                         ? await UpdateFirestore(
-                                                investorProfitPercentage:
-                                                    double.parse(
-                                                        investorProfitController
-                                                            .text),
-                                                numberOfPayments:
-                                                    selectedPayment!,
-                                                orderDate: orderDate!,
-                                                productSalePrice:
-                                                    widget.productPurchasecost,
-                                                vendorName: nameController
-                                                        .text.isNotEmpty
+                                            investorProfitPercentage:
+                                                double.parse(
+                                                    investorProfitController
+                                                        .text),
+                                            numberOfPayments: selectedPayment!,
+                                            orderDate: orderDate!,
+                                            productSalePrice:
+                                                widget.productPurchasecost,
+                                            vendorName:
+                                                nameController.text.isNotEmpty
                                                     ? nameController.text
                                                     : 'No Name',
-                                                customerName:
-                                                    widget.customerName,
-                                                productCost: int.parse(
-                                                    costController.text),
-                                                productName: widget.productName,
-                                                firstPaymnetDate: firstPaymentDate!)
-                                            .addCustomerToNewVendor()
+                                            customerName: widget.customerName,
+                                            productCost:
+                                                int.parse(costController.text),
+                                            productName: widget.productName,
+                                            firstPaymnetDate: firstPaymentDate!,
+                                            openingBalance: int.parse(
+                                                openingBalanceController.text),
+                                            investorName:
+                                                nameController.text.isNotEmpty
+                                                    ? nameController.text
+                                                    : 'No Name',
+                                          ).addCustomerToNewVendor()
                                         : false;
 
                                 if (!mounted) return;
