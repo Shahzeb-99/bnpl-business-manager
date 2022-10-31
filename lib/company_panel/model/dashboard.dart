@@ -22,10 +22,28 @@ class DashboardData {
   Future<void> getAllExpenses() async {
     expensesList = [];
 
-    FirebaseFirestore.instance
+   await FirebaseFirestore.instance
         .collection('financials')
         .doc('finance')
-        .collection('expenses')
+        .collection('expenses').orderBy('time',descending: true)
+        .get()
+        .then((value) {
+      for (var expense in value.docs) {
+        final num amount = expense.get('amount');
+        final Timestamp date = expense.get('time');
+        final String description = expense.get('description');
+        expensesList.add(Expenses(amount: amount, date: date, description: description));
+      }
+    });
+  }
+
+  Future<void> getAllTransactions() async {
+    expensesList = [];
+
+    await FirebaseFirestore.instance
+        .collection('financials')
+        .doc('finance')
+        .collection('transactions').orderBy('time',descending: true )
         .get()
         .then((value) {
       for (var expense in value.docs) {

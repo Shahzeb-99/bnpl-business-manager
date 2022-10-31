@@ -1,7 +1,7 @@
+import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
 import 'package:ecommerce_bnql/investor_panel/view_model/viewmodel_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'company_panel/dashboard/dashboard_screen.dart';
 import 'company_panel/view_model/viewmodel_customers.dart';
 import 'company_panel/view_model/viewmodel_dashboard.dart';
 import 'company_panel/view_model/viewmodel_vendors.dart';
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
               ),
               buttonTheme:
                   const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
-          home: DashboardCompany()),
+          home: const MainScreen()),
     );
   }
 }

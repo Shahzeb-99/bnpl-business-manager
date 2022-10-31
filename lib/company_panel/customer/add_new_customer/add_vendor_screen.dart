@@ -2,12 +2,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/company_panel/customer/add_new_customer/update_firebase_class.dart';
+import 'package:ecommerce_bnql/company_panel/pageview_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../all_customer_screen.dart';
 
 enum Vendor { newVendor, existingVendor }
 
@@ -373,7 +373,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const AllCustomersScreen()),
+                                              const MainScreenCustomer()),
                                       (route) => false);
                                 } else {
                                   _showMyDialog();

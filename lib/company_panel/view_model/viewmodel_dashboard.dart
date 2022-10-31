@@ -43,4 +43,10 @@ class DashboardView extends ChangeNotifier {
    notifyListeners();
 
   }
+  Future<void> getTransactions() async {
+
+    await dashboardData.getAllTransactions();
+    notifyListeners();
+
+  }
 }

@@ -118,6 +118,7 @@ class Customers {
             purchaseAmount: productCost,
             sellingAmount: productSellingPrice,
             documentReferencePurchase: documentReference,
+            investorReference: purchase.get('investorReference'),
           ));
         }
       },
@@ -170,6 +171,7 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            investorReference: purchase.get('investorReference'),
             companyProfit: companyProfit,
             customerID: documentID,
             purchaseDate: purchaseDate,
@@ -252,6 +254,7 @@ class Customers {
             );
 
             purchases.add(Purchase(
+              investorReference: purchase.get('investorReference'),
               companyProfit: companyProfit,
               customerID: documentID,
               purchaseDate: purchaseDate,
@@ -337,6 +340,7 @@ class Customers {
             );
 
             purchases.add(Purchase(
+              investorReference: purchase.get('investorReference'),
               companyProfit: companyProfit,
               customerID: documentID,
               purchaseDate: purchaseDate,

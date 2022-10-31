@@ -6,10 +6,10 @@ class DashboardData {
   num totalCost;
   num profit;
   int cashAvailable;
-  int expenses;
+  int company_profit;
 
   DashboardData(
-      {required this.expenses,
+      {required this.company_profit,
       required this.cashAvailable,
       required this.profit,
       required this.totalAmountPaid,
@@ -20,7 +20,7 @@ class DashboardData {
     totalCost = 0;
     totalOutstandingBalance = 0;
     totalAmountPaid = 0;
-    expenses = 0;
+    company_profit = 0;
 
     final cloud = FirebaseFirestore.instance;
 
@@ -30,7 +30,7 @@ class DashboardData {
         totalAmountPaid = value.docs[0].get('amount_paid');
         totalCost = value.docs[0].get('total_cost');
         cashAvailable = value.docs[0].get('cash_available');
-        expenses = value.docs[0].get('expenses');
+        company_profit = value.docs[0].get('company_profit');
         profit = value.docs[0].get('total_profit');
       }
     });
@@ -86,7 +86,8 @@ class DashboardData {
     );
   }
 
-  Future<void> getThisMonthCustomers({required bool isThisMonth}) async {
+  Future<void> getThisMonthCustomers(
+      {required bool isThisMonth, required Function update}) async {
     totalOutstandingBalance = 0;
     totalAmountPaid = 0;
 
@@ -95,45 +96,52 @@ class DashboardData {
 
     await cloud.collection('investorCustomers').get().then((value) async {
       for (var customers in value.docs) {
-        await customers.reference
-            .collection('purchases')
-            .get()
-            .then((value) async {
-          for (var purchase in value.docs) {
-            await purchase.reference
-                .collection('payment_schedule')
-                .where('date',
-                    isLessThanOrEqualTo: DateTime(
-                        DateTime.now().year, DateTime.now().month + 1, 0))
-                .get()
-                .then((value)  {
-              for (var payment in value.docs) {
-                totalOutstandingBalance += payment.get('remainingAmount');
-              }
-            });
-          }
-          for(var purchase in value.docs){
-
-            await purchase.reference.collection('transaction_history').where('date',
-                isLessThanOrEqualTo: DateTime(
-                    DateTime.now().year, DateTime.now().month + 1, 0))
-                .where('date',
-                isGreaterThanOrEqualTo: isThisMonth
-                    ? DateTime(
-                    DateTime.now().year, DateTime.now().month, 1)
-                    : DateTime(DateTime.now().year,
-                    DateTime.now().month - 5, 1)).get().then((value) {
-
-              for(var transaction  in value.docs){
-                totalAmountPaid+=transaction.get('amount');
-
-                }
-
-            });
-
-          }
-        });
+        async(customers: customers, isThisMonth: isThisMonth, update: update);
       }
     });
+  }
+
+  Future<void> async(
+      {required QueryDocumentSnapshot customers,
+      required bool isThisMonth,
+      required Function update}) async {
+    await customers.reference.collection('purchases').get().then(
+      (value) async {
+        for (var purchase in value.docs) {
+          await purchase.reference
+              .collection('payment_schedule')
+              .where('date',
+                  isLessThanOrEqualTo: DateTime(
+                      DateTime.now().year, DateTime.now().month + 1, 0))
+              .get()
+              .then((value) {
+            for (var payment in value.docs) {
+              totalOutstandingBalance += payment.get('remainingAmount');
+            }
+          });
+        }
+        for (var purchase in value.docs) {
+          await purchase.reference
+              .collection('transaction_history')
+              .where('date',
+                  isLessThanOrEqualTo: DateTime(
+                      DateTime.now().year, DateTime.now().month + 1, 0))
+              .where('date',
+                  isGreaterThanOrEqualTo: isThisMonth
+                      ? DateTime(DateTime.now().year, DateTime.now().month, 1)
+                      : DateTime(
+                          DateTime.now().year, DateTime.now().month - 5, 1))
+              .get()
+              .then((value) {
+            for (var transaction in value.docs) {
+              totalAmountPaid += transaction.get('amount');
+
+
+            }
+          });
+        }
+      },
+    );
+    update();
   }
 }

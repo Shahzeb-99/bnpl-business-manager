@@ -2,11 +2,11 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/investor_panel//customer/add_new_customer/update_firebase_class.dart';
+import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../../../investor_panel/customer/all_customer_screen.dart';
 
 enum Vendor { newVendor, existingVendor }
 
@@ -163,7 +163,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                             )
                           : const Divider(),
                       ListTile(
-                        title: const Text('Existing Vendor'),
+                        title: const Text('Existing Investor'),
                         leading: Radio<Vendor?>(
                           value: Vendor.existingVendor,
                           groupValue: _selectedVendorOption,
@@ -353,9 +353,6 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'This field is required';
-                                    } else if (int.parse(costController.text) >
-                                        cashInHand) {
-                                      return 'Not enough Cash available';
                                     }
                                     return null;
                                   },
@@ -431,7 +428,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const AllCustomersScreen()),
+                                              const MainScreen()),
                                       (route) => false);
                                 } else {
                                   _showMyDialog();

@@ -185,6 +185,8 @@ class Purchase {
       'outstanding_balance': FieldValue.increment(-amount),
       'cash_available': FieldValue.increment(amount),
     });
+
+
   }
 
   void addTransaction(int amount) {
@@ -192,6 +194,13 @@ class Purchase {
       {
         'amount': amount,
         'date': Timestamp.now(),
+      },
+    );
+    FirebaseFirestore.instance.collection('financials').doc('finance').collection('transactions').add(
+      {
+        'amount': amount,
+        'time': Timestamp.now(),
+        'description':'Payment received from customer($customerID) for product($productName)'
       },
     );
   }

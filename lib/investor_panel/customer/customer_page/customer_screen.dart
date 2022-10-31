@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_model/viewmodel_customers.dart';
-import '../add_new_customer/add_product.dart';
+import '../customer_page/add_product.dart';
 import '../all_customer_screen.dart';
 import '../payment_schedule_class.dart';
 import '../purchase_widget.dart';

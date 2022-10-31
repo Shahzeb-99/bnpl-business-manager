@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../company_panel/dashboard/dashboard_screen.dart';
 import '../../investor_panel/customer/customer_page/customer_screen.dart';
-import '../../investor_panel/vendor/all_vendor_screen.dart';
-import '../../investor_panel/dashboard/dashboard_screen.dart';
 import '../../investor_panel/customer/add_new_customer/add_customer_screen.dart';
 import '../../investor_panel/view_model/viewmodel_customers.dart';
 
@@ -34,15 +31,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(builder: (BuildContext context) {
-          return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(
-                Icons.menu,
-              ));
-        }),
+
         title: Row(
           children: [
             const Text(
@@ -65,55 +54,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Center(
-                    child: Text(
-                  'Investor Panel',
-                  style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                )),
-               const SizedBox(height: 20,),
 
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DashboardInvestor()));
-                  },
-                  child: const Text('Dashboard'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AllVendorScreen()));
-                  },
-                  child: const Text('Vendors'),
-                ),
-                Expanded(child: Container()),
-                OutlinedButton(
-                    child: const Text('Switch to Company Account'),
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DashboardCompany()),
-                              (route) => false);
-                    })
-
-              ],
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

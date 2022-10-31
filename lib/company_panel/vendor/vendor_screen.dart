@@ -95,12 +95,9 @@ class _VendorProfileState extends State<VendorProfile> {
         .get();
 
     for (var productDocument in productCollection.docs) {
-      String image = productDocument.get('image');
-      int price = productDocument.get('price');
-      String name = productDocument.get('name');
       setState(
         () {
-          allProducts.add(VendorWidget(price: price, image: image, name: name));
+          allProducts.add(VendorWidget(price: productDocument.get('price'), image: productDocument.get('image'), name: productDocument.get('name')));
         },
       );
     }

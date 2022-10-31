@@ -1,24 +1,19 @@
 // ignore_for_file: camel_case_types
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_bnql/company_panel/dashboard/dashboard_screen.dart';
+import 'package:ecommerce_bnql/company_panel/pageview_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../../investor_panel/customer/all_customer_screen.dart';
 import '../../investor_panel/dashboard/amountPaid_button/amount_spend_screen.dart';
 import '../../investor_panel/dashboard/outstandingAmount_button/outstanding_balance_screen.dart';
-import '../../investor_panel/vendor/all_vendor_screen.dart';
 import '../../investor_panel/view_model/viewmodel_dashboard.dart';
 
 enum DashboardFilterOptions { all, oneMonth, sixMonths }
 
 class DashboardInvestor extends StatefulWidget {
-  DashboardInvestor({Key? key}) : super(key: key);
-
-  final TextEditingController moneyController = TextEditingController();
+  const DashboardInvestor({Key? key}) : super(key: key);
 
   @override
   State<DashboardInvestor> createState() => _DashboardInvestorState();
@@ -26,9 +21,13 @@ class DashboardInvestor extends StatefulWidget {
 
 class _DashboardInvestorState extends State<DashboardInvestor> {
   bool loading = false;
+  final TextEditingController moneyController = TextEditingController();
+  int filterIndex = 0;
 
   @override
   void initState() {
+    Provider.of<DashboardViewInvestor>(context, listen: false).option =
+        DashboardFilterOptions.all;
     Provider.of<DashboardViewInvestor>(context, listen: false)
         .getAllFinancials();
     super.initState();
@@ -55,51 +54,56 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
               'Dashboard Investor',
               style: TextStyle(fontSize: 25),
             ),
-            IconButton(
-              splashRadius: 25,
-              onPressed: () async {
-                if (Provider.of<DashboardViewInvestor>(context, listen: false)
-                        .option ==
-                    DashboardFilterOptions.all) {
-                  setState(() {
-                    loading = true;
-                  });
-                  await Provider.of<DashboardViewInvestor>(context,
-                          listen: false)
-                      .getAllFinancials();
-                  setState(() {
-                    loading = false;
-                  });
-                } else if (Provider.of<DashboardViewInvestor>(context,
-                            listen: false)
-                        .option ==
-                    DashboardFilterOptions.sixMonths) {
-                  setState(() {
-                    loading = true;
-                  });
-                  await Provider.of<DashboardViewInvestor>(context,
-                          listen: false)
-                      .getMonthlyFinancials();
-                  setState(() {
-                    loading = false;
-                  });
-                } else if (Provider.of<DashboardViewInvestor>(context,
-                            listen: false)
-                        .option ==
-                    DashboardFilterOptions.oneMonth) {
-                  setState(() {
-                    loading = true;
-                  });
-                  await Provider.of<DashboardViewInvestor>(context,
-                          listen: false)
-                      .getMonthlyFinancials();
-                  setState(() {
-                    loading = false;
-                  });
-                }
-              },
-              icon: const Icon(Icons.refresh_rounded),
-            )
+            loading != true
+                ? IconButton(
+                    splashRadius: 25,
+                    onPressed: () async {
+                      if (Provider.of<DashboardViewInvestor>(context,
+                                  listen: false)
+                              .option ==
+                          DashboardFilterOptions.all) {
+                        setState(() {
+                          loading = true;
+                        });
+                        await Provider.of<DashboardViewInvestor>(context,
+                                listen: false)
+                            .getAllFinancials();
+                        setState(() {
+                          loading = false;
+                        });
+                      } else if (Provider.of<DashboardViewInvestor>(context,
+                                  listen: false)
+                              .option ==
+                          DashboardFilterOptions.sixMonths) {
+                        setState(() {
+                          loading = true;
+                        });
+                        await Provider.of<DashboardViewInvestor>(context,
+                                listen: false)
+                            .getMonthlyFinancials();
+                        setState(() {
+                          loading = false;
+                        });
+                      } else if (Provider.of<DashboardViewInvestor>(context,
+                                  listen: false)
+                              .option ==
+                          DashboardFilterOptions.oneMonth) {
+                        setState(() {
+                          loading = true;
+                        });
+                        await Provider.of<DashboardViewInvestor>(context,
+                                listen: false)
+                            .getMonthlyFinancials();
+                        setState(() {
+                          loading = false;
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.refresh_rounded),
+                  )
+                : const RefreshProgressIndicator(
+                    backgroundColor: Color(0xFF1A1C33),
+                  )
           ],
         ),
       ),
@@ -115,92 +119,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                   'Investor Panel',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AllCustomersScreen()));
-                  },
-                  child: const Text('Customers'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AllVendorScreen()));
-                  },
-                  child: const Text('Vendors'),
-                ),
-                ListTile(
-                  title: const Text('All Time'),
-                  leading: Radio<DashboardFilterOptions?>(
-                    value: DashboardFilterOptions.all,
-                    groupValue:
-                        Provider.of<DashboardViewInvestor>(context).option,
-                    onChanged: (value) async {
-                      Navigator.pop(context);
-                      loading = true;
-                      setState(() {
-                        Provider.of<DashboardViewInvestor>(context,
-                                listen: false)
-                            .option = value!;
-                      });
-                      await Provider.of<DashboardViewInvestor>(context,
-                              listen: false)
-                          .getAllFinancials();
-                      loading = false;
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Last Month'),
-                  leading: Radio<DashboardFilterOptions?>(
-                    value: DashboardFilterOptions.oneMonth,
-                    groupValue:
-                        Provider.of<DashboardViewInvestor>(context).option,
-                    onChanged: (value) async {
-                      Navigator.pop(context);
-                      loading = true;
-                      setState(() {
-                        Provider.of<DashboardViewInvestor>(context,
-                                listen: false)
-                            .option = value!;
-                      });
-                      await Provider.of<DashboardViewInvestor>(context,
-                              listen: false)
-                          .getMonthlyFinancials();
 
-                      loading = false;
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Last Six Months'),
-                  leading: Radio<DashboardFilterOptions?>(
-                    value: DashboardFilterOptions.sixMonths,
-                    groupValue:
-                        Provider.of<DashboardViewInvestor>(context).option,
-                    onChanged: (value) async {
-                      Navigator.pop(context);
-                      loading = true;
-                      setState(() {
-                        Provider.of<DashboardViewInvestor>(context,
-                                listen: false)
-                            .option = value!;
-                      });
-                      await Provider.of<DashboardViewInvestor>(context,
-                              listen: false)
-                          .getMonthlyFinancials();
-
-                      loading = false;
-                    },
-                  ),
-                ),
                 Expanded(child: Container()),
                 OutlinedButton(
                     child: const Text('Switch to Company Account'),
@@ -208,7 +127,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DashboardCompany()),
+                              builder: (context) => const MainScreenCustomer()),
                           (route) => false);
                     })
               ],
@@ -216,146 +135,86 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
           ),
         ),
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: loading,
-        blur: 5,
-        color: Colors.transparent,
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: Card(
-                            elevation: 5,
-                            color: const Color(0xFF2D2C3F),
-                            child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AllOutstandingBalance()));
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Expanded(
-                                      child: Center(
-                                        child: Text(
-                                          'Remaining Installments',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Color(0xFFB6B8C0),
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 25,
-                                    ),
-                                    Expanded(
-                                        child:
-                                            Provider.of<DashboardViewInvestor>(
-                                                            context)
-                                                        .option ==
-                                                    DashboardFilterOptions.all
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .baseline,
-                                                    textBaseline:
-                                                        TextBaseline.alphabetic,
-                                                    children: [
-                                                      Text(
-                                                        Provider.of<DashboardViewInvestor>(
-                                                                context)
-                                                            .dashboardData
-                                                            .totalOutstandingBalance
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            fontSize: Provider.of<DashboardViewInvestor>(
-                                                                            context)
-                                                                        .dashboardData
-                                                                        .totalOutstandingBalance <
-                                                                    1000000
-                                                                ? 30
-                                                                : 20,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w900),
-                                                      ),
-                                                      const Text(
-                                                        ' Rupees',
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xFF8D8E98),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .baseline,
-                                                    textBaseline:
-                                                        TextBaseline.alphabetic,
-                                                    children: [
-                                                      Text(
-                                                        Provider.of<DashboardViewInvestor>(
-                                                                context)
-                                                            .monthlyFinancials
-                                                            .totalOutstandingBalance
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            fontSize: Provider.of<DashboardViewInvestor>(
-                                                                            context)
-                                                                        .monthlyFinancials
-                                                                        .totalOutstandingBalance <
-                                                                    1000000
-                                                                ? 30
-                                                                : 20,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w900),
-                                                      ),
-                                                      const Text(
-                                                        ' Rupees',
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xFF8D8E98),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ))
-                                  ],
-                                ))),
-                      ),
-                      Expanded(
-                        child: Card(
-                            elevation: 5,
-                            color: const Color(0xFF2D2C3F),
-                            child: InkWell(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 1,
+                child: CupertinoSegmentedControl<int>(
+                  unselectedColor: const Color(0xFF1A1C33),
+                  groupValue: filterIndex,
+                  onValueChanged: (value) async {
+                    setState(() {
+                      filterIndex = value;
+                    });
+                    if (value == 0) {
+                      Provider.of<DashboardViewInvestor>(context, listen: false)
+                          .option = DashboardFilterOptions.all;
+                      setState(() {
+                        loading = true;
+                      });
+                      await Provider.of<DashboardViewInvestor>(context,
+                              listen: false)
+                          .getAllFinancials();
+                      setState(() {
+                        loading = false;
+                      });
+                    } else if (value == 1) {
+                      setState(() {
+                        loading = true;
+                      });
+                      Provider.of<DashboardViewInvestor>(context, listen: false)
+                          .option = DashboardFilterOptions.oneMonth;
+
+                      await Provider.of<DashboardViewInvestor>(context,
+                              listen: false)
+                          .getMonthlyFinancials();
+                      setState(() {
+                        loading = false;
+                      });
+                    } else {
+                      setState(() {
+                        loading = true;
+                      });
+                      Provider.of<DashboardViewInvestor>(context, listen: false)
+                          .option = DashboardFilterOptions.sixMonths;
+
+                      await Provider.of<DashboardViewInvestor>(context,
+                              listen: false)
+                          .getMonthlyFinancials();
+                      setState(() {
+                        loading = false;
+                      });
+                    }
+                  },
+                  children: {
+                    0: buildSegment("All Time"),
+                    1: buildSegment("This Month"),
+                    2: buildSegment("Last 6 Months"),
+                  },
+                ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: Card(
+                          elevation: 5,
+                          color: const Color(0xFF2D2C3F),
+                          child: InkWell(
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const AllAmountSpend()));
+                                            const AllOutstandingBalance()));
                               },
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -363,7 +222,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                   const Expanded(
                                     child: Center(
                                       child: Text(
-                                        'Recovery account',
+                                        'Remaining Installments',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Color(0xFFB6B8C0),
@@ -392,14 +251,14 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                   Provider.of<DashboardViewInvestor>(
                                                           context)
                                                       .dashboardData
-                                                      .totalAmountPaid
+                                                      .totalOutstandingBalance
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontSize: Provider.of<
                                                                           DashboardViewInvestor>(
                                                                       context)
                                                                   .dashboardData
-                                                                  .totalAmountPaid <
+                                                                  .totalOutstandingBalance <
                                                               1000000
                                                           ? 30
                                                           : 20,
@@ -426,14 +285,14 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                   Provider.of<DashboardViewInvestor>(
                                                           context)
                                                       .monthlyFinancials
-                                                      .totalAmountPaid
+                                                      .totalOutstandingBalance
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontSize: Provider.of<
                                                                           DashboardViewInvestor>(
                                                                       context)
                                                                   .monthlyFinancials
-                                                                  .totalAmountPaid <
+                                                                  .totalOutstandingBalance <
                                                               1000000
                                                           ? 30
                                                           : 20,
@@ -449,29 +308,27 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                               ],
                                             ))
                                 ],
-                              ),
-                            )),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: Card(
-                            elevation: 5,
-                            color: const Color(0xFF2D2C3F),
+                              ))),
+                    ),
+                    Expanded(
+                      child: Card(
+                          elevation: 5,
+                          color: const Color(0xFF2D2C3F),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AllAmountSpend()));
+                            },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Expanded(
                                   child: Center(
                                     child: Text(
-                                      'Purchase account',
+                                      'Recovery account',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Color(0xFFB6B8C0),
@@ -500,17 +357,17 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                 Provider.of<DashboardViewInvestor>(
                                                         context)
                                                     .dashboardData
-                                                    .totalCost
+                                                    .totalAmountPaid
                                                     .toString(),
                                                 style: TextStyle(
-                                                    fontSize:
-                                                        Provider.of<DashboardViewInvestor>(
-                                                                        context)
-                                                                    .dashboardData
-                                                                    .totalCost <
-                                                                1000000
-                                                            ? 30
-                                                            : 20,
+                                                    fontSize: Provider.of<
+                                                                        DashboardViewInvestor>(
+                                                                    context)
+                                                                .dashboardData
+                                                                .totalAmountPaid <
+                                                            1000000
+                                                        ? 30
+                                                        : 20,
                                                     fontWeight:
                                                         FontWeight.w900),
                                               ),
@@ -534,17 +391,17 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                 Provider.of<DashboardViewInvestor>(
                                                         context)
                                                     .monthlyFinancials
-                                                    .totalCost
+                                                    .totalAmountPaid
                                                     .toString(),
                                                 style: TextStyle(
-                                                    fontSize:
-                                                        Provider.of<DashboardViewInvestor>(
-                                                                        context)
-                                                                    .dashboardData
-                                                                    .totalCost <
-                                                                1000000
-                                                            ? 30
-                                                            : 20,
+                                                    fontSize: Provider.of<
+                                                                        DashboardViewInvestor>(
+                                                                    context)
+                                                                .monthlyFinancials
+                                                                .totalAmountPaid <
+                                                            1000000
+                                                        ? 30
+                                                        : 20,
                                                     fontWeight:
                                                         FontWeight.w900),
                                               ),
@@ -557,10 +414,20 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                             ],
                                           ))
                               ],
-                            )),
-                      ),
-                      Expanded(
-                        child: Card(
+                            ),
+                          )),
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: Card(
                           elevation: 5,
                           color: const Color(0xFF2D2C3F),
                           child: Column(
@@ -569,7 +436,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                               const Expanded(
                                 child: Center(
                                   child: Text(
-                                    'Calculative profit',
+                                    'Purchase account',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Color(0xFFB6B8C0),
@@ -582,454 +449,307 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                 height: 25,
                               ),
                               Expanded(
-                                child: Provider.of<DashboardViewInvestor>(
-                                                context)
-                                            .option ==
-                                        DashboardFilterOptions.all
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                        textBaseline: TextBaseline.alphabetic,
-                                        children: [
-                                          Text(
-                                            Provider.of<DashboardViewInvestor>(
-                                                    context)
-                                                .dashboardData
-                                                .profit
-                                                .toString(),
-                                            style: TextStyle(
-                                                fontSize:
-                                                    Provider.of<DashboardViewInvestor>(
-                                                                    context)
-                                                                .dashboardData
-                                                                .profit <
-                                                            1000000
-                                                        ? 30
-                                                        : 20,
-                                                fontWeight: FontWeight.w900),
-                                          ),
-                                          const Text(
-                                            ' Rupees',
-                                            style: TextStyle(
-                                              color: Color(0xFF8D8E98),
+                                  child: Provider.of<DashboardViewInvestor>(
+                                                  context)
+                                              .option ==
+                                          DashboardFilterOptions.all
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.alphabetic,
+                                          children: [
+                                            Text(
+                                              Provider.of<DashboardViewInvestor>(
+                                                      context)
+                                                  .dashboardData
+                                                  .totalCost
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      Provider.of<DashboardViewInvestor>(
+                                                                      context)
+                                                                  .dashboardData
+                                                                  .totalCost <
+                                                              1000000
+                                                          ? 30
+                                                          : 20,
+                                                  fontWeight: FontWeight.w900),
                                             ),
-                                          ),
-                                        ],
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                        textBaseline: TextBaseline.alphabetic,
-                                        children: [
-                                          Text(
-                                            '${Provider.of<DashboardViewInvestor>(context).monthlyFinancials.profit}',
-                                            style: TextStyle(
-                                                fontSize:
-                                                    Provider.of<DashboardViewInvestor>(
-                                                                    context)
-                                                                .monthlyFinancials
-                                                                .profit <
-                                                            1000000
-                                                        ? 30
-                                                        : 20,
-                                                fontWeight: FontWeight.w900),
-                                          ),
-                                          const Text(
-                                            ' Rupees',
-                                            style: TextStyle(
-                                              color: Color(0xFF8D8E98),
+                                            const Text(
+                                              ' Rupees',
+                                              style: TextStyle(
+                                                color: Color(0xFF8D8E98),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                              )
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.alphabetic,
+                                          children: [
+                                            Text(
+                                              Provider.of<DashboardViewInvestor>(
+                                                      context)
+                                                  .monthlyFinancials
+                                                  .totalCost
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      Provider.of<DashboardViewInvestor>(
+                                                                      context)
+                                                                  .dashboardData
+                                                                  .totalCost <
+                                                              1000000
+                                                          ? 30
+                                                          : 20,
+                                                  fontWeight: FontWeight.w900),
+                                            ),
+                                            const Text(
+                                              ' Rupees',
+                                              style: TextStyle(
+                                                color: Color(0xFF8D8E98),
+                                              ),
+                                            ),
+                                          ],
+                                        ))
                             ],
-                          ),
+                          )),
+                    ),
+                    Expanded(
+                      child: Card(
+                        elevation: 5,
+                        color: const Color(0xFF2D2C3F),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Center(
+                                child: Text(
+                                  'Calculative profit',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color(0xFFB6B8C0),
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            Expanded(
+                              child: Provider.of<DashboardViewInvestor>(context)
+                                          .option ==
+                                      DashboardFilterOptions.all
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        Text(
+                                          Provider.of<DashboardViewInvestor>(
+                                                  context)
+                                              .dashboardData
+                                              .profit
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize:
+                                                  Provider.of<DashboardViewInvestor>(
+                                                                  context)
+                                                              .dashboardData
+                                                              .profit <
+                                                          1000000
+                                                      ? 30
+                                                      : 20,
+                                              fontWeight: FontWeight.w900),
+                                        ),
+                                        const Text(
+                                          ' Rupees',
+                                          style: TextStyle(
+                                            color: Color(0xFF8D8E98),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        Text(
+                                          '${Provider.of<DashboardViewInvestor>(context).monthlyFinancials.profit}',
+                                          style: TextStyle(
+                                              fontSize:
+                                                  Provider.of<DashboardViewInvestor>(
+                                                                  context)
+                                                              .monthlyFinancials
+                                                              .profit <
+                                                          1000000
+                                                      ? 30
+                                                      : 20,
+                                              fontWeight: FontWeight.w900),
+                                        ),
+                                        const Text(
+                                          ' Rupees',
+                                          style: TextStyle(
+                                            color: Color(0xFF8D8E98),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            )
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: Card(
-                            elevation: 5,
-                            color: const Color(0xFF2D2C3F),
-                            child: InkWell(
-                              onTap: () {
-                                showModalBottomSheet<void>(
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return SingleChildScrollView(
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        decoration: const BoxDecoration(
-                                            color: Color(0xFF2D2C3F),
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(20))),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: Column(
-                                            // mainAxisAlignment: MainAxisAlignment.start,
-                                            // crossAxisAlignment:
-                                            //     CrossAxisAlignment.stretch,
-                                            //mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Text(
-                                                'Add Money',
-                                                style: TextStyle(fontSize: 25),
-                                              ),
-                                              const SizedBox(
-                                                height: 15,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: TextFormField(
-                                                      autofocus: true,
-                                                      controller: widget
-                                                          .moneyController,
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      inputFormatters: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly
-                                                      ],
-                                                      decoration:
-                                                          kDecoration.inputBox(
-                                                              'Amount', 'PKR'),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'This field is required';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  IconButton(
-                                                      onPressed: () async {
-                                                        if (widget
-                                                            .moneyController
-                                                            .text
-                                                            .isNotEmpty) {
-                                                          setState(() {
-                                                            loading = true;
-                                                          });
-                                                          final cloud =
-                                                              FirebaseFirestore
-                                                                  .instance;
-                                                          await cloud
-                                                              .collection(
-                                                                  'investorFinancials')
-                                                              .doc('finance')
-                                                              .update({
-                                                            'cash_available':
-                                                                FieldValue.increment(
-                                                                    int.parse(widget
-                                                                        .moneyController
-                                                                        .text))
-                                                          }).whenComplete(() {
-                                                            Provider.of<DashboardViewInvestor>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .dashboardData
-                                                                .cashAvailable = Provider.of<
-                                                                            DashboardViewInvestor>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .dashboardData
-                                                                    .cashAvailable +
-                                                                int.parse(widget
-                                                                    .moneyController
-                                                                    .text);
-                                                            widget
-                                                                .moneyController
-                                                                .clear();
-                                                            Navigator.pop(
-                                                                context);
-                                                          });
-                                                          setState(() {
-                                                            loading = false;
-                                                          });
-                                                        }
-                                                      },
-                                                      icon: const Icon(
-                                                          Icons.navigate_next))
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Expanded(
-                                    child: Center(
-                                      child: Text(
-                                        'Cash in Hand',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Color(0xFFB6B8C0),
-                                          fontSize: 20,
-                                        ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Card(
+                          elevation: 5,
+                          color: const Color(0xFF2D2C3F),
+                          child: InkWell(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      'Total Investment',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Color(0xFFB6B8C0),
+                                        fontSize: 20,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 25,
-                                  ),
-                                  Expanded(
-                                      child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.baseline,
-                                    textBaseline: TextBaseline.alphabetic,
-                                    children: [
-                                      Text(
-                                        Provider.of<DashboardViewInvestor>(
-                                                context)
-                                            .dashboardData
-                                            .cashAvailable
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize:
-                                                Provider.of<DashboardViewInvestor>(
-                                                                context)
-                                                            .dashboardData
-                                                            .cashAvailable <
-                                                        1000000
-                                                    ? 30
-                                                    : 20,
-                                            fontWeight: FontWeight.w900),
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                Expanded(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.alphabetic,
+                                  children: [
+                                    Text(
+                                      Provider.of<DashboardViewInvestor>(
+                                              context)
+                                          .dashboardData
+                                          .cashAvailable
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize:
+                                              Provider.of<DashboardViewInvestor>(
+                                                              context)
+                                                          .dashboardData
+                                                          .cashAvailable <
+                                                      1000000
+                                                  ? 30
+                                                  : 20,
+                                          fontWeight: FontWeight.w900),
+                                    ),
+                                    const Text(
+                                      ' Rupees',
+                                      style: TextStyle(
+                                        color: Color(0xFF8D8E98),
                                       ),
-                                      const Text(
-                                        ' Rupees',
-                                        style: TextStyle(
-                                          color: Color(0xFF8D8E98),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                                ],
-                              ),
-                            )),
-                      ),
-                      Expanded(
-                        child: Card(
-                            elevation: 5,
-                            color: const Color(0xFF2D2C3F),
-                            child: InkWell(
-                              onTap: () {
-                                showModalBottomSheet<void>(
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return SingleChildScrollView(
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        decoration: const BoxDecoration(
-                                            color: Color(0xFF2D2C3F),
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(20))),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: Column(
-                                            // mainAxisAlignment: MainAxisAlignment.start,
-                                            // crossAxisAlignment:
-                                            //     CrossAxisAlignment.stretch,
-                                            //mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Text(
-                                                'Add Expenses',
-                                                style: TextStyle(fontSize: 25),
-                                              ),
-                                              const SizedBox(
-                                                height: 15,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: TextFormField(
-                                                      autofocus: true,
-                                                      controller: widget
-                                                          .moneyController,
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      inputFormatters: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly
-                                                      ],
-                                                      decoration:
-                                                          kDecoration.inputBox(
-                                                              'Amount', 'PKR'),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'This field is required';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        final cloud =
-                                                            FirebaseFirestore
-                                                                .instance;
-                                                        cloud
-                                                            .collection(
-                                                                'investorFinancials')
-                                                            .doc('finance')
-                                                            .update(
-                                                          {
-                                                            'expenses': FieldValue
-                                                                .increment(int
-                                                                    .parse(widget
-                                                                        .moneyController
-                                                                        .text)),
-                                                            'cash_available': FieldValue
-                                                                .increment(-int
-                                                                    .parse(widget
-                                                                        .moneyController
-                                                                        .text))
-                                                          },
-                                                        ).whenComplete(
-                                                          () {
-                                                            Provider.of<DashboardViewInvestor>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .dashboardData
-                                                                .expenses = Provider.of<
-                                                                            DashboardViewInvestor>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .dashboardData
-                                                                    .expenses +
-                                                                int.parse(widget
-                                                                    .moneyController
-                                                                    .text);
-                                                            Provider.of<DashboardViewInvestor>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .dashboardData
-                                                                .cashAvailable = Provider.of<
-                                                                            DashboardViewInvestor>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .dashboardData
-                                                                    .cashAvailable -
-                                                                int.parse(widget
-                                                                    .moneyController
-                                                                    .text);
-                                                            widget
-                                                                .moneyController
-                                                                .clear();
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        );
-                                                      },
-                                                      icon: const Icon(
-                                                          Icons.navigate_next))
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Expanded(
-                                    child: Center(
-                                      child: Text(
-                                        'Expenses',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Color(0xFFB6B8C0),
-                                          fontSize: 20,
-                                        ),
+                                    ),
+                                  ],
+                                ))
+                              ],
+                            ),
+                          )),
+                    ),
+                    Expanded(
+                      child: Card(
+                          elevation: 5,
+                          color: const Color(0xFF2D2C3F),
+                          child: InkWell(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      'Company Profit',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Color(0xFFB6B8C0),
+                                        fontSize: 20,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 25,
-                                  ),
-                                  Expanded(
-                                      child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.baseline,
-                                    textBaseline: TextBaseline.alphabetic,
-                                    children: [
-                                      Text(
-                                        Provider.of<DashboardViewInvestor>(
-                                                context)
-                                            .dashboardData
-                                            .expenses
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize:
-                                                Provider.of<DashboardViewInvestor>(
-                                                                context)
-                                                            .dashboardData
-                                                            .expenses <
-                                                        1000000
-                                                    ? 30
-                                                    : 20,
-                                            fontWeight: FontWeight.w900),
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                Expanded(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.alphabetic,
+                                  children: [
+                                    Text(
+                                      Provider.of<DashboardViewInvestor>(
+                                              context)
+                                          .dashboardData
+                                          .company_profit
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize:
+                                              Provider.of<DashboardViewInvestor>(
+                                                              context)
+                                                          .dashboardData
+                                                          .company_profit <
+                                                      1000000
+                                                  ? 30
+                                                  : 20,
+                                          fontWeight: FontWeight.w900),
+                                    ),
+                                    const Text(
+                                      ' Rupees',
+                                      style: TextStyle(
+                                        color: Color(0xFF8D8E98),
                                       ),
-                                      const Text(
-                                        ' Rupees',
-                                        style: TextStyle(
-                                          color: Color(0xFF8D8E98),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                                ],
-                              ),
-                            )),
-                      ),
-                    ],
-                  ),
+                                    ),
+                                  ],
+                                ))
+                              ],
+                            ),
+                          )),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildSegment(String text) {
+    return Text(
+      text,
     );
   }
 }

@@ -22,9 +22,11 @@ class Purchase {
   var amountPaid;
   List<PaymentSchedule> paymentSchedule = [];
   List<TransactionHistory> transactionHistory = [];
+  DocumentReference investorReference;
 
   Purchase(
-      {required this.companyProfit,
+      {required this.investorReference,
+      required this.companyProfit,
       required this.customerID,
       required this.documentReferencePurchase,
       required this.vendorName,
@@ -188,19 +190,22 @@ class Purchase {
     });
 
     if (amount > companyProfit) {
-      cloud.collection('financials').doc('finance').update({
-        'cash_available': FieldValue.increment(companyProfit),
+      cloud.collection('InvestorFinancials').doc('finance').update({
+        'companyProfit': FieldValue.increment(companyProfit),
       }).whenComplete(() {
         amount -= companyProfit.toInt();
         companyProfit = 0;
         cloud.collection('investorFinancials').doc('finance').update({
           'cash_available': FieldValue.increment(amount),
         });
+        investorReference
+            .update({'currentBalance': FieldValue.increment(amount)});
       });
     } else {
-      cloud.collection('financials').doc('finance').update({
-        'cash_available': FieldValue.increment(amount),
+      cloud.collection('investorFinancials').doc('finance').update({
+        'company_profit': FieldValue.increment(amount),
       }).whenComplete(() {
+        investorReference.update({'company_profit':FieldValue.increment(amount)});
         companyProfit -= amount;
       });
     }
@@ -213,5 +218,15 @@ class Purchase {
         'date': Timestamp.now(),
       },
     );
+    investorReference.update({
+      'outstandingBalance': FieldValue.increment(-amount),
+      'amountPaid': FieldValue.increment(amount),
+    });
+    investorReference.collection('transactions').add({
+      'date': Timestamp.now(),
+      'amount': amount,
+      'description':
+          'Payment received from customer($customerID) for Product($productName)'
+    });
   }
 }

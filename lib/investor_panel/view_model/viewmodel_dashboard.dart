@@ -13,7 +13,7 @@ class DashboardViewInvestor extends ChangeNotifier {
       totalCost: 0,
       profit: 0,
       cashAvailable: 0,
-      expenses: 0);
+      company_profit: 0);
 
   DashboardData monthlyFinancials = DashboardData(
       totalAmountPaid: 0,
@@ -21,7 +21,7 @@ class DashboardViewInvestor extends ChangeNotifier {
       totalCost: 0,
       profit: 0,
       cashAvailable: 0,
-      expenses: 0);
+      company_profit: 0);
 
   DashboardFilterOptions option = DashboardFilterOptions.all;
 
@@ -31,10 +31,10 @@ class DashboardViewInvestor extends ChangeNotifier {
   }
 
   Future<void> getMonthlyFinancials() async {
-    await monthlyFinancials.getMonthlyFinancials(
+  await monthlyFinancials.getMonthlyFinancials(
         isThisMonth: option == DashboardFilterOptions.oneMonth ? true : false);
-    await monthlyFinancials.getThisMonthCustomers(
-        isThisMonth: option == DashboardFilterOptions.oneMonth ? true : false);
+  await monthlyFinancials.getThisMonthCustomers(
+        isThisMonth: option == DashboardFilterOptions.oneMonth ? true : false, update: (){notifyListeners();});
 
     notifyListeners();
   }

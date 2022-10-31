@@ -1,9 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../investor_panel/dashboard/dashboard_screen.dart';
-import '../dashboard/dashboard_screen.dart';
-import '../vendor/all_vendor_screen.dart';
 import '../view_model/viewmodel_customers.dart';
 import 'add_new_customer/add_customer_screen.dart';
 import 'customer_page/customer_screen.dart';
@@ -34,15 +31,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(builder: (BuildContext context) {
-          return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(
-                Icons.menu,
-              ));
-        }),
+
         title: Row(
           children: [
             const Text(
@@ -65,44 +54,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DashboardCompany()));
-                  },
-                  child: const Text('Dashboard'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AllVendorScreen()));
-                  },
-                  child: const Text('Vendors'),
-                ),
-                Expanded(child: Container()),
-                OutlinedButton(child: const Text('Switch to Investor Account'), onPressed: (){
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DashboardInvestor()),
-                          (route) => false);
-                })
-              ],
-            ),
-          ),
-        ),
-      ),
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

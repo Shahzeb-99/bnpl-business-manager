@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../../pageview_screen.dart';
 import '../add_new_customer/update_firebase_class.dart';
-import '../all_customer_screen.dart';
 
 enum Vendor { newVendor, existingVendor }
 
@@ -28,12 +28,15 @@ class AddVendorScreen extends StatefulWidget {
 }
 
 class _AddVendorScreenState extends State<AddVendorScreen> {
-  List<String> vendorList = [];
-  String selectedVendor = 'Select';
+  List<String> investorList = [];
+  List<num> investorBalance = [];
+  String selectedInvestor = 'Select';
   bool loading = false;
   var cashInHand = 0;
   final TextEditingController costController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController openingBalanceController =
+      TextEditingController();
   final TextEditingController investorProfitController =
       TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -48,15 +51,12 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   @override
   void initState() {
     final cloud = FirebaseFirestore.instance;
-    cloud.collection('investorFinancials').doc('finance').get().then((value) {
-      cashInHand = value.get('cash_available');
-    });
-    cloud.collection('investorVendors').get().then(
+    cloud.collection('investors').get().then(
       (value) {
-        for (var vendor in value.docs) {
-          final String name = vendor.get('name');
-          vendorList.add(name);
-          selectedVendor = vendorList.first;
+        for (var investor in value.docs) {
+          final String name = investor.get('name');
+          investorList.add(name);
+          selectedInvestor = investorList.first;
         }
         setState(() {
           loading = true;
@@ -69,18 +69,18 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _showMyDialog() async {
+    Future<void> _showMyDialog(String errorText) async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: const Color(0xFF2D2C3F),
-            title: const Text('Missing Fields'),
+            title: const Text('Task Failed'),
             content: SingleChildScrollView(
               child: ListBody(
-                children: const <Widget>[
-                  Text('All the field are required to continue.'),
+                children: <Widget>[
+                  Text(errorText),
                 ],
               ),
             ),
@@ -131,20 +131,38 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                         ),
                       ),
                       _selectedVendorOption == Vendor.newVendor
-                          ? TextFormField(
-                              controller: nameController,
-                              decoration:
-                                  kDecoration.inputBox('Vendor Name', ''),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'This field is required';
-                                }
-                                return null;
-                              },
+                          ? Column(
+                              children: [
+                                TextFormField(
+                                  controller: nameController,
+                                  decoration:
+                                      kDecoration.inputBox('Investor Name', ''),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This field is required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                TextFormField(
+                                  controller: openingBalanceController,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  decoration: kDecoration.inputBox(
+                                      'Opening Balance', 'PKR'),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This field is required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ],
                             )
                           : const Divider(),
                       ListTile(
-                        title: const Text('Existing Vendor'),
+                        title: const Text('Existing Investor'),
                         leading: Radio<Vendor?>(
                           value: Vendor.existingVendor,
                           groupValue: _selectedVendorOption,
@@ -165,8 +183,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               dropdownColor: const Color(0xFF2D2C3F),
-                              value: selectedVendor,
-                              items: vendorList.map((String items) {
+                              value: selectedInvestor,
+                              items: investorList.map((String items) {
                                 return DropdownMenuItem(
                                   value: items,
                                   child: Text(items),
@@ -176,7 +194,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   _selectedVendorOption == Vendor.existingVendor
                                       ? (value) {
                                           setState(() {
-                                            selectedVendor = value!;
+                                            selectedInvestor = value!;
                                           });
                                         }
                                       : null,
@@ -331,9 +349,6 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'This field is required';
-                                    } else if (int.parse(costController.text) >
-                                        cashInHand) {
-                                      return 'Not enough Cash available';
                                     }
                                     return null;
                                   },
@@ -345,65 +360,104 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
                           onPressed: () async {
+                            bool hasEnoughBalance = false;
+                            await FirebaseFirestore.instance
+                                .collection('investors')
+                                .where('name', isEqualTo: selectedInvestor)
+                                .get()
+                                .then((value) {
+                              num currentBalance =
+                                  value.docs[0].get('currentBalance');
+                              print(value.docs[0].get('currentBalance'));
+                              int companyProfit = ((widget.productPurchasecost -
+                                          int.parse(costController.text)) -
+                                      (widget.productPurchasecost -
+                                              int.parse(costController.text)) *
+                                          (double.parse(investorProfitController
+                                                  .text) /
+                                              100))
+                                  .toInt();
+                              print(companyProfit);
+                              if (int.parse(costController.text) +
+                                      (companyProfit) <=
+                                  currentBalance) {
+                                print('true');
+                                hasEnoughBalance = true;
+                              }
+                            });
                             setState(() {
                               modalHUD = true;
                             });
+                            print(hasEnoughBalance);
                             if (formKey.currentState!.validate()) {
-                              if (selectedPayment != null ||
-                                  firstPaymentDate != null ||
-                                  orderDate != null) {
-                                bool status = _selectedVendorOption ==
-                                        Vendor.existingVendor
-                                    ? await UpdateFirestore(
-                                            investorProfitPercentage: double.parse(
-                                                investorProfitController.text),
-                                            numberOfPayments: selectedPayment!,
-                                            orderDate: orderDate!,
-                                            productSalePrice:
-                                                widget.productPurchasecost,
-                                            vendorName: selectedVendor,
-                                            customerName: widget.customerName,
-                                            productCost:
-                                                int.parse(costController.text),
-                                            productName: widget.productName,
-                                            firstPaymnetDate: firstPaymentDate!, openingBalance: 10, investorName: '')
-                                        .addProduct()
-                                    : _selectedVendorOption == Vendor.newVendor
-                                        ? await UpdateFirestore(
-                                                investorProfitPercentage:
-                                                    double.parse(
-                                                        investorProfitController
-                                                            .text),
-                                                numberOfPayments:
-                                                    selectedPayment!,
-                                                orderDate: orderDate!,
-                                                productSalePrice:
-                                                    widget.productPurchasecost,
-                                                vendorName: nameController.text,
-                                                customerName:
-                                                    widget.customerName,
-                                                productCost: int.parse(
-                                                    costController.text),
-                                                productName: widget.productName,
-                                                firstPaymnetDate:
-                                                    firstPaymentDate!, openingBalance: 10, investorName: '')
-                                            .addProductToNewVendor()
-                                        : false;
+                              if (hasEnoughBalance == true) {
+                                if (selectedPayment != null ||
+                                    firstPaymentDate != null ||
+                                    orderDate != null) {
+                                  bool status = _selectedVendorOption ==
+                                          Vendor.existingVendor
+                                      ? await UpdateFirestore(
+                                              investorProfitPercentage: double.parse(
+                                                  investorProfitController
+                                                      .text),
+                                              numberOfPayments:
+                                                  selectedPayment!,
+                                              orderDate: orderDate!,
+                                              productSalePrice:
+                                                  widget.productPurchasecost,
+                                              vendorName: nameController.text.isNotEmpty
+                                                  ? nameController.text
+                                                  : 'No Name',
+                                              customerName: widget.customerName,
+                                              productCost: int.parse(
+                                                  costController.text),
+                                              productName: widget.productName,
+                                              firstPaymnetDate:
+                                                  firstPaymentDate!,
+                                              openingBalance: _selectedVendorOption ==
+                                                  Vendor.newVendor? int.parse(
+                                                  openingBalanceController.text):0,
+                                              investorName: selectedInvestor)
+                                          .addProduct()
+                                      : _selectedVendorOption ==
+                                              Vendor.newVendor
+                                          ? await UpdateFirestore(
+                                                  investorProfitPercentage:
+                                                      double.parse(
+                                                          investorProfitController.text),
+                                                  numberOfPayments: selectedPayment!,
+                                                  orderDate: orderDate!,
+                                                  productSalePrice: widget.productPurchasecost,
+                                                  vendorName: nameController.text,
+                                                  customerName: widget.customerName,
+                                                  productCost: int.parse(costController.text),
+                                                  productName: widget.productName,
+                                                  firstPaymnetDate: firstPaymentDate!,
+                                                  openingBalance: int.parse(openingBalanceController.text),
+                                                  investorName: nameController.text)
+                                              .addProductToNewVendor()
+                                          : false;
 
-                                if (!mounted) return;
+                                  if (!mounted) return;
 
-                                if (status) {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AllCustomersScreen()),
-                                      (route) => false);
+                                  if (status) {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MainScreen()),
+                                        (route) => false);
+                                  } else {
+                                    _showMyDialog(
+                                        'All the field are required to continue.');
+                                  }
                                 } else {
-                                  _showMyDialog();
+                                  _showMyDialog(
+                                      'All the field are required to continue.');
                                 }
                               } else {
-                                _showMyDialog();
+                                _showMyDialog(
+                                    'Investor does not have enough cash');
                               }
                             }
                             setState(() {

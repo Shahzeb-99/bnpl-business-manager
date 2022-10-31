@@ -1,13 +1,11 @@
 // ignore_for_file: camel_case_types, no_leading_underscores_for_local_identifiers
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:ecommerce_bnql/company_panel/pageview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import '../add_new_customer/update_firebase_class.dart';
-import '../all_customer_screen.dart';
 
 enum Vendor { newVendor, existingVendor }
 
@@ -37,10 +35,9 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
   final formKey = GlobalKey<FormState>();
   DateTime? firstPaymentDate;
   DateTime? orderDate;
-  List<double> numberOfPayments = [1,2,3,4,5,6,7,8,9,10,11,12];
+  List<double> numberOfPayments = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   double? selectedPayment;
   bool modalHUD = false;
-
 
   Vendor? _selectedVendorOption;
 
@@ -74,7 +71,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor:  const Color(0xFF2D2C3F),
+            backgroundColor: const Color(0xFF2D2C3F),
             title: const Text('Missing Fields'),
             content: SingleChildScrollView(
               child: ListBody(
@@ -101,7 +98,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       appBar: AppBar(
         title: const Text(
           'Add Vendor',
-          style: TextStyle(  fontSize: 25),
+          style: TextStyle(fontSize: 25),
         ),
       ),
       body: ModalProgressHUD(
@@ -240,7 +237,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color:const Color(0xFF2D2C3F),
+                                              color: const Color(0xFF2D2C3F),
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -276,13 +273,13 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color:const Color(0xFF2D2C3F),
+                                        color: const Color(0xFF2D2C3F),
                                         borderRadius: BorderRadius.circular(4)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<double>(
-                                        dropdownColor:const Color(0xFF2D2C3F),
+                                        dropdownColor: const Color(0xFF2D2C3F),
                                         value: selectedPayment,
                                         items: numberOfPayments
                                             .map((double items) {
@@ -372,7 +369,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const AllCustomersScreen()),
+                                              const MainScreenCustomer()),
                                       (route) => false);
                                 } else {
                                   _showMyDialog();
