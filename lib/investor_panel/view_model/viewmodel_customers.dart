@@ -79,7 +79,7 @@ class CustomerViewInvestor extends ChangeNotifier {
                 .where('date',
                     isLessThanOrEqualTo: option != DashboardFilterOptions.all
                         ? DateTime(
-                            DateTime.now().year, DateTime.now().month + 1, 0)
+                            DateTime.now().year, DateTime.now().month + 1, 0,23,59)
                         : DateTime(2100))
                 .get()
                 .then((value) {
@@ -127,7 +127,7 @@ class CustomerViewInvestor extends ChangeNotifier {
                 .where('date',
                     isLessThanOrEqualTo: option != DashboardFilterOptions.all
                         ? DateTime(
-                            DateTime.now().year, DateTime.now().month + 1, 0)
+                            DateTime.now().year, DateTime.now().month + 1, 0,23,59)
                         : DateTime(2100))
                 .get()
                 .then((value) {

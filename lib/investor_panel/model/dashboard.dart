@@ -30,7 +30,7 @@ class DashboardData {
         totalAmountPaid = value.docs[0].get('amount_paid');
         totalCost = value.docs[0].get('total_cost');
         cashAvailable = value.docs[0].get('cash_available');
-        company_profit = value.docs[0].get('company_profit');
+        company_profit = value.docs[0].get('companyProfit');
         profit = value.docs[0].get('total_profit');
       }
     });
@@ -54,12 +54,12 @@ class DashboardData {
               .collection('purchases')
               .where('purchaseDate',
                   isLessThanOrEqualTo: DateTime(
-                      DateTime.now().year, DateTime.now().month + 1, 0))
+                      DateTime.now().year, DateTime.now().month + 1, 0,23,59))
               .where('purchaseDate',
                   isGreaterThanOrEqualTo: isThisMonth
-                      ? DateTime(DateTime.now().year, DateTime.now().month, 1)
+                      ? DateTime(DateTime.now().year, DateTime.now().month, 1,23,59)
                       : DateTime(
-                          DateTime.now().year, DateTime.now().month - 5, 1))
+                          DateTime.now().year, DateTime.now().month - 5, 1,23,59))
               .get()
               .then((value) {
             for (var purchase in value.docs) {
@@ -112,7 +112,7 @@ class DashboardData {
               .collection('payment_schedule')
               .where('date',
                   isLessThanOrEqualTo: DateTime(
-                      DateTime.now().year, DateTime.now().month + 1, 0))
+                      DateTime.now().year, DateTime.now().month + 1, 0,23,59))
               .get()
               .then((value) {
             for (var payment in value.docs) {
@@ -125,12 +125,12 @@ class DashboardData {
               .collection('transaction_history')
               .where('date',
                   isLessThanOrEqualTo: DateTime(
-                      DateTime.now().year, DateTime.now().month + 1, 0))
+                      DateTime.now().year, DateTime.now().month + 1, 0,23,59))
               .where('date',
                   isGreaterThanOrEqualTo: isThisMonth
-                      ? DateTime(DateTime.now().year, DateTime.now().month, 1)
+                      ? DateTime(DateTime.now().year, DateTime.now().month, 1,23,59)
                       : DateTime(
-                          DateTime.now().year, DateTime.now().month - 5, 1))
+                          DateTime.now().year, DateTime.now().month - 5, 1,23,59))
               .get()
               .then((value) {
             for (var transaction in value.docs) {

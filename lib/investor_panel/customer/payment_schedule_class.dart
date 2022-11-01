@@ -32,13 +32,13 @@ class PaymentSchedule {
     });
   }
 
-  Future<void> addTransaction({required int amount}) async {
+  Future<void> addTransaction({required int amount,required DateTime dateTime}) async {
     if (amount>0) {
       purchaseReference
           .collection('payment_schedule')
           .doc(paymentReference).collection('transactions')
           .add({
-        'date': Timestamp.now(),
+        'date': Timestamp.fromDate(dateTime),
         'remainingAmount': amount
       });
     }

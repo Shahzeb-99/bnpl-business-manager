@@ -1,5 +1,5 @@
 // ignore_for_file: camel_case_types
-
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/company_panel/dashboard/expenses_screen.dart';
 import 'package:ecommerce_bnql/company_panel/dashboard/transactions_screen.dart';
@@ -27,6 +27,8 @@ class DashboardCompany extends StatefulWidget {
 class _DashboardCompanyState extends State<DashboardCompany> {
   bool loading = false;
   int filterIndex = 0;
+  DateTime dateTime = DateTime.now();
+  TimeOfDay time = TimeOfDay.now();
 
   @override
   void initState() {
@@ -656,7 +658,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
+                                                        vertical: 4.0),
                                                 child: TextFormField(
                                                   autofocus: true,
                                                   controller:
@@ -679,23 +681,114 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                   },
                                                 ),
                                               ),
-                                              TextFormField(
-                                                maxLines: 5,
-                                                autofocus: true,
-                                                controller: widget
-                                                    .descriptionController,
-                                                keyboardType:
-                                                    TextInputType.text,
-                                                decoration:
-                                                    kDecoration.inputBox(
-                                                        'Description', ''),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Please add a description for expense';
-                                                  }
-                                                  return null;
-                                                },
+
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                child: TextFormField(
+                                                  maxLines: 5,
+                                                  autofocus: true,
+                                                  controller: widget
+                                                      .descriptionController,
+                                                  keyboardType:
+                                                      TextInputType.text,
+                                                  decoration:
+                                                      kDecoration.inputBox(
+                                                          'Description', ''),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please add a description for expense';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 4.0),
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    DateTime? newDate =
+                                                    await showDatePicker(
+                                                      context: context,
+                                                      initialDate: dateTime,
+                                                      initialDatePickerMode:
+                                                      DatePickerMode.day,
+                                                      firstDate: DateTime(2000),
+                                                      lastDate: DateTime(2100),
+                                                    );
+                                                    setState(() {
+                                                      dateTime = newDate!;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                    const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                        border: Border.all(
+                                                            color: const Color(
+                                                                0xFF0E1223),
+                                                            width: 1)),
+                                                    child: Text(
+                                                      DateFormat.yMMMMEEEEd()
+                                                          .format(dateTime),
+                                                      style: const TextStyle(
+                                                          color:
+                                                          Color(0x59FFFFFF),
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                          FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 4.0),
+                                                child: GestureDetector(
+                                                  onTap: () async {
+                                                    TimeOfDay? newTime =
+                                                    await showTimePicker(
+                                                        context: context,
+                                                        initialTime:
+                                                        TimeOfDay.now());
+                                                    setState(() {
+                                                      time = newTime!;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    padding: const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                        border: Border.all(
+                                                            color: const Color(
+                                                                0xFF0E1223),
+                                                            width: 1)),
+                                                    child: Text(
+                                                      DateFormat.jms().format(
+                                                          DateTime(
+                                                              dateTime.year,
+                                                              dateTime.month,
+                                                              dateTime.day,
+                                                              time.hour,
+                                                              time.minute)),
+                                                      style: const TextStyle(
+                                                          color:
+                                                          Color(0x59FFFFFF),
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                          FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                               OutlinedButton(
                                                   onPressed: () async {
@@ -731,7 +824,12 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                                   .moneyController
                                                                   .text),
                                                           'time':
-                                                              Timestamp.now(),
+                                                          Timestamp.fromDate(DateTime(
+                                                              dateTime.year,
+                                                              dateTime.month,
+                                                              dateTime.day,
+                                                              time.hour,
+                                                              time.minute)),
                                                           'description': widget
                                                               .descriptionController
                                                               .text
@@ -840,6 +938,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                           const ExpensesScreen()));
                             },
                             onTap: () {
+                              dateTime = DateTime.now();
+                              time = TimeOfDay.now();
                               showModalBottomSheet<void>(
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
@@ -875,7 +975,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 8.0),
+                                                      vertical: 4.0),
                                               child: TextFormField(
                                                 autofocus: true,
                                                 controller:
@@ -897,21 +997,110 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                 },
                                               ),
                                             ),
-                                            TextFormField(
-                                              maxLines: 5,
-                                              autofocus: true,
-                                              controller:
-                                                  widget.descriptionController,
-                                              keyboardType: TextInputType.text,
-                                              decoration: kDecoration.inputBox(
-                                                  'Description', ''),
-                                              validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return 'Please add a description for expense';
-                                                }
-                                                return null;
-                                              },
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                              child: TextFormField(
+                                                maxLines: 5,
+                                                autofocus: true,
+                                                controller:
+                                                    widget.descriptionController,
+                                                keyboardType: TextInputType.text,
+                                                decoration: kDecoration.inputBox(
+                                                    'Description', ''),
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please add a description for expense';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4.0),
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  DateTime? newDate =
+                                                      await showDatePicker(
+                                                    context: context,
+                                                    initialDate: dateTime,
+                                                    initialDatePickerMode:
+                                                        DatePickerMode.day,
+                                                    firstDate: DateTime(2000),
+                                                    lastDate: DateTime(2100),
+                                                  );
+                                                  setState(() {
+                                                    dateTime = newDate!;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      border: Border.all(
+                                                          color: const Color(
+                                                              0xFF0E1223),
+                                                          width: 1)),
+                                                  child: Text(
+                                                    DateFormat.yMMMMEEEEd()
+                                                        .format(dateTime),
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Color(0x59FFFFFF),
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4.0),
+                                              child: GestureDetector(
+                                                onTap: () async {
+                                                  TimeOfDay? newTime =
+                                                      await showTimePicker(
+                                                          context: context,
+                                                          initialTime:
+                                                              TimeOfDay.now());
+                                                  setState(() {
+                                                    time = newTime!;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(8),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      border: Border.all(
+                                                          color: const Color(
+                                                              0xFF0E1223),
+                                                          width: 1)),
+                                                  child: Text(
+                                                    DateFormat.jms().format(
+                                                        DateTime(
+                                                            dateTime.year,
+                                                            dateTime.month,
+                                                            dateTime.day,
+                                                            time.hour,
+                                                            time.minute)),
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Color(0x59FFFFFF),
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                             OutlinedButton(
                                                 onPressed: () async {
@@ -950,7 +1139,13 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                             widget
                                                                 .moneyController
                                                                 .text),
-                                                        'time': Timestamp.now(),
+                                                        'time': Timestamp
+                                                            .fromDate(DateTime(
+                                                                dateTime.year,
+                                                                dateTime.month,
+                                                                dateTime.day,
+                                                                time.hour,
+                                                                time.minute)),
                                                         'description': widget
                                                             .descriptionController
                                                             .text
@@ -958,21 +1153,24 @@ class _DashboardCompanyState extends State<DashboardCompany> {
 
                                                       FirebaseFirestore.instance
                                                           .collection(
-                                                          'financials')
+                                                              'financials')
                                                           .doc('finance')
                                                           .collection(
-                                                          'transactions')
+                                                              'transactions')
                                                           .add({
                                                         'amount': -int.parse(
                                                             widget
                                                                 .moneyController
                                                                 .text),
-                                                        'time': Timestamp.now(),
-                                                        'description': 'Expense : ${
-                                                          widget
-                                                              .descriptionController
-                                                              .text
-                                                        }'
+                                                        'time': Timestamp
+                                                            .fromDate(DateTime(
+                                                                dateTime.year,
+                                                                dateTime.month,
+                                                                dateTime.day,
+                                                                time.hour,
+                                                                time.minute)),
+                                                        'description':
+                                                            'Expense : ${widget.descriptionController.text}'
                                                       });
                                                       Provider.of<DashboardView>(
                                                                   context,

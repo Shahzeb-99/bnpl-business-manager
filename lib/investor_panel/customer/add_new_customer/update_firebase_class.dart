@@ -36,7 +36,7 @@ class UpdateFirestore {
     cloud.collection('investorFinancials').doc('finance').update(
       {
         'outstanding_balance': FieldValue.increment(productSalePrice),
-        'total_cost': FieldValue.increment(productCost),
+        'total_cost': FieldValue.increment(productCost - companyProfit),
         'cash_available': FieldValue.increment(-productCost + companyProfit),
         'total_profit': FieldValue.increment(productSalePrice - productCost),
       },
@@ -61,7 +61,7 @@ class UpdateFirestore {
         await vendorReference.collection('products').add(
       {
         'name': productName,
-        'price': productCost,
+        'price': productCost - companyProfit,
         'image':
             'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
       },
@@ -153,7 +153,7 @@ class UpdateFirestore {
     cloud.collection('investorFinancials').doc('finance').update(
       {
         'outstanding_balance': FieldValue.increment(productSalePrice),
-        'total_cost': FieldValue.increment(productCost),
+        'total_cost': FieldValue.increment(productCost - companyProfit),
         'cash_available':
             FieldValue.increment(openingBalance - productCost + companyProfit),
         'total_profit': FieldValue.increment(productSalePrice - productCost),
@@ -176,7 +176,7 @@ class UpdateFirestore {
         await vendorReference.collection('products').add(
       {
         'name': productName,
-        'price': productCost,
+        'price': productCost - companyProfit,
         'image':
             'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
       },
@@ -218,7 +218,7 @@ class UpdateFirestore {
       'currentBalance': openingBalance - productCost + companyProfit,
       'outstandingBalance': productSalePrice,
       'amountPaid': 0,
-          'company_profit':0
+      'company_profit': 0
     });
     investorReference
         .collection('products')
@@ -289,7 +289,7 @@ class UpdateFirestore {
         await vendorReference.collection('products').add(
       {
         'name': productName,
-        'price': productCost,
+        'price': productCost - companyProfit,
         'image':
             'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
       },
@@ -310,7 +310,7 @@ class UpdateFirestore {
       cloud.collection('investorFinancials').doc('finance').update(
         {
           'outstanding_balance': FieldValue.increment(productSalePrice),
-          'total_cost': FieldValue.increment(productCost),
+          'total_cost': FieldValue.increment(productCost - companyProfit),
           'total_profit': FieldValue.increment(productSalePrice - productCost),
         },
       );
@@ -414,7 +414,7 @@ class UpdateFirestore {
         await vendorReference.collection('products').add(
       {
         'name': productName,
-        'price': productCost,
+        'price': productCost - companyProfit,
         'image':
             'https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png'
       },
@@ -435,7 +435,7 @@ class UpdateFirestore {
       cloud.collection('investorFinancials').doc('finance').update(
         {
           'outstanding_balance': FieldValue.increment(productSalePrice),
-          'total_cost': FieldValue.increment(productCost),
+          'total_cost': FieldValue.increment(productCost - companyProfit),
           'total_profit': FieldValue.increment(productSalePrice - productCost),
         },
       );
@@ -466,7 +466,7 @@ class UpdateFirestore {
         'currentBalance': openingBalance - productCost + companyProfit,
         'outstandingBalance': productSalePrice,
         'amountPaid': 0,
-            'company_profit':0
+        'company_profit': 0
       });
       investorReference
           .collection('products')

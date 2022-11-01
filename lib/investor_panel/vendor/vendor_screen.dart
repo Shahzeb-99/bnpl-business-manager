@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:intl/intl.dart';
 import '../../investor_panel/view_model/viewmodel_vendors.dart';
 
 List<PurchaseWidgetVendor> purchaseWidgetList = [];
@@ -28,7 +28,8 @@ class _VendorProfileState extends State<VendorProfile> {
 
   TextEditingController moneyController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-
+  late DateTime dateTime;
+  late TimeOfDay time;
   TextStyle informationTextStyle = const TextStyle(fontSize: 20);
 
   @override
@@ -46,6 +47,8 @@ class _VendorProfileState extends State<VendorProfile> {
               Expanded(child: Container()),
               IconButton(
                 onPressed: () {
+                  dateTime = DateTime.now();
+                  time = TimeOfDay.now();
                   showModalBottomSheet<void>(
                     isScrollControlled: true,
                     backgroundColor: Colors.transparent,
@@ -76,7 +79,7 @@ class _VendorProfileState extends State<VendorProfile> {
                                 ),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                      const EdgeInsets.symmetric(vertical: 4.0),
                                   child: TextFormField(
                                     autofocus: true,
                                     controller: moneyController,
@@ -95,19 +98,94 @@ class _VendorProfileState extends State<VendorProfile> {
                                     },
                                   ),
                                 ),
-                                TextFormField(
-                                  maxLines: 5,
-                                  autofocus: true,
-                                  controller: descriptionController,
-                                  keyboardType: TextInputType.text,
-                                  decoration:
-                                      kDecoration.inputBox('Description', ''),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please add a description for expense';
-                                    }
-                                    return null;
-                                  },
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: TextFormField(
+                                    maxLines: 5,
+                                    autofocus: true,
+                                    controller: descriptionController,
+                                    keyboardType: TextInputType.text,
+                                    decoration:
+                                        kDecoration.inputBox('Description', ''),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please add a description for expense';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      DateTime? newDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: dateTime,
+                                        initialDatePickerMode:
+                                            DatePickerMode.day,
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime(2100),
+                                      );
+                                      setState(() {
+                                        dateTime = newDate!;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          border: Border.all(
+                                              color: Colors.black,
+                                              width: 1)),
+                                      child: Text(
+                                        DateFormat.yMMMMEEEEd()
+                                            .format(dateTime),
+                                        style: const TextStyle(
+                                            color: Color(0x59FFFFFF),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      TimeOfDay? newTime = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.now());
+                                      setState(() {
+                                        time = newTime!;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          border: Border.all(
+                                              color: Colors.black,
+                                              width: 1)),
+                                      child: Text(
+                                        DateFormat.jms().format(DateTime(
+                                            dateTime.year,
+                                            dateTime.month,
+                                            dateTime.day,
+                                            time.hour,
+                                            time.minute)),
+                                        style: const TextStyle(
+                                            color: Color(0x59FFFFFF),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 OutlinedButton(
                                     onPressed: () async {
@@ -134,7 +212,13 @@ class _VendorProfileState extends State<VendorProfile> {
                                                   description:
                                                       descriptionController
                                                           .text,
-                                                  date: Timestamp.now());
+                                                  date: Timestamp.fromDate(
+                                                      DateTime(
+                                                          dateTime.year,
+                                                          dateTime.month,
+                                                          dateTime.day,
+                                                          time.hour,
+                                                          time.minute)));
                                           FirebaseFirestore.instance
                                               .collection('investorFinancials')
                                               .doc('finance')

@@ -109,7 +109,7 @@ class Purchase {
             .collection('transactions')
             .where('date',
                 isLessThanOrEqualTo: option != DashboardFilterOptions.all
-                    ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0)
+                    ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0,23,59)
                     : DateTime(2100))
             .get()
             .then((value) {
@@ -158,8 +158,8 @@ class Purchase {
                 DateTime(DateTime.now().year, DateTime.now().month + 1, 0))
         .where('date',
             isGreaterThanOrEqualTo: isThisMonth
-                ? DateTime(DateTime.now().year, DateTime.now().month, 1)
-                : DateTime(DateTime.now().year, DateTime.now().month - 5, 1))
+                ? DateTime(DateTime.now().year, DateTime.now().month, 1,23,59)
+                : DateTime(DateTime.now().year, DateTime.now().month - 5, 1,23,59))
         .orderBy('date', descending: false)
         .get()
         .then((value) {
@@ -190,11 +190,12 @@ class Purchase {
     });
 
     if (amount > companyProfit) {
-      cloud.collection('InvestorFinancials').doc('finance').update({
+      cloud.collection('investorFinancials').doc('finance').update({
         'companyProfit': FieldValue.increment(companyProfit),
       }).whenComplete(() {
         amount -= companyProfit.toInt();
-        companyProfit = 0;
+       
+        documentReferencePurchase.update({'companyProfit':0}).whenComplete(() {companyProfit=0;});
         cloud.collection('investorFinancials').doc('finance').update({
           'cash_available': FieldValue.increment(amount),
         });
@@ -206,16 +207,17 @@ class Purchase {
         'company_profit': FieldValue.increment(amount),
       }).whenComplete(() {
         investorReference.update({'company_profit':FieldValue.increment(amount)});
-        companyProfit -= amount;
+        
+        documentReferencePurchase.update({'companyProfit':FieldValue.increment(-amount)}).whenComplete(() {companyProfit -= amount;});
       });
     }
   }
 
-  void addTransaction(int amount) {
+  void addTransaction({required int amount,required DateTime dateTime}) {
     documentReferencePurchase.collection('transaction_history').add(
       {
         'amount': amount,
-        'date': Timestamp.now(),
+        'date': Timestamp.fromDate(dateTime),
       },
     );
     investorReference.update({
@@ -223,7 +225,7 @@ class Purchase {
       'amountPaid': FieldValue.increment(amount),
     });
     investorReference.collection('transactions').add({
-      'date': Timestamp.now(),
+      'date': Timestamp.fromDate(dateTime),
       'amount': amount,
       'description':
           'Payment received from customer($customerID) for Product($productName)'

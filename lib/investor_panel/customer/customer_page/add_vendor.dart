@@ -101,7 +101,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
-          'Add Vendor',
+          'Add Investor',
           style: TextStyle(fontSize: 25),
         ),
       ),
@@ -119,7 +119,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ListTile(
-                        title: const Text('New Vendor'),
+                        title: const Text('New Investor'),
                         leading: Radio<Vendor?>(
                           value: Vendor.newVendor,
                           groupValue: _selectedVendorOption,
@@ -198,7 +198,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           });
                                         }
                                       : null,
-                              hint: const Text('Select Vendor'),
+                              hint: const Text('Select Investor'),
                             ),
                           ),
                         ),

@@ -1,5 +1,6 @@
 import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
 import 'package:ecommerce_bnql/investor_panel/view_model/viewmodel_dashboard.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'company_panel/view_model/viewmodel_customers.dart';
@@ -17,6 +18,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   runApp(const MyApp());
 }
 

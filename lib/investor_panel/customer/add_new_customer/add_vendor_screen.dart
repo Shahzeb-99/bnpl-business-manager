@@ -102,7 +102,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
-          'Add Vendor',
+          'Add Investor',
           style: TextStyle(fontSize: 25),
         ),
       ),
@@ -199,7 +199,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           });
                                         }
                                       : null,
-                              hint: const Text('Select Vendor'),
+                              hint: const Text('Select Investor'),
                             ),
                           ),
                         ),

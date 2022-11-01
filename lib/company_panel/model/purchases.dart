@@ -68,7 +68,7 @@ class Purchase {
         .orderBy('date', descending: false)
         .where('date',
             isLessThanOrEqualTo:
-                DateTime(DateTime.now().year, DateTime.now().month + 1, 0))
+                DateTime(DateTime.now().year, DateTime.now().month + 1, 0,23,59))
         .get()
         .then((value) {
       for (var payment in value.docs) {
@@ -105,7 +105,7 @@ class Purchase {
             .collection('transactions')
             .where('date',
                 isLessThanOrEqualTo: option != DashboardFilterOptions.all
-                    ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0)
+                    ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0,23,59)
                     : DateTime(2100))
             .get()
             .then((value) {
@@ -151,11 +151,11 @@ class Purchase {
         .collection('transaction_history')
         .where('date',
             isLessThanOrEqualTo:
-                DateTime(DateTime.now().year, DateTime.now().month + 1, 0))
+                DateTime(DateTime.now().year, DateTime.now().month + 1, 0,23,59))
         .where('date',
             isGreaterThanOrEqualTo: isThisMonth
-                ? DateTime(DateTime.now().year, DateTime.now().month, 1)
-                : DateTime(DateTime.now().year, DateTime.now().month - 5, 1))
+                ? DateTime(DateTime.now().year, DateTime.now().month, 1,23,59)
+                : DateTime(DateTime.now().year, DateTime.now().month - 5, 1,23,59))
         .orderBy('date', descending: false)
         .get()
         .then((value) {
@@ -189,17 +189,17 @@ class Purchase {
 
   }
 
-  void addTransaction(int amount) {
+  void addTransaction({required int amount, required DateTime dateTime}) {
     documentReferencePurchase.collection('transaction_history').add(
       {
         'amount': amount,
-        'date': Timestamp.now(),
+        'date': Timestamp.fromDate(dateTime),
       },
     );
     FirebaseFirestore.instance.collection('financials').doc('finance').collection('transactions').add(
       {
         'amount': amount,
-        'time': Timestamp.now(),
+        'time': Timestamp.fromDate(dateTime),
         'description':'Payment received from customer($customerID) for product($productName)'
       },
     );
