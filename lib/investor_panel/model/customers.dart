@@ -107,6 +107,7 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            customerName: name,
             companyProfit: companyProfit,
             customerID: documentID,
             purchaseDate: purchaseDate,
@@ -171,6 +172,7 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            customerName: name,
             investorReference: purchase.get('investorReference'),
             companyProfit: companyProfit,
             customerID: documentID,
@@ -254,6 +256,7 @@ class Customers {
             );
 
             purchases.add(Purchase(
+              customerName: name,
               investorReference: purchase.get('investorReference'),
               companyProfit: companyProfit,
               customerID: documentID,
@@ -340,6 +343,7 @@ class Customers {
             );
 
             purchases.add(Purchase(
+              customerName: name,
               investorReference: purchase.get('investorReference'),
               companyProfit: companyProfit,
               customerID: documentID,

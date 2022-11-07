@@ -1,5 +1,11 @@
 
+import 'dart:io';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import '../view_model/viewmodel_customers.dart';
 import 'add_new_customer/add_customer_screen.dart';
@@ -41,6 +47,79 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
             Expanded(
               child: Container(),
             ),
+            IconButton(
+                onPressed: () async {
+                  final pdf = pw.Document();
+
+                  final image = (await rootBundle.load('assets/dart.png'))
+                      .buffer
+                      .asUint8List();
+                  final list =
+                      Provider.of<CustomerView>(context, listen: false)
+                          .allCustomers;
+                  pdf.addPage(
+                    pw.Page(
+                        build: (pw.Context context) => pw.Column(
+                          children: [
+                            pw.SizedBox(
+                                width: 250,
+                                child: pw.Center(
+                                  child: pw.Image(pw.MemoryImage(image)),
+                                )),
+                            pw.SizedBox(height: 25),
+                            pw.Center(
+                              child: pw.Text('Customers List'),
+                            ),
+                            pw.SizedBox(height: 100),
+                            pw.Column(
+                                crossAxisAlignment:
+                                pw.CrossAxisAlignment.stretch,
+                                children: [
+                                  pw.Row(children: [
+                                    pw.Expanded(child: pw.Text('Name')),
+                                    pw.Expanded(
+                                        child:
+                                        pw.Text('Outstanding Balance')),
+                                    pw.Expanded(
+                                        child: pw.Text('Amount Paid')),
+                                  ]),
+                                  pw.Divider(
+                                      thickness: 1, color: PdfColors.black)
+                                ]),
+                            pw.ListView.builder(
+                                itemBuilder:
+                                    (pw.Context context, int index) {
+                                  return pw.Column(
+                                      crossAxisAlignment:
+                                      pw.CrossAxisAlignment.stretch,
+                                      children: [
+                                        pw.Row(children: [
+                                          pw.Expanded(
+                                              child: pw.Text(
+                                                  '${list[index].name}')),
+                                          pw.Expanded(
+                                              child: pw.Text(
+                                                  '${list[index].outstandingBalance}')),
+                                          pw.Expanded(
+                                              child: pw.Text(
+                                                  '${list[index].paidAmount}')),
+                                        ]),
+                                        pw.Divider(color: PdfColors.black)
+                                      ]);
+                                },
+                                itemCount: list.length)
+                          ],
+                        )),
+                  );
+                  final path = (await getApplicationDocumentsDirectory()).path;
+                  final file = File('${path}exameple.pdf');
+                  await file
+                      .writeAsBytes(await pdf.save())
+                      .whenComplete(() async => await OpenFilex.open(file.path));
+
+                  print(file.path);
+                },
+                icon: const Icon(Icons.picture_as_pdf_rounded)),
             IconButton(
               onPressed: () {
                 Navigator.push(

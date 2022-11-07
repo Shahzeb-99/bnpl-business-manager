@@ -3,6 +3,7 @@
 import 'package:ecommerce_bnql/investor_panel/customer/paymentScheduleWidget.dart';
 import 'package:ecommerce_bnql/investor_panel/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/investor_panel/customer/transaction_history_screen.dart';
+import 'package:ecommerce_bnql/investor_panel/invoice_investor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -45,10 +46,27 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Payment Schedule',
-              style: TextStyle(fontSize: 25),
+            const Expanded(
+              child: Text(
+                'Payment Schedule',
+                overflow: TextOverflow.fade,
+                style: TextStyle(fontSize: 25),
+              ),
             ),
+            IconButton(onPressed: () async {
+              final service = PdfInvoiceServiceInvestor();
+              final date = await service.createPaymentList(
+                Provider.of<CustomerViewInvestor>(context, listen: false)
+                    .allCustomers[widget.index]
+                    .purchases[widget.productIndex]
+                    .paymentSchedule,
+                Provider.of<CustomerViewInvestor>(context, listen: false)
+                    .allCustomers[widget.index]
+                    .purchases[widget.productIndex],
+              );
+              print('1');
+              service.savePdfFile('Order Status', date);
+            }, icon: const Icon(Icons.receipt)),
             IconButton(
                 onPressed: () {
                   time = TimeOfDay.now();
@@ -185,7 +203,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                         ),
                                       ),
                                       IconButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             if (formKey.currentState!
                                                 .validate()) {
                                               if (Provider.of<CustomerViewInvestor>(
@@ -239,6 +257,21 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                         widget.productIndex]
                                                     .updateCustomTransaction(
                                                         amount: newPayment);
+
+                                                final service = PdfInvoiceServiceInvestor();
+                                                final date = await service.createPaymentReceipt(
+                                                    Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                        .allCustomers[widget.index]
+                                                        .purchases[widget.productIndex],int.parse(
+                                                    moneyController.text),DateTime(
+                                                    dateTime.year,
+                                                    dateTime.month,
+                                                    dateTime.day,
+                                                    time.hour,
+                                                    time.minute)
+                                                );
+                                                print('1');
+                                                service.savePdfFile('reciept', date);
 
                                                 moneyController.clear();
 
@@ -460,6 +493,19 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                           widget.productIndex]
                                                       .updateCustomTransaction(
                                                           amount: newPayment);
+                                                  final service = PdfInvoiceServiceInvestor();
+                                                  final date = await service.createPaymentReceipt(
+                                                      Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                          .allCustomers[widget.index]
+                                                          .purchases[widget.productIndex],newPayment,DateTime(
+                                                      dateTime.year,
+                                                      dateTime.month,
+                                                      dateTime.day,
+                                                      time.hour,
+                                                      time.minute)
+                                                  );
+                                                  print('1');
+                                                  service.savePdfFile('receipt', date);
                                                   for (var payment in Provider
                                                           .of<CustomerViewInvestor>(
                                                               context,

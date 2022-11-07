@@ -21,9 +21,11 @@ class Purchase {
   var amountPaid;
   List<PaymentSchedule> paymentSchedule = [];
   List<TransactionHistory> transactionHistory = [];
+  String customerName;
 
   Purchase(
-      {required this.customerID,
+      {required this.customerName,
+        required this.customerID,
       required this.documentReferencePurchase,
       required this.vendorName,
       required this.outstandingBalance,

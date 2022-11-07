@@ -1,9 +1,11 @@
 // ignore_for_file: camel_case_types
 
+
 import 'package:ecommerce_bnql/company_panel/pageview_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../investor_panel/dashboard/amountPaid_button/amount_spend_screen.dart';
@@ -51,9 +53,10 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Dashboard Investor',
+              'Dashboard',
               style: TextStyle(fontSize: 25),
             ),
+
             loading != true
                 ? IconButton(
                     splashRadius: 25,
@@ -119,7 +122,6 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                   'Investor Panel',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )),
-
                 Expanded(child: Container()),
                 OutlinedButton(
                     child: const Text('Switch to Company Account'),
@@ -259,7 +261,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                       context)
                                                                   .dashboardData
                                                                   .totalOutstandingBalance <
-                                                              1000000
+                                                              100000
                                                           ? 30
                                                           : 20,
                                                       fontWeight:
@@ -293,7 +295,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                       context)
                                                                   .monthlyFinancials
                                                                   .totalOutstandingBalance <
-                                                              1000000
+                                                          100000
                                                           ? 30
                                                           : 20,
                                                       fontWeight:
@@ -365,7 +367,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                     context)
                                                                 .dashboardData
                                                                 .totalAmountPaid <
-                                                            1000000
+                                                        100000
                                                         ? 30
                                                         : 20,
                                                     fontWeight:
@@ -399,7 +401,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                     context)
                                                                 .monthlyFinancials
                                                                 .totalAmountPaid <
-                                                            1000000
+                                                        100000
                                                         ? 30
                                                         : 20,
                                                     fontWeight:
@@ -472,7 +474,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                       context)
                                                                   .dashboardData
                                                                   .totalCost <
-                                                              1000000
+                                                          100000
                                                           ? 30
                                                           : 20,
                                                   fontWeight: FontWeight.w900),
@@ -504,7 +506,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                       context)
                                                                   .dashboardData
                                                                   .totalCost <
-                                                              1000000
+                                                          100000
                                                           ? 30
                                                           : 20,
                                                   fontWeight: FontWeight.w900),
@@ -565,7 +567,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                   context)
                                                               .dashboardData
                                                               .profit <
-                                                          1000000
+                                                      100000
                                                       ? 30
                                                       : 20,
                                               fontWeight: FontWeight.w900),
@@ -593,7 +595,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                   context)
                                                               .monthlyFinancials
                                                               .profit <
-                                                          1000000
+                                                      100000
                                                       ? 30
                                                       : 20,
                                               fontWeight: FontWeight.w900),
@@ -661,7 +663,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                               context)
                                                           .dashboardData
                                                           .cashAvailable <
-                                                      1000000
+                                                  100000
                                                   ? 30
                                                   : 20,
                                           fontWeight: FontWeight.w900),
@@ -720,7 +722,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                               context)
                                                           .dashboardData
                                                           .company_profit <
-                                                      1000000
+                                                  100000
                                                   ? 30
                                                   : 20,
                                           fontWeight: FontWeight.w900),

@@ -101,7 +101,7 @@ class UpdateFirestore {
                   : lastPayment2.toInt(),
             },
           );
-          timeNow = timeNow.add(const Duration(days: 30));
+          timeNow = DateTime(timeNow.year,timeNow.month+1,timeNow.day);
         }
       },
     );
@@ -193,7 +193,7 @@ class UpdateFirestore {
               : lastPayment2.toInt(),
         },
       );
-      timeNow = timeNow.add(const Duration(days: 30));
+      timeNow = DateTime(timeNow.year,timeNow.month+1,timeNow.day);
     }
 
     return true;
@@ -286,7 +286,7 @@ class UpdateFirestore {
                     : lastPayment2.toInt(),
               },
             );
-            timeNow = timeNow.add(const Duration(days: 30));
+            timeNow = DateTime(timeNow.year,timeNow.month+1,timeNow.day);
           }
         });
       },
@@ -385,7 +385,7 @@ class UpdateFirestore {
                 : lastPayment2.toInt(),
           },
         );
-        timeNow = timeNow.add(const Duration(days: 30));
+        timeNow = DateTime(timeNow.year,timeNow.month+1,timeNow.day);
       }
     });
 

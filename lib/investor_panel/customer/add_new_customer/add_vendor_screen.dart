@@ -1,12 +1,10 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, camel_case_types
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/investor_panel//customer/add_new_customer/update_firebase_class.dart';
 import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 
 enum Vendor { newVendor, existingVendor }
 
@@ -199,7 +197,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           });
                                         }
                                       : null,
-                              hint: const Text('Select Investor'),
+                              hint: const Text('Select Vendor'),
                             ),
                           ),
                         ),
@@ -380,17 +378,21 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                                         .text),
                                             numberOfPayments: selectedPayment!,
                                             orderDate: orderDate!,
-                                            productSalePrice:
-                                                widget.productPurchasecost,
+                                            productSalePrice: widget
+                                                .productPurchasecost,
                                             vendorName: investorVendor,
                                             customerName: widget.customerName,
                                             productCost:
                                                 int.parse(costController.text),
                                             productName: widget.productName,
                                             firstPaymnetDate: firstPaymentDate!,
-                                            openingBalance:_selectedVendorOption ==
-                                                Vendor.newVendor? int.parse(
-                                                openingBalanceController.text):0,
+                                            openingBalance:
+                                                _selectedVendorOption ==
+                                                        Vendor.newVendor
+                                                    ? int.parse(
+                                                        openingBalanceController
+                                                            .text)
+                                                    : 0,
                                             investorName: investorVendor)
                                         .addCustomerToExistingInvestor()
                                     : _selectedVendorOption == Vendor.newVendor

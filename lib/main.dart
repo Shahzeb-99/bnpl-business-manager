@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => VendorView()),
         ChangeNotifierProvider(create: (context) => CustomerView()),
         ChangeNotifierProvider(create: (context) => DashboardView()),
-        ChangeNotifierProvider(create: (context)=>DashboardViewInvestor()),
-        ChangeNotifierProvider(create: (context)=>VendorViewInvestor()),
-        ChangeNotifierProvider(create: (context)=>CustomerViewInvestor()),
+        ChangeNotifierProvider(create: (context) => DashboardViewInvestor()),
+        ChangeNotifierProvider(create: (context) => VendorViewInvestor()),
+        ChangeNotifierProvider(create: (context) => CustomerViewInvestor()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

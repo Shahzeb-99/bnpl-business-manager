@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+import '../../invoice.dart';
 import '../view_model/viewmodel_customers.dart';
 
 class PaymentScheduleScreen extends StatefulWidget {
@@ -45,10 +46,29 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Payment Schedule',
-              style: TextStyle(fontSize: 25),
+            const Expanded(
+              child: Text(
+                'Payment Schedule',
+                overflow: TextOverflow.fade,
+                style: TextStyle(fontSize: 25),
+              ),
             ),
+            IconButton(
+                onPressed: () async {
+                  final service = PdfInvoiceService();
+                  final date = await service.createPaymentList(
+                    Provider.of<CustomerView>(context, listen: false)
+                        .allCustomers[widget.index]
+                        .purchases[widget.productIndex]
+                        .paymentSchedule,
+                    Provider.of<CustomerView>(context, listen: false)
+                        .allCustomers[widget.index]
+                        .purchases[widget.productIndex],
+                  );
+                  print('1');
+                  service.savePdfFile('Order Status', date);
+                },
+                icon: const Icon(Icons.receipt)),
             IconButton(
                 onPressed: () {
                   time = TimeOfDay.now();
@@ -179,7 +199,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                       ),
                                     ),
                                     IconButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           if (formKey.currentState!
                                               .validate()) {
                                             if (Provider.of<CustomerView>(
@@ -208,6 +228,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                           time.hour,
                                                           time.minute));
 
+
                                               int index = 0;
                                               int length = Provider.of<
                                                           CustomerView>(context,
@@ -222,6 +243,20 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
 
                                               updateLocalState(
                                                   context, newPayment);
+                                              final service = PdfInvoiceService();
+                                              final date = await service.createPaymentReceipt(
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .allCustomers[widget.index]
+                                                      .purchases[widget.productIndex],int.parse(
+                                                  moneyController.text),DateTime(
+                                                  dateTime.year,
+                                                  dateTime.month,
+                                                  dateTime.day,
+                                                  time.hour,
+                                                  time.minute)
+                                              );
+                                              print('1');
+                                              service.savePdfFile('Order Status', date);
                                               Provider.of<CustomerView>(context,
                                                       listen: false)
                                                   .allCustomers[widget.index]
@@ -411,8 +446,10 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                   length--;
                                                 }
                                               }
+
                                               Navigator.pop(context);
                                               setState(() {});
+
                                             } else {
                                               if (moneyController
                                                   .text.isNotEmpty) {

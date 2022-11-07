@@ -104,6 +104,7 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            customerName: name,
             customerID: documentID,
             purchaseDate: purchaseDate,
             vendorName: vendorName,
@@ -165,6 +166,7 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            customerName: name,
             customerID: documentID,
             purchaseDate: purchaseDate,
             vendorName: vendorName,
@@ -244,6 +246,7 @@ class Customers {
             );
 
             purchases.add(Purchase(
+              customerName: name,
               customerID: documentID,
               purchaseDate: purchaseDate,
               vendorName: vendorName,
@@ -326,6 +329,7 @@ class Customers {
             );
 
             purchases.add(Purchase(
+              customerName: name,
               customerID: documentID,
               purchaseDate: purchaseDate,
               vendorName: vendorName,

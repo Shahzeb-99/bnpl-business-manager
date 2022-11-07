@@ -20,12 +20,14 @@ class Purchase {
   String productImage;
   var outstandingBalance;
   var amountPaid;
+  String customerName;
   List<PaymentSchedule> paymentSchedule = [];
   List<TransactionHistory> transactionHistory = [];
   DocumentReference investorReference;
 
   Purchase(
-      {required this.investorReference,
+      {
+        required this.customerName,required this.investorReference,
       required this.companyProfit,
       required this.customerID,
       required this.documentReferencePurchase,
