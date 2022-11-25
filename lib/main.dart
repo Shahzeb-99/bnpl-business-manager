@@ -1,5 +1,6 @@
-import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
+import 'package:ecommerce_bnql/investor_panel/screens/login-registration%20screen/login_screen.dart';
 import 'package:ecommerce_bnql/investor_panel/view_model/viewmodel_dashboard.dart';
+import 'package:ecommerce_bnql/investor_panel/view_model/viewmodel_user.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -35,34 +36,37 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => DashboardViewInvestor()),
         ChangeNotifierProvider(create: (context) => VendorViewInvestor()),
         ChangeNotifierProvider(create: (context) => CustomerViewInvestor()),
+        ChangeNotifierProvider(create: (context) => UserViewModel()),
+
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData.dark().copyWith(
-              primaryColor: const Color(0xFFE8C8D2),
-              colorScheme: const ColorScheme.dark(
-                primary: Color(0xFF9898B0),
-                secondary: Color(0xFF2D2C3F),
+              primaryColor: Colors.white,
+              colorScheme:  const ColorScheme.light(
+                primary:    Color(0xFFE56E14),
+                secondary:    Color(0xFFE56E14),
               ),
               textTheme: GoogleFonts.poppinsTextTheme(
                 Theme.of(context).textTheme,
               ).apply(
-                bodyColor: Colors.white, //<-- SEE HERE
-                displayColor: Colors.white,
+                bodyColor: const Color(0xFFE56E14), //<-- SEE HERE
+                displayColor:  const Color(0xFFE56E14),
               ),
-              scaffoldBackgroundColor: const Color(0xFF1A1C33),
+              scaffoldBackgroundColor: Colors.white,
               drawerTheme: const DrawerThemeData(
-                backgroundColor: Color(0xFF2D2C3F),
+                backgroundColor: Colors.white,
               ),
-              appBarTheme: const AppBarTheme(
+              appBarTheme:   const AppBarTheme(
+
                 elevation: 3,
-                color: Color(0xFF1A1C33),
-                iconTheme: IconThemeData(color: Colors.white),
+                color: Colors.white,
+                iconTheme: IconThemeData(color: Color(0xFFE56E14),),
               ),
               buttonTheme:
                   const ButtonThemeData(textTheme: ButtonTextTheme.primary)),
-          home: const MainScreen()),
+          home: LoginScreen()),
     );
   }
 }

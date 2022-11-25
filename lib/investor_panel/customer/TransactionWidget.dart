@@ -27,8 +27,16 @@ class TransactionWidget extends StatefulWidget {
 class _TransactionWidgetState extends State<TransactionWidget> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color(0xFF2D2C3F),
+    return Card(shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+        side: BorderSide(
+          width: 1,
+          color: Color(0xFFEEAC7C),
+        )),
+      elevation: 2,
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Row(

@@ -18,22 +18,6 @@ class CustomRow {
 }
 
 class PdfInvoiceService {
-  Future<Uint8List> createHelloWorld() {
-    final pdf = pw.Document();
-    pdf.addPage(
-      pw.Page(
-        pageFormat: PdfPageFormat.a4,
-        build: (pw.Context context) {
-          return pw.Center(
-            child: pw.Text("Hello World"),
-          );
-        },
-      ),
-    );
-
-    return pdf.save();
-  }
-
   Future<Uint8List> createInvoice(Purchase soldProducts) async {
     final pdf = pw.Document();
 
@@ -68,8 +52,21 @@ class PdfInvoiceService {
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text("Customer Name : ${soldProducts.customerName}"),
-                      pw.Text("Vendor Name : ${soldProducts.vendorName}"),
+                      pw.Text(
+                        "Customer Name : ${soldProducts.customerName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Vendor Name : ${soldProducts.vendorName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+
+                      ),
+                      pw.Text(
+                        "Purchase Date: ${DateFormat.yMMMMd().format(soldProducts.purchaseDate.toDate())}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+
+                      ),
+
                     ],
                   ),
                 ],
@@ -82,15 +79,15 @@ class PdfInvoiceService {
                 pw.Expanded(
                     child: pw.Column(children: [
                   pw.SizedBox(width: 200, child: pw.Divider()),
-                  pw.Text('Company Signature')
+                  pw.Text('Company Signature',style: pw.TextStyle(fontWeight: pw.FontWeight.bold),)
                 ])),
               ]),
               pw.SizedBox(height: 25),
-              pw.Text("Thanks for your trust, and till the next time."),
+              pw.Text("Thanks for your trust, and till the next time.",style: pw.TextStyle(fontWeight: pw.FontWeight.bold),),
               pw.SizedBox(height: 25),
-              pw.Text("Kind regards,"),
+              pw.Text("Kind regards,",style: pw.TextStyle(fontWeight: pw.FontWeight.bold),),
               pw.SizedBox(height: 25),
-              pw.Text("Shahzeb Iftikhar")
+              pw.Text("Friends Traders",style: pw.TextStyle(fontWeight: pw.FontWeight.bold),)
             ],
           );
         },
@@ -120,8 +117,22 @@ class PdfInvoiceService {
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text("Customer Name : ${soldProduct.customerName}"),
-                      pw.Text("Vendor Name : ${soldProduct.vendorName}"),
+                      pw.Text(
+                        "Customer Name : ${soldProduct.customerName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Vendor Name : ${soldProduct.vendorName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Product Name : ${soldProduct.productName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Purchase Date : ${DateFormat.yMMMMd().format(soldProduct.purchaseDate.toDate())}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
                     ],
                   ),
                 ],
@@ -131,15 +142,24 @@ class PdfInvoiceService {
                 pw.Row(
                   children: [
                     pw.Expanded(
-                        child: pw.Text("Date", textAlign: pw.TextAlign.left)),
+                        child: pw.Text(
+                      "Date",
+                      textAlign: pw.TextAlign.left,
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    )),
                     pw.Expanded(
-                        child:
-                            pw.Text("Amount ", textAlign: pw.TextAlign.right)),
+                        child: pw.Text(
+                      "Amount ",
+                      textAlign: pw.TextAlign.right,
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    )),
                     pw.Expanded(
                         child: pw.Text("Remaining Amount",
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.right)),
                     pw.Expanded(
                         child: pw.Text("Payment Status",
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.right)),
                   ],
                 ),
@@ -152,7 +172,10 @@ class PdfInvoiceService {
                 pw.Expanded(
                     child: pw.Column(children: [
                   pw.SizedBox(width: 200, child: pw.Divider()),
-                  pw.Text('Company Signature')
+                  pw.Text(
+                    'Company Signature',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  )
                 ])),
               ]),
             ],
@@ -164,19 +187,20 @@ class PdfInvoiceService {
   }
 
   Future<Uint8List> createPaymentReceipt(
-       Purchase soldProduct,int amount,DateTime dateTime) async {
+      Purchase soldProduct, int amount, DateTime dateTime) async {
     final pdf = pw.Document();
 
     final image =
-    (await rootBundle.load("assets/dart.png")).buffer.asUint8List();
-    final paidImage = (await rootBundle.load('assets/paid-5025785_1920.png')).buffer.asUint8List();
+        (await rootBundle.load("assets/dart.png")).buffer.asUint8List();
+    final paidImage = (await rootBundle.load('assets/paid-5025785_1920.png'))
+        .buffer
+        .asUint8List();
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return pw.Column(
             children: [
-
               pw.Image(pw.MemoryImage(image),
                   width: 200, height: 101, fit: pw.BoxFit.fill),
               pw.SizedBox(height: 50),
@@ -186,8 +210,24 @@ class PdfInvoiceService {
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text("Customer Name : ${soldProduct.customerName}"),
-                      pw.Text("Vendor Name : ${soldProduct.vendorName}"),
+                      pw.Text(
+                        "Customer Name : ${soldProduct.customerName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Vendor Name : ${soldProduct.vendorName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Product Name : ${soldProduct.productName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+
+                      ),
+                      pw.Text(
+                        "Purchase Date: ${DateFormat.yMMMMd().format(soldProduct.purchaseDate.toDate())}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+
+                      ),
                     ],
                   ),
                 ],
@@ -197,15 +237,18 @@ class PdfInvoiceService {
                 pw.Row(
                   children: [
                     pw.Expanded(
-                        child: pw.Text("Date", textAlign: pw.TextAlign.left)),
+                        child: pw.Text(
+                      "Date",
+                      textAlign: pw.TextAlign.left,
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    )),
                     pw.Expanded(
-                        child:
-                        pw.Text("", textAlign: pw.TextAlign.right)),
+                        child: pw.Text("", textAlign: pw.TextAlign.right)),
                     pw.Expanded(
-                        child: pw.Text("",
-                            textAlign: pw.TextAlign.right)),
+                        child: pw.Text("", textAlign: pw.TextAlign.right)),
                     pw.Expanded(
                         child: pw.Text("Amount",
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.right)),
                   ],
                 ),
@@ -215,39 +258,50 @@ class PdfInvoiceService {
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                   children: [
-                      pw.Column(children: [
-                        pw.Row(
-                          children: [
-                            pw.Expanded(
-                                child: pw.Text(
-                                    DateFormat.yMMMMd().add_jm().format(dateTime),
-                                    textAlign: pw.TextAlign.left)),
-                            pw.Expanded(
-                                child: pw.Text('',
-                                    textAlign: pw.TextAlign.right)),
-                            pw.Expanded(
-                                child: pw.Text('',
-                                    textAlign: pw.TextAlign.right)),
-                            pw.Expanded(
-                                child: pw.Text(amount.toString(),
-                                    textAlign: pw.TextAlign.right)),
-                          ],
-                        ),
-                        pw.Divider(),
-                      ]),
+                    pw.Column(children: [
+                      pw.Row(
+                        children: [
+                          pw.Expanded(
+                              child: pw.Text(
+                                  DateFormat.yMMMMd().add_jm().format(dateTime),
+                                  style: pw.TextStyle(
+                                      fontWeight: pw.FontWeight.bold),
+                                  textAlign: pw.TextAlign.left)),
+                          pw.Expanded(
+                              child:
+                                  pw.Text('', textAlign: pw.TextAlign.right)),
+                          pw.Expanded(
+                              child:
+                                  pw.Text('', textAlign: pw.TextAlign.right)),
+                          pw.Expanded(
+                              child: pw.Text(amount.toString(),
+                                  style: pw.TextStyle(
+                                      fontWeight: pw.FontWeight.bold),
+                                  textAlign: pw.TextAlign.right)),
+                        ],
+                      ),
+                      pw.Divider(),
+                    ]),
                     pw.Column(
                       children: [
                         pw.Row(
                           children: [
-                            pw.Expanded(child: pw.Text("", textAlign: pw.TextAlign.left)),
                             pw.Expanded(
-                                child: pw.Text("", textAlign: pw.TextAlign.right)),
+                                child:
+                                    pw.Text("", textAlign: pw.TextAlign.left)),
+                            pw.Expanded(
+                                child:
+                                    pw.Text("", textAlign: pw.TextAlign.right)),
                             pw.Expanded(
                                 child: pw.Text("Total Outstanding",
+                                    style: pw.TextStyle(
+                                        fontWeight: pw.FontWeight.bold),
                                     textAlign: pw.TextAlign.right)),
                             pw.Expanded(
                                 child: pw.Text(
                                     '${soldProduct.outstandingBalance.toString()} PKR',
+                                    style: pw.TextStyle(
+                                        fontWeight: pw.FontWeight.bold),
                                     textAlign: pw.TextAlign.right)),
                           ],
                         ),
@@ -258,14 +312,22 @@ class PdfInvoiceService {
                       children: [
                         pw.Row(
                           children: [
-                            pw.Expanded(child: pw.Text("", textAlign: pw.TextAlign.left)),
                             pw.Expanded(
-                                child: pw.Text("", textAlign: pw.TextAlign.right)),
+                                child:
+                                    pw.Text("", textAlign: pw.TextAlign.left)),
+                            pw.Expanded(
+                                child:
+                                    pw.Text("", textAlign: pw.TextAlign.right)),
                             pw.Expanded(
                                 child: pw.Text("Total Amount Paid",
+                                    style: pw.TextStyle(
+                                        fontWeight: pw.FontWeight.bold),
                                     textAlign: pw.TextAlign.right)),
                             pw.Expanded(
-                                child: pw.Text('${soldProduct.amountPaid.toString()} PKR',
+                                child: pw.Text(
+                                    '${soldProduct.amountPaid.toString()} PKR',
+                                    style: pw.TextStyle(
+                                        fontWeight: pw.FontWeight.bold),
                                     textAlign: pw.TextAlign.right)),
                           ],
                         ),
@@ -273,16 +335,22 @@ class PdfInvoiceService {
                       ],
                     ),
                     pw.SizedBox(height: 50),
-                    pw.Center(child: pw.Image(pw.MemoryImage(paidImage),
-                        width: 200, height: 200, fit: pw.BoxFit.fill),)
+                    pw.Center(
+                      child: pw.Image(pw.MemoryImage(paidImage),
+                          width: 200, height: 200, fit: pw.BoxFit.fill),
+                    )
                   ],
                 ),
               ),
               pw.Row(children: [
                 pw.Expanded(child: pw.Container()),
                 pw.Expanded(child: pw.Container()),
-
-              ]),pw.Header(text: 'Payment Receipt',textStyle: pw.TextStyle(fontItalic: pw.Font.timesItalic())),
+              ]),
+              pw.Header(
+                  text: 'Payment Receipt',
+                  textStyle: pw.TextStyle(
+                      fontItalic: pw.Font.timesItalic(),
+                      fontWeight: pw.FontWeight.bold)),
             ],
           );
         },
@@ -304,15 +372,19 @@ class PdfInvoiceService {
                   pw.Expanded(
                       child: pw.Text(
                           DateFormat.yMMMMd().format(element.date.toDate()),
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.left)),
                   pw.Expanded(
                       child: pw.Text(element.amount.toString(),
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text(element.remainingAmount.toString(),
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text(element.isPaid ? 'Paid' : 'Not Paid',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                 ],
               ),
@@ -327,10 +399,12 @@ class PdfInvoiceService {
                       child: pw.Text("", textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text("Total Outstanding",
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text(
                           '${soldProduct.outstandingBalance.toString()} PKR',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                 ],
               ),
@@ -346,9 +420,11 @@ class PdfInvoiceService {
                       child: pw.Text("", textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text("Total Amount Paid",
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text('${soldProduct.amountPaid.toString()} PKR',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                 ],
               ),
@@ -371,15 +447,19 @@ class PdfInvoiceService {
                 children: [
                   pw.Expanded(
                       child: pw.Text(element.itemName,
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.left)),
                   pw.Expanded(
                       child: pw.Text(element.itemPrice,
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text(element.amount,
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                   pw.Expanded(
                       child: pw.Text(element.total,
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
                 ],
               ),

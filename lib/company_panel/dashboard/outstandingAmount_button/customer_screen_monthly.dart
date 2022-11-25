@@ -40,7 +40,7 @@ class _CustomerProfileMonthlyOutstandingState extends State<CustomerProfileMonth
               Provider.of<CustomerView>(context, listen: false)
                   .thisMonthCustomers[widget.index]
                   .name,
-              style: const TextStyle(fontSize: 25),
+              style:   const TextStyle(fontSize: 25,color: Color(0xFFE56E14),),
             ),
             Expanded(child: Container()),
             CircleAvatar(
@@ -73,11 +73,11 @@ class _CustomerProfileMonthlyOutstandingState extends State<CustomerProfileMonth
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            const SizedBox(
+             SizedBox(
               height: 10,
               child: Divider(
                 thickness: 1,
-                color: Colors.white,
+                color: Colors.purple.shade900,
               ),
             ),
             Expanded(

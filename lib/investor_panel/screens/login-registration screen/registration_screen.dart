@@ -1,10 +1,14 @@
 
+import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
+import 'package:ecommerce_bnql/investor_panel/screens/login-registration%20screen/login_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_bnql/investor_panel/screens/login-registration screen/decorations.dart';
+import 'package:provider/provider.dart';
 
-import '../../../investor_panel/screens/login-registration screen/login_screen.dart';
+import '../../view_model/viewmodel_user.dart';
+
 
 
 class RegistrationScreen extends StatelessWidget {
@@ -23,6 +27,7 @@ class RegistrationScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset('assets/dart.png',scale: 3,),
             TextField(
               decoration: kDecoration.inputBox('Email'),
               autofocus: true,
@@ -40,7 +45,14 @@ class RegistrationScreen extends StatelessWidget {
                 onPressed: () {
                   try {
                     auth.createUserWithEmailAndPassword(
-                        email: email.text, password: password.text);
+                        email: email.text, password: password.text).then((value) async {
+                      Provider.of<UserViewModel>(context,listen: false)
+                          .checkPermissions()
+                          .whenComplete(() => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MainScreen())));
+                    });
                   } on Exception catch (e) {
                     if (kDebugMode) {
                       print(e);
@@ -54,7 +66,7 @@ class RegistrationScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                        MaterialPageRoute(builder: (context) =>   LoginScreen()));
                   },
                   child: const Text(
                     '  Sign in',

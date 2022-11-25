@@ -18,9 +18,9 @@ class AddCustomerScreen extends StatelessWidget {
     final _formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:   const Text(
           'Add Customer',
-          style: TextStyle(  fontSize: 25),
+          style: TextStyle(color:  Color(0xFFE56E14),  fontSize: 25),
         ),
       ),
       body: Column(
@@ -76,17 +76,15 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(color:  Color(0xFFE56E14),),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
+
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
-      ),
+
     );
   }
 }

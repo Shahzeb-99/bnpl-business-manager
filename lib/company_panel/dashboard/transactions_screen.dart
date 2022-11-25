@@ -28,7 +28,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transaction History'),
+        title:  const Text('Transaction History',style: TextStyle(color: Color(0xFFE56E14),),),
       ),
       body: ListView.builder(
         physics: const ScrollPhysics(parent: BouncingScrollPhysics()),

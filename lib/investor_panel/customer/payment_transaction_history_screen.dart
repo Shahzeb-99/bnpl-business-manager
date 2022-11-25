@@ -31,21 +31,23 @@ class _PaymentTransactionHistoryScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Installment Transaction History'),
+        title:  const Text('Installment Transaction History',style: TextStyle(color: Color(0xFFE56E14),),),
       ),
-      body: ListView.builder(
-        physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-        itemCount: Provider.of<CustomerViewInvestor>(context)
-            .allCustomers[widget.index]
-            .purchases[widget.productIndex]
-            .paymentSchedule[widget.paymentIndex].transactionHistory
-            .length,
-        itemBuilder: (BuildContext context, int transactionIndex) {
-          return InstallmentTransactionWidget(
-              index: widget.index,
-              productIndex: widget.productIndex,
-              transactionIndex: transactionIndex, paymentIndex: widget.paymentIndex,);
-        },
+      body: Padding(padding: const EdgeInsets.only(top: 5),
+        child: ListView.builder(
+          physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
+          itemCount: Provider.of<CustomerViewInvestor>(context)
+              .allCustomers[widget.index]
+              .purchases[widget.productIndex]
+              .paymentSchedule[widget.paymentIndex].transactionHistory
+              .length,
+          itemBuilder: (BuildContext context, int transactionIndex) {
+            return InstallmentTransactionWidget(
+                index: widget.index,
+                productIndex: widget.productIndex,
+                transactionIndex: transactionIndex, paymentIndex: widget.paymentIndex,);
+          },
+        ),
       ),
     );
   }

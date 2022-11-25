@@ -31,22 +31,24 @@ class _TransactionHistoryScreenRecoveryState extends State<TransactionHistoryScr
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transaction History'),
+        title:   const Text('Transaction History',style: TextStyle(color: Color(0xFFE56E14),),),
       ),
-      body: ListView.builder(
-        physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-        itemCount: Provider
-            .of<CustomerView>(context)
-            .thisMonthCustomers[widget.index]
-            .purchases[widget.productIndex]
-            .transactionHistory
-            .length,
-        itemBuilder: (BuildContext context, int paymentIndex) {
-          return TransactionWidgetRecovery(
-              index: widget.index,
-              productIndex: widget.productIndex,
-              paymentIndex: paymentIndex);
-        },
+      body: Padding(padding:const EdgeInsets.only(top: 5),
+        child: ListView.builder(
+          physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
+          itemCount: Provider
+              .of<CustomerView>(context)
+              .thisMonthCustomers[widget.index]
+              .purchases[widget.productIndex]
+              .transactionHistory
+              .length,
+          itemBuilder: (BuildContext context, int paymentIndex) {
+            return TransactionWidgetRecovery(
+                index: widget.index,
+                productIndex: widget.productIndex,
+                paymentIndex: paymentIndex);
+          },
+        ),
       ),
     );
   }

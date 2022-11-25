@@ -1,5 +1,5 @@
-
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,9 +7,11 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
+import '../../investor_panel/view_model/viewmodel_user.dart';
 import '../view_model/viewmodel_customers.dart';
 import 'add_new_customer/add_customer_screen.dart';
 import 'customer_page/customer_screen.dart';
+import 'package:intl/intl.dart';
 
 enum CustomerFilterOptions { all, oneMonth, sixMonths }
 
@@ -37,12 +39,14 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: Row(
           children: [
             const Text(
               'Customers',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(
+                fontSize: 25,
+                color: Color(0xFFE56E14),
+              ),
             ),
             Expanded(
               child: Container(),
@@ -50,77 +54,160 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
             IconButton(
                 onPressed: () async {
                   final pdf = pw.Document();
-
+                  final finance = await FirebaseFirestore.instance
+                      .collection('financials')
+                      .doc('finance')
+                      .get();
+                  final outstanding = finance.get('outstanding_balance');
+                  final amountPaid = finance.get('amount_paid');
                   final image = (await rootBundle.load('assets/dart.png'))
                       .buffer
                       .asUint8List();
-                  final list =
-                      Provider.of<CustomerView>(context, listen: false)
-                          .allCustomers;
+                  final list = Provider.of<CustomerView>(context, listen: false)
+                      .allCustomers;
                   pdf.addPage(
                     pw.Page(
                         build: (pw.Context context) => pw.Column(
-                          children: [
-                            pw.SizedBox(
-                                width: 250,
-                                child: pw.Center(
-                                  child: pw.Image(pw.MemoryImage(image)),
-                                )),
-                            pw.SizedBox(height: 25),
-                            pw.Center(
-                              child: pw.Text('Customers List'),
-                            ),
-                            pw.SizedBox(height: 100),
-                            pw.Column(
-                                crossAxisAlignment:
-                                pw.CrossAxisAlignment.stretch,
-                                children: [
-                                  pw.Row(children: [
-                                    pw.Expanded(child: pw.Text('Name')),
-                                    pw.Expanded(
-                                        child:
-                                        pw.Text('Outstanding Balance')),
-                                    pw.Expanded(
-                                        child: pw.Text('Amount Paid')),
-                                  ]),
-                                  pw.Divider(
-                                      thickness: 1, color: PdfColors.black)
-                                ]),
-                            pw.ListView.builder(
-                                itemBuilder:
-                                    (pw.Context context, int index) {
-                                  return pw.Column(
-                                      crossAxisAlignment:
-                                      pw.CrossAxisAlignment.stretch,
-                                      children: [
-                                        pw.Row(children: [
-                                          pw.Expanded(
-                                              child: pw.Text(
-                                                  '${list[index].name}')),
-                                          pw.Expanded(
-                                              child: pw.Text(
-                                                  '${list[index].outstandingBalance}')),
-                                          pw.Expanded(
-                                              child: pw.Text(
-                                                  '${list[index].paidAmount}')),
-                                        ]),
-                                        pw.Divider(color: PdfColors.black)
-                                      ]);
-                                },
-                                itemCount: list.length)
-                          ],
-                        )),
+                              children: [
+                                pw.SizedBox(
+                                    width: 250,
+                                    child: pw.Center(
+                                      child: pw.Image(pw.MemoryImage(image)),
+                                    )),
+                                pw.SizedBox(height: 25),
+                                pw.Center(
+                                  child: pw.Text(
+                                    'Customers List',
+                                    style: pw.TextStyle(
+                                        fontWeight: pw.FontWeight.bold),
+                                  ),
+                                ),
+                                pw.SizedBox(height: 100),
+                                pw.Column(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.stretch,
+                                    children: [
+                                      pw.Row(children: [
+                                        pw.Expanded(
+                                            child: pw.Text(
+                                          'Name',
+                                          style: pw.TextStyle(
+                                              fontWeight: pw.FontWeight.bold),
+                                        )),
+                                        pw.Expanded(
+                                            child: pw.Text(
+                                          'Outstanding Balance',
+                                          style: pw.TextStyle(
+                                              fontWeight: pw.FontWeight.bold),
+                                        )),
+                                        pw.Expanded(
+                                            child: pw.Text(
+                                          'Amount Paid',
+                                          style: pw.TextStyle(
+                                              fontWeight: pw.FontWeight.bold),
+                                        )),
+                                      ]),
+                                      pw.Divider(
+                                          thickness: 1, color: PdfColors.black)
+                                    ]),
+                                pw.ListView.builder(
+                                    itemBuilder:
+                                        (pw.Context context, int index) {
+                                      return pw.Column(
+                                          crossAxisAlignment:
+                                              pw.CrossAxisAlignment.stretch,
+                                          children: [
+                                            pw.Row(children: [
+                                              pw.Expanded(
+                                                  child: pw.Text(
+                                                '${list[index].name}',
+                                                style: pw.TextStyle(
+                                                    fontWeight:
+                                                        pw.FontWeight.bold),
+                                              )),
+                                              pw.Expanded(
+                                                  child: pw.Text(
+                                                '${list[index].outstandingBalance}',
+                                                style: pw.TextStyle(
+                                                    fontWeight:
+                                                        pw.FontWeight.bold),
+                                              )),
+                                              pw.Expanded(
+                                                  child: pw.Text(
+                                                '${list[index].paidAmount}',
+                                                style: pw.TextStyle(
+                                                    fontWeight:
+                                                        pw.FontWeight.bold),
+                                              )),
+                                            ]),
+                                            pw.Divider(color: PdfColors.black)
+                                          ]);
+                                    },
+                                    itemCount: list.length),
+                                pw.Column(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.stretch,
+                                    children: [
+                                      pw.Row(children: [
+                                        pw.Expanded(child: pw.Text('')),
+                                        pw.Expanded(
+                                            child: pw.Text(
+                                          'Total Outstanding',
+                                          style: pw.TextStyle(
+                                              fontWeight: pw.FontWeight.bold),
+                                        )),
+                                        pw.Expanded(
+                                            child: pw.Text(
+                                          outstanding.toString(),
+                                          style: pw.TextStyle(
+                                              fontWeight: pw.FontWeight.bold),
+                                        )),
+                                      ]),
+                                      pw.Divider(
+                                          thickness: 1, color: PdfColors.black)
+                                    ]),
+                                pw.Column(
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.stretch,
+                                    children: [
+                                      pw.Row(children: [
+                                        pw.Expanded(child: pw.Text('')),
+                                        pw.Expanded(
+                                            child: pw.Text(
+                                          'Total Amount Paid',
+                                          style: pw.TextStyle(
+                                              fontWeight: pw.FontWeight.bold),
+                                        )),
+                                        pw.Expanded(
+                                            child: pw.Text(
+                                          amountPaid.toString(),
+                                          style: pw.TextStyle(
+                                              fontWeight: pw.FontWeight.bold),
+                                        )),
+                                      ]),
+                                      pw.Divider(
+                                          thickness: 1, color: PdfColors.black)
+                                    ]),
+                                pw.Expanded(child: pw.Container()),
+                                pw.Footer(
+                                  title: pw.Text(
+                                    "Generated on : ${DateFormat.yMMMMd().add_jm().format(DateTime.now())}",
+                                    style: pw.TextStyle(
+                                        fontWeight: pw.FontWeight.bold),
+                                  ),
+                                )
+                              ],
+                            )),
                   );
                   final path = (await getApplicationDocumentsDirectory()).path;
                   final file = File('${path}exameple.pdf');
-                  await file
-                      .writeAsBytes(await pdf.save())
-                      .whenComplete(() async => await OpenFilex.open(file.path));
+                  await file.writeAsBytes(await pdf.save()).whenComplete(
+                      () async => await OpenFilex.open(file.path));
 
                   print(file.path);
                 },
                 icon: const Icon(Icons.picture_as_pdf_rounded)),
-            IconButton(
+            Provider.of<UserViewModel>(context,listen: false).readWrite?IconButton(
               onPressed: () {
                 Navigator.push(
                     context,
@@ -129,11 +216,10 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
               },
               icon: const Icon(Icons.add_rounded),
               splashRadius: 25,
-            )
+            ):const SizedBox()
           ],
         ),
       ),
-
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -146,8 +232,16 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                 : Provider.of<CustomerView>(context).thisMonthCustomers.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
-                elevation: 5,
-                color: const Color(0xFF2D2C3F),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    side: BorderSide(
+                      width: 1,
+                      color: Color(0xFFEEAC7C),
+                    )),
+                elevation: 2,
+                color: Colors.white,
                 child: InkWell(
                   onLongPress: () {
                     // {

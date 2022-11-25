@@ -26,9 +26,9 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  const Text(
           'Investors ',
-          style: TextStyle(fontSize: 25),
+          style: TextStyle(fontSize: 25,color:  Color(0xFFE56E14),),
         ),
       ),
 
@@ -41,8 +41,16 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                 Provider.of<VendorViewInvestor>(context).allVendors.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
-                elevation: 5,
-                color: const Color(0xFF2D2C3F),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    side: BorderSide(
+                      width: 1,
+                      color: Color(0xFFEEAC7C),
+                    )),
+                elevation: 2,
+                color: Colors.white,
                 child: InkWell(
                   onTap: () {
                     Navigator.push(

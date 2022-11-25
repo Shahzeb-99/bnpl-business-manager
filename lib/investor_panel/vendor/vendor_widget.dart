@@ -15,7 +15,7 @@ class VendorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF2D2C3F),
+      color: Colors.white,
       child: InkWell(
         onTap: () {},
         child: Padding(

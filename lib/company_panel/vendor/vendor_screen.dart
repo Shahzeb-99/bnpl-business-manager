@@ -33,7 +33,10 @@ class _VendorProfileState extends State<VendorProfile> {
                 Provider.of<VendorView>(context, listen: false)
                     .allVendors[widget.index]
                     .name,
-                style: const TextStyle(  fontSize: 25),
+                style: const TextStyle(
+                  fontSize: 25,
+                  color: Color(0xFFE56E14),
+                ),
               ),
               Expanded(child: Container()),
               CircleAvatar(
@@ -97,7 +100,10 @@ class _VendorProfileState extends State<VendorProfile> {
     for (var productDocument in productCollection.docs) {
       setState(
         () {
-          allProducts.add(VendorWidget(price: productDocument.get('price'), image: productDocument.get('image'), name: productDocument.get('name')));
+          allProducts.add(VendorWidget(
+              price: productDocument.get('price'),
+              image: productDocument.get('image'),
+              name: productDocument.get('name')));
         },
       );
     }

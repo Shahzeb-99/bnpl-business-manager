@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../investor_panel/view_model/viewmodel_user.dart';
 import '../../view_model/viewmodel_customers.dart';
 
 class PaymentScheduleWidgetMonthly extends StatefulWidget {
@@ -27,57 +28,67 @@ class _PaymentScheduleWidgetMonthlyState
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF2D2C3F),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+          side: BorderSide(
+            width: 1,
+            color: Color(0xFFEEAC7C),
+          )),
+      elevation: 2,
+      color: Colors.white,
       child: InkWell(
 
         onTap: () async {
-          DateTime? newDate = await showDatePicker(
-              initialDate: DateTime(
-                  Provider
-                      .of<CustomerView>(context, listen: false)
-                      .thisMonthCustomers[widget.index]
-                      .purchases[widget.productIndex]
-                      .paymentSchedule[widget.paymentIndex]
-                      .date
-                      .toDate()
-                      .year,
-                  Provider
-                      .of<CustomerView>(context, listen: false)
-                      .thisMonthCustomers[widget.index]
-                      .purchases[widget.productIndex]
-                      .paymentSchedule[widget.paymentIndex]
-                      .date
-                      .toDate()
-                      .month,
-                  Provider
-                      .of<CustomerView>(context, listen: false)
-                      .thisMonthCustomers[widget.index]
-                      .purchases[widget.productIndex]
-                      .paymentSchedule[widget.paymentIndex]
-                      .date
-                      .toDate()
-                      .day),
-              firstDate: DateTime(DateTime
-                  .now()
-                  .year),
-              lastDate: DateTime(2030),
-              context: context);
+          if(Provider.of<UserViewModel>(context,listen: false).readWrite){
+            DateTime? newDate = await showDatePicker(
+                initialDate: DateTime(
+                    Provider
+                        .of<CustomerView>(context, listen: false)
+                        .thisMonthCustomers[widget.index]
+                        .purchases[widget.productIndex]
+                        .paymentSchedule[widget.paymentIndex]
+                        .date
+                        .toDate()
+                        .year,
+                    Provider
+                        .of<CustomerView>(context, listen: false)
+                        .thisMonthCustomers[widget.index]
+                        .purchases[widget.productIndex]
+                        .paymentSchedule[widget.paymentIndex]
+                        .date
+                        .toDate()
+                        .month,
+                    Provider
+                        .of<CustomerView>(context, listen: false)
+                        .thisMonthCustomers[widget.index]
+                        .purchases[widget.productIndex]
+                        .paymentSchedule[widget.paymentIndex]
+                        .date
+                        .toDate()
+                        .day),
+                firstDate: DateTime(DateTime
+                    .now()
+                    .year),
+                lastDate: DateTime(2030),
+                context: context);
 
-          setState(() {
+            setState(() {
+              Provider
+                  .of<CustomerView>(context, listen: false)
+                  .thisMonthCustomers[widget.index]
+                  .purchases[widget.productIndex]
+                  .paymentSchedule[widget.paymentIndex]
+                  .date = Timestamp.fromDate(newDate!);
+            });
             Provider
                 .of<CustomerView>(context, listen: false)
                 .thisMonthCustomers[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
-                .date = Timestamp.fromDate(newDate!);
-          });
-          Provider
-              .of<CustomerView>(context, listen: false)
-              .thisMonthCustomers[widget.index]
-              .purchases[widget.productIndex]
-              .paymentSchedule[widget.paymentIndex]
-              .updateFirestore();
-        },
+                .updateFirestore();
+          } },
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Row(

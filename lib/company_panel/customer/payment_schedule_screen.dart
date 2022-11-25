@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+import '../../investor_panel/view_model/viewmodel_user.dart';
 import '../../invoice.dart';
 import '../view_model/viewmodel_customers.dart';
 
@@ -46,11 +47,11 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
+              const Expanded(
               child: Text(
                 'Payment Schedule',
                 overflow: TextOverflow.fade,
-                style: TextStyle(fontSize: 25),
+                style: TextStyle(fontSize: 25,color: Color(0xFFE56E14),),
               ),
             ),
             IconButton(
@@ -69,7 +70,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                   service.savePdfFile('Order Status', date);
                 },
                 icon: const Icon(Icons.receipt)),
-            IconButton(
+            Provider.of<UserViewModel>(context,listen: false).readWrite? IconButton(
                 onPressed: () {
                   time = TimeOfDay.now();
                   dateTime = DateTime.now();
@@ -85,7 +86,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
                           decoration: const BoxDecoration(
-                              color: Color(0xFF2D2C3F),
+                              color:Colors.white,
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(20))),
                           child: Padding(
@@ -119,16 +120,15 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
+                                      decoration: BoxDecoration(color: Colors.grey.shade200,
                                           borderRadius:
                                               BorderRadius.circular(4),
-                                          border: Border.all(
-                                              color: Colors.black, width: 1)),
+                                          ),
                                       child: Text(
                                         DateFormat.yMMMMEEEEd()
                                             .format(dateTime),
-                                        style: const TextStyle(
-                                            color: Color(0x59FFFFFF),
+                                        style:   TextStyle(
+                                            color: const Color(0xFFE56E14),
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600),
                                       ),
@@ -149,11 +149,10 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
+                                      decoration: BoxDecoration(color: Colors.grey.shade200,
                                           borderRadius:
                                               BorderRadius.circular(4),
-                                          border: Border.all(
-                                              color: Colors.black, width: 1)),
+                                          ),
                                       child: Text(
                                         DateFormat.jms().format(DateTime(
                                             dateTime.year,
@@ -161,8 +160,8 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                             dateTime.day,
                                             time.hour,
                                             time.minute)),
-                                        style: const TextStyle(
-                                            color: Color(0x59FFFFFF),
+                                        style:  TextStyle(
+                                            color: const Color(0xFFE56E14),
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600),
                                       ),
@@ -198,7 +197,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                         },
                                       ),
                                     ),
-                                    IconButton(
+                                    IconButton(color: const Color(0xFFE56E14),
                                         onPressed: () async {
                                           if (formKey.currentState!
                                               .validate()) {
@@ -482,6 +481,19 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                         widget.productIndex]
                                                     .updateCustomTransaction(
                                                         amount: newPayment);
+                                                final service = PdfInvoiceService();
+                                                final date = await service.createPaymentReceipt(
+                                                    Provider.of<CustomerView>(context, listen: false)
+                                                        .allCustomers[widget.index]
+                                                        .purchases[widget.productIndex],newPayment,DateTime(
+                                                    dateTime.year,
+                                                    dateTime.month,
+                                                    dateTime.day,
+                                                    time.hour,
+                                                    time.minute)
+                                                );
+                                                print('1');
+                                                service.savePdfFile('receipt', date);
                                                 for (var payment in Provider.of<
                                                             CustomerView>(
                                                         context,
@@ -547,7 +559,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                     },
                   );
                 },
-                icon: const Icon(Icons.add))
+                icon: const Icon(Icons.add)):const SizedBox()
           ],
         ),
       ),
@@ -575,7 +587,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
             TextButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
-                  const Color(0xFF2D2C3F),
+                      Colors.grey.shade200,
                 )),
                 onPressed: () {
                   Navigator.push(
@@ -629,19 +641,17 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? Text(suffix) : null,
+      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(color:  Color(0xFFE56E14),),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
+
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
-      ),
+
     );
   }
 }

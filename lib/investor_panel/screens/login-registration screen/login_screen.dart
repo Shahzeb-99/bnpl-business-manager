@@ -1,11 +1,11 @@
+import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
 import 'package:ecommerce_bnql/investor_panel/screens/login-registration%20screen/registration_screen.dart';
+import 'package:ecommerce_bnql/investor_panel/view_model/viewmodel_user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_bnql/investor_panel/screens/login-registration screen/decorations.dart';
-
-import '../../../investor_panel/customer/all_customer_screen.dart';
-
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -23,6 +23,10 @@ class LoginScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset(
+              'assets/dart.png',
+              scale: 3,
+            ),
             TextField(
               autofocus: true,
               decoration: kDecoration.inputBox('Email'),
@@ -42,11 +46,14 @@ class LoginScreen extends StatelessWidget {
                     auth
                         .signInWithEmailAndPassword(
                             email: email.text, password: password.text)
-                        .then((value) => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const AllCustomersScreen())));
+                        .then((value) async {
+                      Provider.of<UserViewModel>(context,listen: false)
+                          .checkPermissions()
+                          .whenComplete(() => Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MainScreen())));
+                    });
                   } on Exception catch (e) {
                     if (kDebugMode) {
                       print(e);

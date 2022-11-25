@@ -49,10 +49,10 @@ class _PaymentScheduleScreenMonthlyRecoveryState
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
+          children:  const [
             Text(
               'Payment Schedule',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(fontSize: 25,color:Color(0xFFE56E14),),
             ),
             // IconButton(
             //     onPressed: () {
@@ -381,7 +381,7 @@ class _PaymentScheduleScreenMonthlyRecoveryState
             TextButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
-                  const Color(0xFF2D2C3F),
+                      Colors.grey.shade200,
                 )),
                 onPressed: () {
                   Navigator.push(

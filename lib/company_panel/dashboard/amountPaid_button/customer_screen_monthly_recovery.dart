@@ -13,16 +13,19 @@ class CustomerProfileMonthlyRecovery extends StatefulWidget {
   final int index;
 
   @override
-  State<CustomerProfileMonthlyRecovery> createState() => _CustomerProfileMonthlyRecoveryState();
+  State<CustomerProfileMonthlyRecovery> createState() =>
+      _CustomerProfileMonthlyRecoveryState();
 }
 
-class _CustomerProfileMonthlyRecoveryState extends State<CustomerProfileMonthlyRecovery> {
+class _CustomerProfileMonthlyRecoveryState
+    extends State<CustomerProfileMonthlyRecovery> {
   @override
   void initState() {
     if (Provider.of<DashboardView>(context, listen: false).option !=
         DashboardFilterOptions.all) {
       Provider.of<CustomerView>(context, listen: false)
-          .getMonthlyPurchasesRecovery(widget.index,Provider.of<DashboardView>(context, listen: false).option);
+          .getMonthlyPurchasesRecovery(widget.index,
+              Provider.of<DashboardView>(context, listen: false).option);
     } else {
       Provider.of<CustomerView>(context, listen: false)
           .getAllPurchasesDashboardView(widget.index);
@@ -40,7 +43,10 @@ class _CustomerProfileMonthlyRecoveryState extends State<CustomerProfileMonthlyR
               Provider.of<CustomerView>(context, listen: false)
                   .thisMonthCustomers[widget.index]
                   .name,
-              style: const TextStyle(fontSize: 25),
+              style: const TextStyle(
+                fontSize: 25,
+                color: Color(0xFFE56E14),
+              ),
             ),
             Expanded(child: Container()),
             CircleAvatar(
@@ -68,7 +74,7 @@ class _CustomerProfileMonthlyRecoveryState extends State<CustomerProfileMonthlyR
               height: 30,
             ),
             const Center(
-              child:  Text(
+              child: Text(
                 'All Purchases',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -77,48 +83,48 @@ class _CustomerProfileMonthlyRecoveryState extends State<CustomerProfileMonthlyR
               height: 10,
               child: Divider(
                 thickness: 1,
-                color: Colors.white,
+                color: Color(0xFFE56E14),
               ),
             ),
             Expanded(
               child: Provider.of<CustomerView>(context)
-                  .thisMonthCustomers[widget.index]
-                  .purchases
-                  .isNotEmpty
-                  ? ListView.builder(
-                  physics:
-                  const ScrollPhysics(parent: BouncingScrollPhysics()),
-                  itemCount: Provider.of<CustomerView>(context)
                       .thisMonthCustomers[widget.index]
                       .purchases
-                      .length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return PurchaseWidgetMonthlyRecovery(
-                      image: Provider.of<CustomerView>(context)
+                      .isNotEmpty
+                  ? ListView.builder(
+                      physics:
+                          const ScrollPhysics(parent: BouncingScrollPhysics()),
+                      itemCount: Provider.of<CustomerView>(context)
                           .thisMonthCustomers[widget.index]
-                          .purchases[index]
-                          .productImage,
-                      name: Provider.of<CustomerView>(context)
-                          .thisMonthCustomers[widget.index]
-                          .purchases[index]
-                          .productName,
-                      outstandingBalance: Provider.of<CustomerView>(context)
-                          .thisMonthCustomers[widget.index]
-                          .purchases[index]
-                          .outstandingBalance,
-                      amountPaid: Provider.of<CustomerView>(context)
-                          .thisMonthCustomers[widget.index]
-                          .purchases[index]
-                          .amountPaid,
-                      productIndex: index,
-                      index: widget.index,
-                    );
-                  })
+                          .purchases
+                          .length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return PurchaseWidgetMonthlyRecovery(
+                          image: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .productImage,
+                          name: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .productName,
+                          outstandingBalance: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .outstandingBalance,
+                          amountPaid: Provider.of<CustomerView>(context)
+                              .thisMonthCustomers[widget.index]
+                              .purchases[index]
+                              .amountPaid,
+                          productIndex: index,
+                          index: widget.index,
+                        );
+                      })
                   : const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              ),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
             )
           ],
         ),

@@ -29,7 +29,7 @@ class _PaymentTransactionHistoryScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Installment Transaction History'),
+        title:  const Text('Installment Transaction History',style: TextStyle(color:  Color(0xFFE56E14),),),
       ),
       body: ListView.builder(
         physics: const ScrollPhysics(parent: BouncingScrollPhysics()),

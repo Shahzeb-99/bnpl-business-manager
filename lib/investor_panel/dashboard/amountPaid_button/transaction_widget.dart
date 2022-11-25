@@ -25,7 +25,7 @@ class _TransactionWidgetRecoveryState extends State<TransactionWidgetRecovery> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color:const Color(0xFF2D2C3F),
+      color:Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Row(

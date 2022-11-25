@@ -1,5 +1,6 @@
 import 'package:ecommerce_bnql/company_panel/customer/payment_schedule_class.dart';
 import 'package:ecommerce_bnql/company_panel/customer/payment_schedule_screen.dart';
+import 'package:ecommerce_bnql/invoice.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,8 +35,24 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color:const Color(0xFF2D2C3F),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+          side: BorderSide(
+            width: 1,
+            color: Color(0xFFEEAC7C),
+          )),
+      elevation: 2,
+      color: Colors.white,
       child: InkWell(
+        onLongPress: () async {
+
+          final service = PdfInvoiceService();
+          final data = await service.createInvoice(Provider.of<CustomerView>(context,listen: false).allCustomers[widget.index].purchases[widget.productIndex]);
+          service.savePdfFile('invoice', data);
+
+        },
         onTap: () {
           Navigator.push(
             context,

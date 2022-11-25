@@ -1,10 +1,8 @@
 // ignore_for_file: camel_case_types
 
-
+import 'package:ecommerce_bnql/company_panel/customer/add_new_customer/add_vendor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../customer_page/add_vendor.dart';
 
 enum ProfitSelection { percentage, lumpsum }
 
@@ -38,7 +36,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
       appBar: AppBar(
         title: const Text(
           'Add Product',
-          style: TextStyle(fontSize: 25),
+          style: TextStyle(
+            fontSize: 25,
+            color: Color(0xFFE56E14),
+          ),
         ),
       ),
       body: Column(
@@ -81,16 +82,22 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       },
                     ),
                   ),
-                  ListTile(
-                    title: const Text('Percentage Profit'),
-                    leading: Radio<ProfitSelection?>(
-                      value: ProfitSelection.percentage,
-                      groupValue: _selectedProfitOption,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedProfitOption = value!;
-                        });
-                      },
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                        unselectedWidgetColor: const Color(0xFFE56E14),
+                        disabledColor: Colors.blue),
+                    child: ListTile(
+                      title: const Text('Percentage Profit'),
+                      leading: Radio<ProfitSelection?>(
+                        activeColor: const Color(0xFFE56E14),
+                        value: ProfitSelection.percentage,
+                        groupValue: _selectedProfitOption,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedProfitOption = value!;
+                          });
+                        },
+                      ),
                     ),
                   ),
                   _selectedProfitOption == ProfitSelection.percentage
@@ -116,16 +123,22 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           ),
                         )
                       : const Divider(),
-                  ListTile(
-                    title: const Text('Lump-sum Profit'),
-                    leading: Radio<ProfitSelection?>(
-                      value: ProfitSelection.lumpsum,
-                      groupValue: _selectedProfitOption,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedProfitOption = value!;
-                        });
-                      },
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                        unselectedWidgetColor: const Color(0xFFE56E14),
+                        disabledColor: Colors.blue),
+                    child: ListTile(
+                      title: const Text('Lump-sum Profit'),
+                      leading: Radio<ProfitSelection?>(
+                        activeColor: const Color(0xFFE56E14),
+                        value: ProfitSelection.lumpsum,
+                        groupValue: _selectedProfitOption,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedProfitOption = value!;
+                          });
+                        },
+                      ),
                     ),
                   ),
                   _selectedProfitOption == ProfitSelection.lumpsum
@@ -157,7 +170,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
                 decoration: BoxDecoration(
-                    color: const Color(0xFF2D2C3F),
+                    color: Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(4)),
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Text(
@@ -220,18 +233,16 @@ int getTotalLumpsumProfit({required String price, required String profit}) {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? Text(suffix) : null,
+      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(
+        color: Color(0xFFE56E14),
+      ),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

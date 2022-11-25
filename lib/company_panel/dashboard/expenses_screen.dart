@@ -28,7 +28,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transaction History'),
+        title:   Text('Transaction History',style: TextStyle(color: const Color(0xFFE56E14),),),
       ),
       body: ListView.builder(
         physics: const ScrollPhysics(parent: BouncingScrollPhysics()),

@@ -1,9 +1,8 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, camel_case_types
 
-
 import 'package:flutter/material.dart';
 
-import '../customer_page/add_product.dart';
+import '../../../company_panel//customer/add_new_customer/add_product.dart';
 
 class AddCustomerScreen extends StatelessWidget {
   AddCustomerScreen({Key? key}) : super(key: key);
@@ -18,7 +17,10 @@ class AddCustomerScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Add Customer',
-          style: TextStyle(  fontSize: 25),
+          style: TextStyle(
+            fontSize: 25,
+            color: Color(0xFFE56E14),
+          ),
         ),
       ),
       body: Column(
@@ -74,16 +76,14 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(
+        color: Color(0xFFE56E14),
+      ),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

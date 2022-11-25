@@ -98,7 +98,10 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       appBar: AppBar(
         title: const Text(
           'Add Vendor',
-          style: TextStyle(fontSize: 25),
+          style: TextStyle(
+            fontSize: 25,
+            color: Color(0xFFE56E14),
+          ),
         ),
       ),
       body: ModalProgressHUD(
@@ -114,16 +117,22 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      ListTile(
-                        title: const Text('New Vendor'),
-                        leading: Radio<Vendor?>(
-                          value: Vendor.newVendor,
-                          groupValue: _selectedVendorOption,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedVendorOption = value;
-                            });
-                          },
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                            unselectedWidgetColor: const Color(0xFFE56E14),
+                            disabledColor: Colors.blue),
+                        child: ListTile(
+                          title: const Text('New Vendor'),
+                          leading: Radio<Vendor?>(
+                            activeColor: const Color(0xFFE56E14),
+                            value: Vendor.newVendor,
+                            groupValue: _selectedVendorOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedVendorOption = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       _selectedVendorOption == Vendor.newVendor
@@ -139,28 +148,34 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                               },
                             )
                           : const Divider(),
-                      ListTile(
-                        title: const Text('Existing Vendor'),
-                        leading: Radio<Vendor?>(
-                          value: Vendor.existingVendor,
-                          groupValue: _selectedVendorOption,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedVendorOption = value;
-                            });
-                          },
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                            unselectedWidgetColor: const Color(0xFFE56E14),
+                            disabledColor: Colors.blue),
+                        child: ListTile(
+                          title: const Text('Existing Vendor'),
+                          leading: Radio<Vendor?>(
+                            activeColor: const Color(0xFFE56E14),
+                            value: Vendor.existingVendor,
+                            groupValue: _selectedVendorOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedVendorOption = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                              color: const Color(0xFF2D2C3F),
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4)),
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              dropdownColor: const Color(0xFF2D2C3F),
+                              dropdownColor: Colors.grey.shade200,
                               value: selectedVendor,
                               items: vendorList.map((String items) {
                                 return DropdownMenuItem(
@@ -196,7 +211,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFF2D2C3F),
+                                              color: Colors.grey.shade200,
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -217,7 +232,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                                 await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
-                                              firstDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
                                               lastDate: DateTime(2050),
                                             );
                                             setState(() {
@@ -225,7 +240,9 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             });
                                           },
                                           icon: const Icon(
-                                              Icons.date_range_rounded))
+                                            Icons.date_range_rounded,
+                                            color: Color(0xFFE56E14),
+                                          ))
                                     ],
                                   ),
                                 ),
@@ -237,7 +254,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFF2D2C3F),
+                                              color: Colors.grey.shade200,
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -265,7 +282,9 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             });
                                           },
                                           icon: const Icon(
-                                              Icons.date_range_rounded))
+                                            Icons.date_range_rounded,
+                                            color: const Color(0xFFE56E14),
+                                          ))
                                     ],
                                   ),
                                 ),
@@ -273,13 +292,13 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: const Color(0xFF2D2C3F),
+                                        color: Colors.grey.shade200,
                                         borderRadius: BorderRadius.circular(4)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<double>(
-                                        dropdownColor: const Color(0xFF2D2C3F),
+                                        dropdownColor: Colors.grey.shade200,
                                         value: selectedPayment,
                                         items: numberOfPayments
                                             .map((double items) {
@@ -294,7 +313,12 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             selectedPayment = newValue;
                                           });
                                         },
-                                        hint: const Text('Number of Payments'),
+                                        hint: const Text(
+                                          'Number of Payments',
+                                          style: TextStyle(
+                                            color: Color(0xFFE56E14),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -402,16 +426,14 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(
+        color: Color(0xFFE56E14),
+      ),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

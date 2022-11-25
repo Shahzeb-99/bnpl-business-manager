@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, use_build_context_synchronously
 
 import 'package:ecommerce_bnql/investor_panel/dashboard/outstandingAmount_button/payment_schedule_widget_monthly.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,8 @@ import '../../../investor_panel/customer/payment_schedule_class.dart';
 import '../../../investor_panel/dashboard/dashboard_screen.dart';
 import '../../../investor_panel/view_model/viewmodel_customers.dart';
 import '../../../investor_panel/view_model/viewmodel_dashboard.dart';
+import '../../invoice_investor.dart';
+import '../../view_model/viewmodel_user.dart';
 
 class PaymentScheduleScreenMonthlyOutstanding extends StatefulWidget {
   const PaymentScheduleScreenMonthlyOutstanding(
@@ -58,9 +60,9 @@ class _PaymentScheduleScreenMonthlyOutstandingState
           children: [
             const Text(
               'Payment Schedule',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(fontSize: 25, color: Color(0xFFE56E14),),
             ),
-            IconButton(
+            Provider.of<UserViewModel>(context,listen: false).readWrite? IconButton(
                 onPressed: () {
                   dateTime = DateTime.now();
                   time = TimeOfDay.now();
@@ -76,12 +78,13 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
                           decoration: const BoxDecoration(
-                              color: Color(0xFF2D2C3F),
+                              color: Colors.white,
                               borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(20))),
                           child: Padding(
                             padding: const EdgeInsets.all(20),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 const Text(
                                   'Add Money',
@@ -109,17 +112,15 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
+                                      decoration: BoxDecoration(color: Colors.grey.shade200,
                                           borderRadius:
                                               BorderRadius.circular(4),
-                                          border: Border.all(
-                                              color: const Color(0xFF0E1223),
-                                              width: 1)),
+                                          ),
                                       child: Text(
                                         DateFormat.yMMMMEEEEd()
                                             .format(dateTime),
-                                        style: const TextStyle(
-                                            color: Color(0x59FFFFFF),
+                                        style:   const TextStyle(
+                                            color: Color(0xFFE56E14),
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600),
                                       ),
@@ -140,12 +141,10 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
+                                      decoration: BoxDecoration(color: Colors.grey.shade200,
                                           borderRadius:
                                               BorderRadius.circular(4),
-                                          border: Border.all(
-                                              color: const Color(0xFF0E1223),
-                                              width: 1)),
+                                          ),
                                       child: Text(
                                         DateFormat.jms().format(DateTime(
                                             dateTime.year,
@@ -153,8 +152,8 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                                             dateTime.day,
                                             time.hour,
                                             time.minute)),
-                                        style: const TextStyle(
-                                            color: Color(0x59FFFFFF),
+                                        style:   const TextStyle(
+                                            color: Color(0xFFE56E14),
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600),
                                       ),
@@ -192,8 +191,8 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                                         },
                                       ),
                                     ),
-                                    IconButton(
-                                        onPressed: () {
+                                    IconButton(color: const Color(0xFFE56E14),
+                                        onPressed: () async {
                                           if (formKey.currentState!
                                               .validate()) {
                                             if (Provider.of<CustomerViewInvestor>(
@@ -249,6 +248,20 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                                                       widget.productIndex]
                                                   .updateCustomTransaction(
                                                       amount: newPayment);
+                                              final service = PdfInvoiceServiceInvestor();
+                                              final date = await service.createPaymentReceipt(
+                                                  Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex],int.parse(
+                                                  moneyController.text),DateTime(
+                                                  dateTime.year,
+                                                  dateTime.month,
+                                                  dateTime.day,
+                                                  time.hour,
+                                                  time.minute)
+                                              );
+
+                                              service.savePdfFile('receipt', date);
 
                                               moneyController.clear();
 
@@ -463,6 +476,19 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                                                         widget.productIndex]
                                                     .updateCustomTransaction(
                                                         amount: newPayment);
+                                                final service = PdfInvoiceServiceInvestor();
+                                                final date = await service.createPaymentReceipt(
+                                                    Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                        .thisMonthCustomers[widget.index]
+                                                        .purchases[widget.productIndex],newPayment,DateTime(
+                                                    dateTime.year,
+                                                    dateTime.month,
+                                                    dateTime.day,
+                                                    time.hour,
+                                                    time.minute)
+                                                );
+
+                                                service.savePdfFile('receipt', date);
                                                 for (var payment in Provider.of<
                                                             CustomerViewInvestor>(
                                                         context,
@@ -528,7 +554,7 @@ class _PaymentScheduleScreenMonthlyOutstandingState
                     },
                   );
                 },
-                icon: const Icon(Icons.add))
+                icon: const Icon(Icons.add)):const SizedBox()
           ],
         ),
       ),
@@ -610,19 +636,17 @@ class _PaymentScheduleScreenMonthlyOutstandingState
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? Text(suffix) : null,
+      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(color:  Color(0xFFE56E14),),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
+
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
-      ),
+
     );
   }
 }

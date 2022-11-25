@@ -2,8 +2,10 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:ecommerce_bnql/investor_panel/customer/all_customer_screen.dart';
 import 'package:ecommerce_bnql/investor_panel/dashboard/dashboard_screen.dart';
 import 'package:ecommerce_bnql/investor_panel/vendor/all_vendor_screen.dart';
+import 'package:ecommerce_bnql/investor_panel/view_model/viewmodel_user.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -15,7 +17,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
-
+@override
+  void initState() {
+    Provider.of<UserViewModel>(context,listen: false).checkPermissions();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -36,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
         bottomNavigationBar: BottomNavyBar(
           animationDuration: const Duration(milliseconds: 300),
           curve: Curves.easeOutCubic,
-          backgroundColor: const Color(0xFF1C1E38),
+          backgroundColor: Colors.grey.shade300,
           selectedIndex: _selectedIndex,
           showElevation: true,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -50,13 +56,13 @@ class _MainScreenState extends State<MainScreen> {
             BottomNavyBarItem(
               icon: const Icon(Icons.apps),
               title: const Text(' Dashboard'),
-              activeColor: const Color(0xFF9191E7),
+              activeColor: const Color(0xFFE56E14),
               inactiveColor: const Color(0xFF9898B0),
             ),
             BottomNavyBarItem(
                 icon: const Icon(Icons.people),
                 title: const Text(' Customers'),
-                activeColor: const Color(0xFF9191E7),
+                activeColor: const Color(0xFFE56E14),
                 inactiveColor: const Color(0xFF9898B0)),
             BottomNavyBarItem(
                 icon: const FaIcon(
@@ -64,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
                   size: 20,
                 ),
                 title: const Text(' Investors'),
-                activeColor: const Color(0xFF9191E7),
+                activeColor: const Color(0xFFE56E14),
                 inactiveColor: const Color(0xFF9898B0)),
           ],
         ),

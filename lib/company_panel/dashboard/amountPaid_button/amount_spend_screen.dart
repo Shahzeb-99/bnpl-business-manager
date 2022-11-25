@@ -14,8 +14,9 @@ class AllAmountSpend extends StatefulWidget {
 class _AllAmountSpendState extends State<AllAmountSpend> {
   @override
   void initState() {
-    Provider.of<CustomerView>(context, listen: false).getThisMonthCustomersRecovery(
-        option: Provider.of<DashboardView>(context, listen: false).option);
+    Provider.of<CustomerView>(context, listen: false)
+        .getThisMonthCustomersRecovery(
+            option: Provider.of<DashboardView>(context, listen: false).option);
     super.initState();
   }
 
@@ -27,7 +28,10 @@ class _AllAmountSpendState extends State<AllAmountSpend> {
           children: [
             const Text(
               'Customers',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(
+                fontSize: 25,
+                color: Color(0xFFE56E14),
+              ),
             ),
             Expanded(
               child: Container(),
@@ -41,11 +45,19 @@ class _AllAmountSpendState extends State<AllAmountSpend> {
           child: ListView.builder(
             physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
             itemCount:
-            Provider.of<CustomerView>(context).thisMonthCustomers.length,
+                Provider.of<CustomerView>(context).thisMonthCustomers.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
-                elevation: 5,
-                color: const Color(0xFF2D2C3F),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    side: BorderSide(
+                      width: 1,
+                      color: Color(0xFFEEAC7C),
+                    )),
+                elevation: 2,
+                color: Colors.white,
                 child: InkWell(
                   onLongPress: () {
                     {
@@ -68,12 +80,12 @@ class _AllAmountSpendState extends State<AllAmountSpend> {
                                       child: const Text('Delete Customer'),
                                       onPressed: () {
                                         Provider.of<CustomerView>(context,
-                                            listen: false)
+                                                listen: false)
                                             .thisMonthCustomers[index]
                                             .deleteCustomer();
                                         setState(() {
                                           Provider.of<CustomerView>(context,
-                                              listen: false)
+                                                  listen: false)
                                               .thisMonthCustomers
                                               .removeAt(index);
                                         });

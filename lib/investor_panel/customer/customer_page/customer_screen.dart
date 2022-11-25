@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_model/viewmodel_customers.dart';
+import '../../view_model/viewmodel_user.dart';
 import '../customer_page/add_product.dart';
 import '../all_customer_screen.dart';
 import '../payment_schedule_class.dart';
@@ -39,7 +40,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
               Provider.of<CustomerViewInvestor>(context, listen: false)
                   .allCustomers[widget.index]
                   .name,
-              style: const TextStyle(  fontSize: 25),
+              style:   const TextStyle(  fontSize: 25,color: Color(0xFFE56E14),)
             ),
             Expanded(child: Container()),
             CircleAvatar(
@@ -74,7 +75,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Expanded(
-                    child: IconButton(
+                    child:Provider.of<UserViewModel>(context,listen: false).readWrite? IconButton(
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -88,14 +89,14 @@ class _CustomerProfileState extends State<CustomerProfile> {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.add_rounded)))
+                        icon:  const Icon(Icons.add_rounded,color: Color(0xFFE56E14),)):const SizedBox())
               ],
             ),
             const SizedBox(
               height: 10,
               child: Divider(
                 thickness: 1,
-                color: Colors.white,
+                color: Color(0xFFE56E14),
               ),
             ),
             Expanded(

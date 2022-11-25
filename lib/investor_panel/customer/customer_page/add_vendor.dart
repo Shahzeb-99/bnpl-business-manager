@@ -102,7 +102,10 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       appBar: AppBar(
         title: const Text(
           'Add Investor',
-          style: TextStyle(fontSize: 25),
+          style: TextStyle(
+            fontSize: 25,
+            color: Color(0xFFE56E14),
+          ),
         ),
       ),
       body: ModalProgressHUD(
@@ -118,16 +121,22 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      ListTile(
-                        title: const Text('New Investor'),
-                        leading: Radio<Vendor?>(
-                          value: Vendor.newVendor,
-                          groupValue: _selectedVendorOption,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedVendorOption = value;
-                            });
-                          },
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                            unselectedWidgetColor: const Color(0xFFE56E14),
+                            disabledColor: Colors.blue),
+                        child: ListTile(
+                          title: const Text('New Investor'),
+                          leading: Radio<Vendor?>(
+                            activeColor: const Color(0xFFE56E14),
+                            value: Vendor.newVendor,
+                            groupValue: _selectedVendorOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedVendorOption = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       _selectedVendorOption == Vendor.newVendor
@@ -161,34 +170,44 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                               ],
                             )
                           : const Divider(),
-                      ListTile(
-                        title: const Text('Existing Investor'),
-                        leading: Radio<Vendor?>(
-                          value: Vendor.existingVendor,
-                          groupValue: _selectedVendorOption,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedVendorOption = value;
-                            });
-                          },
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                            unselectedWidgetColor:const Color(0xFFE56E14),
+                            disabledColor: Colors.blue),
+                        child: ListTile(
+                          title: const Text('Existing Investor'),
+                          leading: Radio<Vendor?>(
+                            activeColor: const Color(0xFFE56E14),
+                            value: Vendor.existingVendor,
+                            groupValue: _selectedVendorOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedVendorOption = value;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                              color: const Color(0xFF2D2C3F),
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4)),
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              dropdownColor: const Color(0xFF2D2C3F),
+                              dropdownColor: Colors.grey.shade200,
                               value: selectedInvestor,
                               items: investorList.map((String items) {
                                 return DropdownMenuItem(
                                   value: items,
-                                  child: Text(items),
-                                );
+                                  child: Text(
+                                    items,
+                                    style: const TextStyle(
+                                        color:Color(0xFFE56E14),
+                                  ),
+                                  ));
                               }).toList(),
                               onChanged:
                                   _selectedVendorOption == Vendor.existingVendor
@@ -218,7 +237,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFF2D2C3F),
+                                              color: Colors.grey.shade200,
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -239,7 +258,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                                 await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
-                                              firstDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
                                               lastDate: DateTime(2050),
                                             );
                                             setState(() {
@@ -247,7 +266,9 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             });
                                           },
                                           icon: const Icon(
-                                              Icons.date_range_rounded))
+                                            Icons.date_range_rounded,
+                                            color: Color(0xFFE56E14),
+                                          ))
                                     ],
                                   ),
                                 ),
@@ -259,7 +280,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color(0xFF2D2C3F),
+                                              color: Colors.grey.shade200,
                                               borderRadius:
                                                   BorderRadius.circular(4)),
                                           height: 60,
@@ -287,7 +308,9 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             });
                                           },
                                           icon: const Icon(
-                                              Icons.date_range_rounded))
+                                            Icons.date_range_rounded,
+                                            color: Color(0xFFE56E14),
+                                          ))
                                     ],
                                   ),
                                 ),
@@ -295,20 +318,24 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: const Color(0xFF2D2C3F),
+                                        color: Colors.grey.shade200,
                                         borderRadius: BorderRadius.circular(4)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<double>(
-                                        dropdownColor: const Color(0xFF2D2C3F),
+                                        dropdownColor: Colors.grey.shade200,
                                         value: selectedPayment,
                                         items: numberOfPayments
                                             .map((double items) {
                                           return DropdownMenuItem(
                                             value: items,
-                                            child:
-                                                Text(items.toInt().toString()),
+                                            child: Text(
+                                              items.toInt().toString(),
+                                              style: const TextStyle(
+                                                  color:
+                                                  Color(0xFFE56E14),),
+                                            ),
                                           );
                                         }).toList(),
                                         onChanged: (newValue) {
@@ -316,7 +343,11 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                             selectedPayment = newValue;
                                           });
                                         },
-                                        hint: const Text('Number of Payments'),
+                                        hint: const Text(
+                                          'Number of Payments',
+                                          style: TextStyle(
+                                              color:   Color(0xFFE56E14),),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -397,45 +428,36 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                   bool status = _selectedVendorOption ==
                                           Vendor.existingVendor
                                       ? await UpdateFirestore(
-                                              investorProfitPercentage: double.parse(
-                                                  investorProfitController
-                                                      .text),
+                                              investorProfitPercentage:
+                                                  double.parse(
+                                                      investorProfitController
+                                                          .text),
                                               numberOfPayments:
                                                   selectedPayment!,
                                               orderDate: orderDate!,
                                               productSalePrice:
                                                   widget.productPurchasecost,
-                                              vendorName: nameController.text.isNotEmpty
-                                                  ? nameController.text
-                                                  : 'No Name',
+                                              vendorName:
+                                                  nameController.text.isNotEmpty
+                                                      ? nameController.text
+                                                      : 'No Name',
                                               customerName: widget.customerName,
                                               productCost: int.parse(
                                                   costController.text),
                                               productName: widget.productName,
                                               firstPaymnetDate:
                                                   firstPaymentDate!,
-                                              openingBalance: _selectedVendorOption ==
-                                                  Vendor.newVendor? int.parse(
-                                                  openingBalanceController.text):0,
+                                              openingBalance:
+                                                  _selectedVendorOption ==
+                                                          Vendor.newVendor
+                                                      ? int.parse(
+                                                          openingBalanceController
+                                                              .text)
+                                                      : 0,
                                               investorName: selectedInvestor)
                                           .addProduct()
-                                      : _selectedVendorOption ==
-                                              Vendor.newVendor
-                                          ? await UpdateFirestore(
-                                                  investorProfitPercentage:
-                                                      double.parse(
-                                                          investorProfitController.text),
-                                                  numberOfPayments: selectedPayment!,
-                                                  orderDate: orderDate!,
-                                                  productSalePrice: widget.productPurchasecost,
-                                                  vendorName: nameController.text,
-                                                  customerName: widget.customerName,
-                                                  productCost: int.parse(costController.text),
-                                                  productName: widget.productName,
-                                                  firstPaymnetDate: firstPaymentDate!,
-                                                  openingBalance: int.parse(openingBalanceController.text),
-                                                  investorName: nameController.text)
-                                              .addProductToNewVendor()
+                                      : _selectedVendorOption == Vendor.newVendor
+                                          ? await UpdateFirestore(investorProfitPercentage: double.parse(investorProfitController.text), numberOfPayments: selectedPayment!, orderDate: orderDate!, productSalePrice: widget.productPurchasecost, vendorName: nameController.text, customerName: widget.customerName, productCost: int.parse(costController.text), productName: widget.productName, firstPaymnetDate: firstPaymentDate!, openingBalance: int.parse(openingBalanceController.text), investorName: nameController.text).addProductToNewVendor()
                                           : false;
 
                                   if (!mounted) return;
@@ -482,18 +504,16 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? Text(suffix) : null,
+      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(
+        color: Color(0xFFE56E14),
+      ),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
     );
   }

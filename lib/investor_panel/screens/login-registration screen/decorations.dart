@@ -6,16 +6,17 @@ class kDecoration {
   static InputDecoration inputBox(String hintText) {
     return InputDecoration(
       filled: true,
-      fillColor: Colors.teal.shade200,
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(
+        color: Color(0xFFE56E14),
+      ),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: Color(0xFFE56E14),
+        ),
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Colors.white30, width: 1),
       ),
     );
   }

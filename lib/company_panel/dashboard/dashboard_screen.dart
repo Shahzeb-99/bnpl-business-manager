@@ -1,4 +1,6 @@
 // ignore_for_file: camel_case_types
+import 'package:ecommerce_bnql/investor_panel/screens/login-registration%20screen/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/company_panel/dashboard/expenses_screen.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../investor_panel/view_model/viewmodel_user.dart';
 import '../view_model/viewmodel_dashboard.dart';
 import 'amountPaid_button/amount_spend_screen.dart';
 import 'outstandingAmount_button/outstanding_balance_screen.dart';
@@ -58,7 +61,10 @@ class _DashboardCompanyState extends State<DashboardCompany> {
               child: Text(
                 'Dashboard Company',
                 overflow: TextOverflow.fade,
-                style: TextStyle(fontSize: 25),
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Color(0xFFE56E14),
+                ),
               ),
             ),
             loading != true
@@ -105,7 +111,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                     icon: const Icon(Icons.refresh_rounded),
                   )
                 : const RefreshProgressIndicator(
-                    backgroundColor: Color(0xFF1A1C33),
+                    backgroundColor: Colors.transparent,
                     color: Colors.white,
                   )
           ],
@@ -124,6 +130,16 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )),
                 Expanded(child: Container()),
+                OutlinedButton(
+                    child: const Text('Sign Out'),
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut().whenComplete(() => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>  LoginScreen()),
+                              (route) => false));
+
+                    }),
                 OutlinedButton(
                     child: const Text('Switch to Investor Account'),
                     onPressed: () {
@@ -148,7 +164,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
               Expanded(
                 flex: 1,
                 child: CupertinoSegmentedControl<int>(
-                  unselectedColor: const Color(0xFF1A1C33),
+                  unselectedColor: Colors.grey.shade200,
                   groupValue: filterIndex,
                   onValueChanged: (value) async {
                     setState(() {
@@ -206,8 +222,16 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   children: [
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -225,7 +249,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                         'Remaining Installments',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: Color(0xFFB6B8C0),
+                                          color: Colors.black,
                                           fontSize: 20,
                                         ),
                                       ),
@@ -267,7 +291,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                 const Text(
                                                   ' Rupees',
                                                   style: TextStyle(
-                                                    color: Color(0xFF8D8E98),
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ],
@@ -301,7 +325,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                 const Text(
                                                   ' Rupees',
                                                   style: TextStyle(
-                                                    color: Color(0xFF8D8E98),
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ],
@@ -311,8 +335,16 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                     ),
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                             onTap: () {
                               Navigator.push(
@@ -330,7 +362,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                       'Recovery account',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Color(0xFFB6B8C0),
+                                        color: Colors.black,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -372,7 +404,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                               const Text(
                                                 ' Rupees',
                                                 style: TextStyle(
-                                                  color: Color(0xFF8D8E98),
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                             ],
@@ -406,7 +438,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                               const Text(
                                                 ' Rupees',
                                                 style: TextStyle(
-                                                  color: Color(0xFF8D8E98),
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                             ],
@@ -426,8 +458,16 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   children: [
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -437,7 +477,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                     'Purchase account',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: Color(0xFFB6B8C0),
+                                      color: Colors.black,
                                       fontSize: 20,
                                     ),
                                   ),
@@ -477,7 +517,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                             const Text(
                                               ' Rupees',
                                               style: TextStyle(
-                                                color: Color(0xFF8D8E98),
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ],
@@ -509,7 +549,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                             const Text(
                                               ' Rupees',
                                               style: TextStyle(
-                                                color: Color(0xFF8D8E98),
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ],
@@ -519,8 +559,16 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                     ),
                     Expanded(
                       child: Card(
-                        elevation: 5,
-                        color: const Color(0xFF2D2C3F),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            side: BorderSide(
+                              width: 1,
+                              color: Color(0xFFEEAC7C),
+                            )),
+                        elevation: 2,
+                        color: Colors.white,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -530,7 +578,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                   'Calculative profit',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Color(0xFFB6B8C0),
+                                    color: Colors.black,
                                     fontSize: 20,
                                   ),
                                 ),
@@ -569,7 +617,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                         const Text(
                                           ' Rupees',
                                           style: TextStyle(
-                                            color: Color(0xFF8D8E98),
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ],
@@ -597,7 +645,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                         const Text(
                                           ' Rupees',
                                           style: TextStyle(
-                                            color: Color(0xFF8D8E98),
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ],
@@ -617,11 +665,21 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   children: [
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                             onTap: () {
-                              {
+                              if (Provider.of<UserViewModel>(context,
+                                      listen: false)
+                                  .readWrite) {
                                 showModalBottomSheet<void>(
                                   isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
@@ -634,7 +692,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                 .viewInsets
                                                 .bottom),
                                         decoration: const BoxDecoration(
-                                            color: Color(0xFF2D2C3F),
+                                            color: Colors.white,
                                             borderRadius: BorderRadius.vertical(
                                                 top: Radius.circular(20))),
                                         child: Padding(
@@ -681,9 +739,10 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                   },
                                                 ),
                                               ),
-
                                               Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
                                                 child: TextFormField(
                                                   maxLines: 5,
                                                   autofocus: true,
@@ -703,19 +762,18 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                   },
                                                 ),
                                               ),
-
                                               Padding(
                                                 padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 4.0),
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
                                                 child: InkWell(
                                                   onTap: () async {
                                                     DateTime? newDate =
-                                                    await showDatePicker(
+                                                        await showDatePicker(
                                                       context: context,
                                                       initialDate: dateTime,
                                                       initialDatePickerMode:
-                                                      DatePickerMode.day,
+                                                          DatePickerMode.day,
                                                       firstDate: DateTime(2000),
                                                       lastDate: DateTime(2100),
                                                     );
@@ -725,53 +783,53 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                   },
                                                   child: Container(
                                                     padding:
-                                                    const EdgeInsets.all(8),
+                                                        const EdgeInsets.all(8),
                                                     decoration: BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                            4),
-                                                        border: Border.all(
-                                                            color: const Color(
-                                                                0xFF0E1223),
-                                                            width: 1)),
+                                                      color:
+                                                          Colors.grey.shade200,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                    ),
                                                     child: Text(
                                                       DateFormat.yMMMMEEEEd()
                                                           .format(dateTime),
                                                       style: const TextStyle(
                                                           color:
-                                                          Color(0x59FFFFFF),
+                                                              Color(0xFFE56E14),
                                                           fontSize: 20,
                                                           fontWeight:
-                                                          FontWeight.w600),
+                                                              FontWeight.w600),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                               Padding(
                                                 padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 4.0),
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
                                                 child: GestureDetector(
                                                   onTap: () async {
                                                     TimeOfDay? newTime =
-                                                    await showTimePicker(
-                                                        context: context,
-                                                        initialTime:
-                                                        TimeOfDay.now());
+                                                        await showTimePicker(
+                                                            context: context,
+                                                            initialTime:
+                                                                TimeOfDay
+                                                                    .now());
                                                     setState(() {
                                                       time = newTime!;
                                                     });
                                                   },
                                                   child: Container(
-                                                    padding: const EdgeInsets.all(8),
+                                                    padding:
+                                                        const EdgeInsets.all(8),
                                                     decoration: BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                            4),
-                                                        border: Border.all(
-                                                            color: const Color(
-                                                                0xFF0E1223),
-                                                            width: 1)),
+                                                      color:
+                                                          Colors.grey.shade200,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                    ),
                                                     child: Text(
                                                       DateFormat.jms().format(
                                                           DateTime(
@@ -782,10 +840,10 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                               time.minute)),
                                                       style: const TextStyle(
                                                           color:
-                                                          Color(0x59FFFFFF),
+                                                              Color(0xFFE56E14),
                                                           fontSize: 20,
                                                           fontWeight:
-                                                          FontWeight.w600),
+                                                              FontWeight.w600),
                                                     ),
                                                   ),
                                                 ),
@@ -823,13 +881,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                                               widget
                                                                   .moneyController
                                                                   .text),
-                                                          'time':
-                                                          Timestamp.fromDate(DateTime(
-                                                              dateTime.year,
-                                                              dateTime.month,
-                                                              dateTime.day,
-                                                              time.hour,
-                                                              time.minute)),
+                                                          'time': Timestamp
+                                                              .fromDate(DateTime(
+                                                                  dateTime.year,
+                                                                  dateTime
+                                                                      .month,
+                                                                  dateTime.day,
+                                                                  time.hour,
+                                                                  time.minute)),
                                                           'description': widget
                                                               .descriptionController
                                                               .text
@@ -882,7 +941,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                       'Cash in Hand',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Color(0xFFB6B8C0),
+                                        color: Colors.black,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -916,7 +975,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                     const Text(
                                       ' Rupees',
                                       style: TextStyle(
-                                        color: Color(0xFF8D8E98),
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ],
@@ -927,8 +986,16 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                     ),
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                             onLongPress: () {
                               Navigator.push(
@@ -938,277 +1005,291 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                           const ExpensesScreen()));
                             },
                             onTap: () {
-                              dateTime = DateTime.now();
-                              time = TimeOfDay.now();
-                              showModalBottomSheet<void>(
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return SingleChildScrollView(
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom),
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xFF2D2C3F),
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(20))),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Center(
-                                              child: Text(
-                                                'Expenses',
-                                                style: TextStyle(fontSize: 25),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 15,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4.0),
-                                              child: TextFormField(
-                                                autofocus: true,
-                                                controller:
-                                                    widget.moneyController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(RegExp('[0-9-]'))
-                                                ],
-                                                decoration: kDecoration
-                                                    .inputBox('Amount', 'PKR'),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'This field is required';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                              child: TextFormField(
-                                                maxLines: 5,
-                                                autofocus: true,
-                                                controller:
-                                                    widget.descriptionController,
-                                                keyboardType: TextInputType.text,
-                                                decoration: kDecoration.inputBox(
-                                                    'Description', ''),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Please add a description for expense';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4.0),
-                                              child: InkWell(
-                                                onTap: () async {
-                                                  DateTime? newDate =
-                                                      await showDatePicker(
-                                                    context: context,
-                                                    initialDate: dateTime,
-                                                    initialDatePickerMode:
-                                                        DatePickerMode.day,
-                                                    firstDate: DateTime(2000),
-                                                    lastDate: DateTime(2100),
-                                                  );
-                                                  setState(() {
-                                                    dateTime = newDate!;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                      border: Border.all(
-                                                          color: const Color(
-                                                              0xFF0E1223),
-                                                          width: 1)),
-                                                  child: Text(
-                                                    DateFormat.yMMMMEEEEd()
-                                                        .format(dateTime),
-                                                    style: const TextStyle(
-                                                        color:
-                                                            Color(0x59FFFFFF),
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                  ),
+                              if (Provider.of<UserViewModel>(context,
+                                      listen: false)
+                                  .readWrite) {
+                                dateTime = DateTime.now();
+                                time = TimeOfDay.now();
+                                showModalBottomSheet<void>(
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SingleChildScrollView(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20))),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Center(
+                                                child: Text(
+                                                  'Expenses',
+                                                  style:
+                                                      TextStyle(fontSize: 25),
                                                 ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4.0),
-                                              child: GestureDetector(
-                                                onTap: () async {
-                                                  TimeOfDay? newTime =
-                                                      await showTimePicker(
-                                                          context: context,
-                                                          initialTime:
-                                                              TimeOfDay.now());
-                                                  setState(() {
-                                                    time = newTime!;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(8),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                      border: Border.all(
-                                                          color: const Color(
-                                                              0xFF0E1223),
-                                                          width: 1)),
-                                                  child: Text(
-                                                    DateFormat.jms().format(
-                                                        DateTime(
-                                                            dateTime.year,
-                                                            dateTime.month,
-                                                            dateTime.day,
-                                                            time.hour,
-                                                            time.minute)),
-                                                    style: const TextStyle(
-                                                        color:
-                                                            Color(0x59FFFFFF),
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                  ),
+                                              const SizedBox(
+                                                height: 15,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
+                                                child: TextFormField(
+                                                  autofocus: true,
+                                                  controller:
+                                                      widget.moneyController,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .allow(RegExp('[0-9-]'))
+                                                  ],
+                                                  decoration:
+                                                      kDecoration.inputBox(
+                                                          'Amount', 'PKR'),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'This field is required';
+                                                    }
+                                                    return null;
+                                                  },
                                                 ),
                                               ),
-                                            ),
-                                            OutlinedButton(
-                                                onPressed: () async {
-                                                  if (widget.moneyController
-                                                      .text.isNotEmpty) {
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
+                                                child: TextFormField(
+                                                  maxLines: 5,
+                                                  autofocus: true,
+                                                  controller: widget
+                                                      .descriptionController,
+                                                  keyboardType:
+                                                      TextInputType.text,
+                                                  decoration:
+                                                      kDecoration.inputBox(
+                                                          'Description', ''),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please add a description for expense';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    DateTime? newDate =
+                                                        await showDatePicker(
+                                                      context: context,
+                                                      initialDate: dateTime,
+                                                      initialDatePickerMode:
+                                                          DatePickerMode.day,
+                                                      firstDate: DateTime(2000),
+                                                      lastDate: DateTime(2100),
+                                                    );
                                                     setState(() {
-                                                      loading = true;
+                                                      dateTime = newDate!;
                                                     });
-                                                    final cloud =
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.grey.shade200,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                    ),
+                                                    child: Text(
+                                                      DateFormat.yMMMMEEEEd()
+                                                          .format(dateTime),
+                                                      style: const TextStyle(
+                                                          color:
+                                                              Color(0xFFE56E14),
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
+                                                child: GestureDetector(
+                                                  onTap: () async {
+                                                    TimeOfDay? newTime =
+                                                        await showTimePicker(
+                                                            context: context,
+                                                            initialTime:
+                                                                TimeOfDay
+                                                                    .now());
+                                                    setState(() {
+                                                      time = newTime!;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.grey.shade200,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                    ),
+                                                    child: Text(
+                                                      DateFormat.jms().format(
+                                                          DateTime(
+                                                              dateTime.year,
+                                                              dateTime.month,
+                                                              dateTime.day,
+                                                              time.hour,
+                                                              time.minute)),
+                                                      style: const TextStyle(
+                                                          color:
+                                                              Color(0xFFE56E14),
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              OutlinedButton(
+                                                  onPressed: () async {
+                                                    if (widget.moneyController
+                                                        .text.isNotEmpty) {
+                                                      setState(() {
+                                                        loading = true;
+                                                      });
+                                                      final cloud =
+                                                          FirebaseFirestore
+                                                              .instance;
+                                                      await cloud
+                                                          .collection(
+                                                              'financials')
+                                                          .doc('finance')
+                                                          .update({
+                                                        'cash_available':
+                                                            FieldValue.increment(
+                                                                -int.parse(widget
+                                                                    .moneyController
+                                                                    .text)),
+                                                        'expenses': FieldValue
+                                                            .increment(
+                                                                int.parse(widget
+                                                                    .moneyController
+                                                                    .text))
+                                                      }).whenComplete(() {
                                                         FirebaseFirestore
-                                                            .instance;
-                                                    await cloud
-                                                        .collection(
-                                                            'financials')
-                                                        .doc('finance')
-                                                        .update({
-                                                      'cash_available':
-                                                          FieldValue.increment(
-                                                              -int.parse(widget
+                                                            .instance
+                                                            .collection(
+                                                                'financials')
+                                                            .doc('finance')
+                                                            .collection(
+                                                                'expenses')
+                                                            .add({
+                                                          'amount': int.parse(
+                                                              widget
                                                                   .moneyController
-                                                                  .text)),
-                                                      'expenses':
-                                                          FieldValue.increment(
-                                                              int.parse(widget
-                                                                  .moneyController
-                                                                  .text))
-                                                    }).whenComplete(() {
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'financials')
-                                                          .doc('finance')
-                                                          .collection(
-                                                              'expenses')
-                                                          .add({
-                                                        'amount': int.parse(
-                                                            widget
-                                                                .moneyController
-                                                                .text),
-                                                        'time': Timestamp
-                                                            .fromDate(DateTime(
-                                                                dateTime.year,
-                                                                dateTime.month,
-                                                                dateTime.day,
-                                                                time.hour,
-                                                                time.minute)),
-                                                        'description': widget
-                                                            .descriptionController
-                                                            .text
-                                                      });
+                                                                  .text),
+                                                          'time': Timestamp
+                                                              .fromDate(DateTime(
+                                                                  dateTime.year,
+                                                                  dateTime
+                                                                      .month,
+                                                                  dateTime.day,
+                                                                  time.hour,
+                                                                  time.minute)),
+                                                          'description': widget
+                                                              .descriptionController
+                                                              .text
+                                                        });
 
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'financials')
-                                                          .doc('finance')
-                                                          .collection(
-                                                              'transactions')
-                                                          .add({
-                                                        'amount': -int.parse(
-                                                            widget
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'financials')
+                                                            .doc('finance')
+                                                            .collection(
+                                                                'transactions')
+                                                            .add({
+                                                          'amount': -int.parse(
+                                                              widget
+                                                                  .moneyController
+                                                                  .text),
+                                                          'time': Timestamp
+                                                              .fromDate(DateTime(
+                                                                  dateTime.year,
+                                                                  dateTime
+                                                                      .month,
+                                                                  dateTime.day,
+                                                                  time.hour,
+                                                                  time.minute)),
+                                                          'description':
+                                                              'Expense : ${widget.descriptionController.text}'
+                                                        });
+                                                        Provider.of<DashboardView>(
+                                                                    context,
+                                                                    listen: false)
+                                                                .dashboardData
+                                                                .cashAvailable -=
+                                                            int.parse(widget
                                                                 .moneyController
-                                                                .text),
-                                                        'time': Timestamp
-                                                            .fromDate(DateTime(
-                                                                dateTime.year,
-                                                                dateTime.month,
-                                                                dateTime.day,
-                                                                time.hour,
-                                                                time.minute)),
-                                                        'description':
-                                                            'Expense : ${widget.descriptionController.text}'
+                                                                .text);
+                                                        Provider.of<DashboardView>(
+                                                                    context,
+                                                                    listen: false)
+                                                                .dashboardData
+                                                                .expenses +=
+                                                            int.parse(widget
+                                                                .moneyController
+                                                                .text);
+                                                        widget.moneyController
+                                                            .clear();
+                                                        widget
+                                                            .descriptionController
+                                                            .clear();
+                                                        Navigator.pop(context);
                                                       });
-                                                      Provider.of<DashboardView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .dashboardData
-                                                              .cashAvailable -=
-                                                          int.parse(widget
-                                                              .moneyController
-                                                              .text);
-                                                      Provider.of<DashboardView>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .dashboardData
-                                                              .expenses +=
-                                                          int.parse(widget
-                                                              .moneyController
-                                                              .text);
-                                                      widget.moneyController
-                                                          .clear();
-                                                      widget
-                                                          .descriptionController
-                                                          .clear();
-                                                      Navigator.pop(context);
-                                                    });
-                                                    setState(() {
-                                                      loading = false;
-                                                    });
-                                                  }
-                                                },
-                                                child:
-                                                    const Text('Add Expense'))
-                                          ],
+                                                      setState(() {
+                                                        loading = false;
+                                                      });
+                                                    }
+                                                  },
+                                                  child:
+                                                      const Text('Add Expense'))
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
+                                    );
+                                  },
+                                );
+                              }
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -1219,7 +1300,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                       'Expenses',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Color(0xFFB6B8C0),
+                                        color: Colors.black,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -1253,7 +1334,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                                     const Text(
                                       ' Rupees',
                                       style: TextStyle(
-                                        color: Color(0xFF8D8E98),
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ],
@@ -1278,16 +1359,14 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.grey.shade200,
+      hintStyle: const TextStyle(
+        color: Color(0xFFE56E14),
+      ),
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Color(0xFF0E1223), width: 1),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: const BorderSide(color: Color(0xFF0E1223), width: 1),
       ),
     );
   }

@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
 
-
 import 'package:ecommerce_bnql/company_panel/pageview_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../investor_panel/dashboard/amountPaid_button/amount_spend_screen.dart';
 import '../../investor_panel/dashboard/outstandingAmount_button/outstanding_balance_screen.dart';
 import '../../investor_panel/view_model/viewmodel_dashboard.dart';
+import '../screens/login-registration screen/login_screen.dart';
 
 enum DashboardFilterOptions { all, oneMonth, sixMonths }
 
@@ -47,6 +48,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
               },
               icon: const Icon(
                 Icons.menu,
+                color: Color(0xFFE56E14),
               ));
         }),
         title: Row(
@@ -54,12 +56,15 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
           children: [
             const Text(
               'Dashboard',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(
+                fontSize: 25,
+                color: Color(0xFFE56E14),
+              ),
             ),
-
             loading != true
                 ? IconButton(
                     splashRadius: 25,
+                    color: const Color(0xFFE56E14),
                     onPressed: () async {
                       if (Provider.of<DashboardViewInvestor>(context,
                                   listen: false)
@@ -105,7 +110,8 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                     icon: const Icon(Icons.refresh_rounded),
                   )
                 : const RefreshProgressIndicator(
-                    backgroundColor: Color(0xFF1A1C33),
+                    color: Color(0xFFE56E14),
+                    backgroundColor: Colors.transparent,
                   )
           ],
         ),
@@ -123,6 +129,16 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )),
                 Expanded(child: Container()),
+                OutlinedButton(
+                    child: const Text('Sign Out'),
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut().whenComplete(() => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>  LoginScreen()),
+                              (route) => false));
+
+                    }),
                 OutlinedButton(
                     child: const Text('Switch to Company Account'),
                     onPressed: () {
@@ -147,7 +163,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
               Expanded(
                 flex: 1,
                 child: CupertinoSegmentedControl<int>(
-                  unselectedColor: const Color(0xFF1A1C33),
+                  unselectedColor: Colors.white,
                   groupValue: filterIndex,
                   onValueChanged: (value) async {
                     setState(() {
@@ -208,8 +224,16 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                   children: [
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -227,7 +251,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                         'Remaining Installments',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: Color(0xFFB6B8C0),
+                                          color: Colors.black,
                                           fontSize: 20,
                                         ),
                                       ),
@@ -270,7 +294,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                 const Text(
                                                   ' Rupees',
                                                   style: TextStyle(
-                                                    color: Color(0xFF8D8E98),
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ],
@@ -295,7 +319,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                       context)
                                                                   .monthlyFinancials
                                                                   .totalOutstandingBalance <
-                                                          100000
+                                                              100000
                                                           ? 30
                                                           : 20,
                                                       fontWeight:
@@ -304,7 +328,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                 const Text(
                                                   ' Rupees',
                                                   style: TextStyle(
-                                                    color: Color(0xFF8D8E98),
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ],
@@ -314,8 +338,16 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                     ),
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                             onTap: () {
                               Navigator.push(
@@ -333,7 +365,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                       'Recovery account',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Color(0xFFB6B8C0),
+                                        color: Colors.black,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -367,7 +399,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                     context)
                                                                 .dashboardData
                                                                 .totalAmountPaid <
-                                                        100000
+                                                            100000
                                                         ? 30
                                                         : 20,
                                                     fontWeight:
@@ -376,7 +408,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                               const Text(
                                                 ' Rupees',
                                                 style: TextStyle(
-                                                  color: Color(0xFF8D8E98),
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                             ],
@@ -401,7 +433,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                     context)
                                                                 .monthlyFinancials
                                                                 .totalAmountPaid <
-                                                        100000
+                                                            100000
                                                         ? 30
                                                         : 20,
                                                     fontWeight:
@@ -410,7 +442,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                               const Text(
                                                 ' Rupees',
                                                 style: TextStyle(
-                                                  color: Color(0xFF8D8E98),
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                             ],
@@ -430,8 +462,16 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                   children: [
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -441,7 +481,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                     'Purchase account',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: Color(0xFFB6B8C0),
+                                      color: Colors.black,
                                       fontSize: 20,
                                     ),
                                   ),
@@ -474,7 +514,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                       context)
                                                                   .dashboardData
                                                                   .totalCost <
-                                                          100000
+                                                              100000
                                                           ? 30
                                                           : 20,
                                                   fontWeight: FontWeight.w900),
@@ -482,7 +522,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                             const Text(
                                               ' Rupees',
                                               style: TextStyle(
-                                                color: Color(0xFF8D8E98),
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ],
@@ -506,7 +546,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                       context)
                                                                   .dashboardData
                                                                   .totalCost <
-                                                          100000
+                                                              100000
                                                           ? 30
                                                           : 20,
                                                   fontWeight: FontWeight.w900),
@@ -514,7 +554,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                             const Text(
                                               ' Rupees',
                                               style: TextStyle(
-                                                color: Color(0xFF8D8E98),
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ],
@@ -524,8 +564,16 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                     ),
                     Expanded(
                       child: Card(
-                        elevation: 5,
-                        color: const Color(0xFF2D2C3F),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            side: BorderSide(
+                              width: 1,
+                              color: Color(0xFFEEAC7C),
+                            )),
+                        elevation: 2,
+                        color: Colors.white,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -535,7 +583,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                   'Calculative profit',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Color(0xFFB6B8C0),
+                                    color: Colors.black,
                                     fontSize: 20,
                                   ),
                                 ),
@@ -567,7 +615,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                   context)
                                                               .dashboardData
                                                               .profit <
-                                                      100000
+                                                          100000
                                                       ? 30
                                                       : 20,
                                               fontWeight: FontWeight.w900),
@@ -575,7 +623,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                         const Text(
                                           ' Rupees',
                                           style: TextStyle(
-                                            color: Color(0xFF8D8E98),
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ],
@@ -595,7 +643,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                                   context)
                                                               .monthlyFinancials
                                                               .profit <
-                                                      100000
+                                                          100000
                                                       ? 30
                                                       : 20,
                                               fontWeight: FontWeight.w900),
@@ -603,7 +651,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                         const Text(
                                           ' Rupees',
                                           style: TextStyle(
-                                            color: Color(0xFF8D8E98),
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ],
@@ -623,8 +671,16 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                   children: [
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -635,7 +691,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                       'Total Investment',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Color(0xFFB6B8C0),
+                                        color: Colors.black,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -663,7 +719,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                               context)
                                                           .dashboardData
                                                           .cashAvailable <
-                                                  100000
+                                                      100000
                                                   ? 30
                                                   : 20,
                                           fontWeight: FontWeight.w900),
@@ -671,7 +727,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                     const Text(
                                       ' Rupees',
                                       style: TextStyle(
-                                        color: Color(0xFF8D8E98),
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ],
@@ -682,8 +738,16 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                     ),
                     Expanded(
                       child: Card(
-                          elevation: 5,
-                          color: const Color(0xFF2D2C3F),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              side: BorderSide(
+                                width: 1,
+                                color: Color(0xFFEEAC7C),
+                              )),
+                          elevation: 2,
+                          color: Colors.white,
                           child: InkWell(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -694,7 +758,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                       'Company Profit',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Color(0xFFB6B8C0),
+                                        color: Colors.black,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -722,7 +786,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                                               context)
                                                           .dashboardData
                                                           .company_profit <
-                                                  100000
+                                                      100000
                                                   ? 30
                                                   : 20,
                                           fontWeight: FontWeight.w900),
@@ -730,7 +794,7 @@ class _DashboardInvestorState extends State<DashboardInvestor> {
                                     const Text(
                                       ' Rupees',
                                       style: TextStyle(
-                                        color: Color(0xFF8D8E98),
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ],
@@ -761,7 +825,7 @@ class kDecoration {
     return InputDecoration(
       suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
-      fillColor: const Color(0xFF2D2C3F),
+      fillColor: Colors.white,
       border: const OutlineInputBorder(),
       hintText: hintText,
       focusedBorder: OutlineInputBorder(

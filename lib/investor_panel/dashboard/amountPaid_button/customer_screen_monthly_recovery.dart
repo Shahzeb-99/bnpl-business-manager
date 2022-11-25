@@ -42,7 +42,7 @@ class _CustomerProfileMonthlyRecoveryState extends State<CustomerProfileMonthlyR
               Provider.of<CustomerViewInvestor>(context, listen: false)
                   .thisMonthCustomers[widget.index]
                   .name,
-              style: const TextStyle(fontSize: 25),
+              style:  const TextStyle(fontSize: 25,color: Color(0xFFE56E14),),
             ),
             Expanded(child: Container()),
             CircleAvatar(
@@ -75,11 +75,11 @@ class _CustomerProfileMonthlyRecoveryState extends State<CustomerProfileMonthlyR
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            const SizedBox(
+              const SizedBox(
               height: 10,
               child: Divider(
                 thickness: 1,
-                color: Colors.white,
+                color: Color(0xFFE56E14),
               ),
             ),
             Expanded(
