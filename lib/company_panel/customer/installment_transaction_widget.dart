@@ -44,19 +44,19 @@ class _InstallmentTransactionWidgetState extends State<InstallmentTransactionWid
               child: Text(
                   '${Provider
                       .of<CustomerView>(context, listen: false)
-                      .allCustomers[widget.index].purchases[widget
+                      .thisMonthCustomer[widget.index].purchases[widget
                       .productIndex].paymentSchedule[widget.paymentIndex].transactionHistory[widget.transactionIndex].date
                       .toDate()
                       .day
                       .toString()} - ${Provider
                       .of<CustomerView>(context, listen: false)
-                      .allCustomers[widget.index].purchases[widget
+                      .thisMonthCustomer[widget.index].purchases[widget
                       .productIndex].paymentSchedule[widget.paymentIndex].transactionHistory[widget.transactionIndex].date
                       .toDate()
                       .month
                       .toString()} - ${Provider
                       .of<CustomerView>(context, listen: false)
-                      .allCustomers[widget.index].purchases[widget
+                      .thisMonthCustomer[widget.index].purchases[widget
                       .productIndex].paymentSchedule[widget.paymentIndex].transactionHistory[widget.transactionIndex].date
                       .toDate()
                       .year
@@ -67,7 +67,7 @@ class _InstallmentTransactionWidgetState extends State<InstallmentTransactionWid
               child: Text(
                   'Amount : ${Provider
                       .of<CustomerView>(context, listen: false)
-                      .allCustomers[widget.index].purchases[widget
+                      .thisMonthCustomer[widget.index].purchases[widget
                       .productIndex].paymentSchedule[widget.paymentIndex].transactionHistory[widget.transactionIndex]
                       .amount.toString()} PKR'),
             ),

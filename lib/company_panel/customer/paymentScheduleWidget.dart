@@ -46,7 +46,7 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                 initialDate: DateTime(
                     Provider
                         .of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index]
+                        .thisMonthCustomer[widget.index]
                         .purchases[widget.productIndex]
                         .paymentSchedule[widget.paymentIndex]
                         .date
@@ -54,7 +54,7 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                         .year,
                     Provider
                         .of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index]
+                        .thisMonthCustomer[widget.index]
                         .purchases[widget.productIndex]
                         .paymentSchedule[widget.paymentIndex]
                         .date
@@ -62,7 +62,7 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                         .month,
                     Provider
                         .of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index]
+                        .thisMonthCustomer[widget.index]
                         .purchases[widget.productIndex]
                         .paymentSchedule[widget.paymentIndex]
                         .date
@@ -77,14 +77,14 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
             setState(() {
               Provider
                   .of<CustomerView>(context, listen: false)
-                  .allCustomers[widget.index]
+                  .thisMonthCustomer[widget.index]
                   .purchases[widget.productIndex]
                   .paymentSchedule[widget.paymentIndex]
                   .date = Timestamp.fromDate(newDate!);
             });
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .updateFirestore();
@@ -105,19 +105,19 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                 child: Text(
                     '${Provider
                         .of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index].purchases[widget
+                        .thisMonthCustomer[widget.index].purchases[widget
                         .productIndex].paymentSchedule[widget.paymentIndex].date
                         .toDate()
                         .day
                         .toString()} - ${Provider
                         .of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index].purchases[widget
+                        .thisMonthCustomer[widget.index].purchases[widget
                         .productIndex].paymentSchedule[widget.paymentIndex].date
                         .toDate()
                         .month
                         .toString()} - ${Provider
                         .of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index].purchases[widget
+                        .thisMonthCustomer[widget.index].purchases[widget
                         .productIndex].paymentSchedule[widget.paymentIndex].date
                         .toDate()
                         .year
@@ -130,13 +130,13 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                     Text(
                         'Amount : ${Provider
                             .of<CustomerView>(context, listen: false)
-                            .allCustomers[widget.index].purchases[widget
+                            .thisMonthCustomer[widget.index].purchases[widget
                             .productIndex].paymentSchedule[widget.paymentIndex]
                             .amount.toString()} PKR'),
                     Text(
                         'Remaining : ${Provider
                             .of<CustomerView>(context, listen: false)
-                            .allCustomers[widget.index].purchases[widget
+                            .thisMonthCustomer[widget.index].purchases[widget
                             .productIndex].paymentSchedule[widget.paymentIndex]
                             .remainingAmount.toString()} PKR'),
                   ],
@@ -144,7 +144,7 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
               ),
               Provider
                   .of<CustomerView>(context, listen: false)
-                  .allCustomers[widget.index]
+                  .thisMonthCustomer[widget.index]
                   .purchases[widget.productIndex]
                   .paymentSchedule[widget.paymentIndex]
                   .isPaid
@@ -160,146 +160,146 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
   update() {
     Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .paymentSchedule[widget.paymentIndex]
         .isPaid
         ? Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .outstandingBalance =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .purchases[widget.productIndex]
             .outstandingBalance -
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount
         : Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .outstandingBalance =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .purchases[widget.productIndex]
             .outstandingBalance +
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount;
     Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .paymentSchedule[widget.paymentIndex]
         .isPaid
         ? Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .amountPaid =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .purchases[widget.productIndex]
             .amountPaid +
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount
         : Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .amountPaid =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .purchases[widget.productIndex]
             .amountPaid -
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount;
 
     Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .paymentSchedule[widget.paymentIndex]
         .isPaid
         ? Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .outstandingBalance =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .outstandingBalance -
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount
         : Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .outstandingBalance =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .outstandingBalance +
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount;
     Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .purchases[widget.productIndex]
         .paymentSchedule[widget.paymentIndex]
         .isPaid
         ? Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .paidAmount =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .paidAmount +
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount
         : Provider
         .of<CustomerView>(context, listen: false)
-        .allCustomers[widget.index]
+        .thisMonthCustomer[widget.index]
         .paidAmount =
         Provider
             .of<CustomerView>(context, listen: false)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .paidAmount -
             Provider
                 .of<CustomerView>(context, listen: false)
-                .allCustomers[widget.index]
+                .thisMonthCustomer[widget.index]
                 .purchases[widget.productIndex]
                 .paymentSchedule[widget.paymentIndex]
                 .amount;

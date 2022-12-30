@@ -6,13 +6,13 @@ import '../model/customers.dart';
 
 
 class CustomerView extends ChangeNotifier {
-  List<Customers> allCustomers = [];
+  List<Customers> thisMonthCustomer = [];
   List<Customers> thisMonthCustomers = [];
   bool monthSwitch = false;
   CustomerFilterOptions option = CustomerFilterOptions.all;
 
   void getCustomers() async {
-    allCustomers = [];
+    thisMonthCustomer = [];
     final cloud = FirebaseFirestore.instance;
     await cloud.collection('customers').get().then(
       (value) async {
@@ -25,7 +25,7 @@ class CustomerView extends ChangeNotifier {
               paidAmount: customer.get('paid_amount'),
               documentID: customer.id,
             );
-            allCustomers.add(newCustomer);
+            thisMonthCustomer.add(newCustomer);
             notifyListeners();
           }
         }
@@ -150,7 +150,7 @@ class CustomerView extends ChangeNotifier {
   }
 
   void getPurchases(int index) async {
-    await allCustomers[index].getPurchases(notify: (){notifyListeners();},);
+    await thisMonthCustomer[index].getPurchases(notify: (){notifyListeners();},);
     notifyListeners();
   }
 
@@ -173,9 +173,9 @@ class CustomerView extends ChangeNotifier {
 
   void getPaymentSchedule(
       {required int index, required int productIndex}) async {
-    await allCustomers[index]
+    await thisMonthCustomer[index]
         .purchases[productIndex]
-        .getPaymentSchedule(allCustomers[index].documentID);
+        .getPaymentSchedule(thisMonthCustomer[index].documentID);
     notifyListeners();
   }
 
@@ -209,9 +209,9 @@ class CustomerView extends ChangeNotifier {
 
   void getTransactionHistory(
       {required int index, required int productIndex}) async {
-    await allCustomers[index]
+    await thisMonthCustomer[index]
         .purchases[productIndex]
-        .getTransactionHistory(allCustomers[index].documentID);
+        .getTransactionHistory(thisMonthCustomer[index].documentID);
     notifyListeners();
   }
 
@@ -230,7 +230,7 @@ class CustomerView extends ChangeNotifier {
       {required int index,
       required int productIndex,
       required paymentIndex}) async {
-    await allCustomers[index]
+    await thisMonthCustomer[index]
         .purchases[productIndex]
         .paymentSchedule[paymentIndex]
         .getInstallmentTransactionHistory();

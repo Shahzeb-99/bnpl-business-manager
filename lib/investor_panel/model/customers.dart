@@ -103,7 +103,7 @@ class Customers {
 
           purchases.add(Purchase(
             investors: investors,
-            isBatchOrder: purchase.get('batchOrder'),
+            isBatchOrder: true,
             customerName: name,
             companyProfit: companyProfit,
             customerID: documentID,
@@ -116,7 +116,7 @@ class Customers {
             purchaseAmount: productCost,
             sellingAmount: productSellingPrice,
             documentReferencePurchase: documentReference,
-            investorReference: purchase.get('investorReference'),
+
           ));
         }
       },
@@ -165,7 +165,7 @@ class Customers {
           purchases.add(Purchase(
             isBatchOrder: purchase.get('batchOrder'),
             customerName: name,
-            investorReference: purchase.get('investorReference'),
+
             companyProfit: companyProfit,
             customerID: documentID,
             purchaseDate: purchaseDate,
@@ -236,7 +236,7 @@ class Customers {
             purchases.add(Purchase(
               isBatchOrder: purchase.get('batchOrder'),
               customerName: name,
-              investorReference: purchase.get('investorReference'),
+
               companyProfit: companyProfit,
               customerID: documentID,
               purchaseDate: purchaseDate,
@@ -311,7 +311,7 @@ class Customers {
             purchases.add(Purchase(
               isBatchOrder: purchase.get('batchOrder'),
               customerName: name,
-              investorReference: purchase.get('investorReference'),
+
               companyProfit: companyProfit,
               customerID: documentID,
               purchaseDate: purchaseDate,

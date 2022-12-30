@@ -24,13 +24,13 @@ class Purchase {
   final String customerName;
   List<PaymentSchedule> paymentSchedule = [];
   List<TransactionHistory> transactionHistory = [];
-  final DocumentReference investorReference;
+
 bool isBatchOrder;
 
 List<Investors>? investors ;
   Purchase(
       {this.investors,
-        required this.customerName,required this.investorReference,
+        required this.customerName,
       required this.companyProfit,
       required this.customerID,
       required this.documentReferencePurchase,
@@ -204,14 +204,14 @@ List<Investors>? investors ;
         cloud.collection('investorFinancials').doc('finance').update({
           'cash_available': FieldValue.increment(amount),
         });
-        investorReference
-            .update({'currentBalance': FieldValue.increment(amount)});
+       // investorReference
+          //  .update({'currentBalance': FieldValue.increment(amount)});
       });
     } else {
       cloud.collection('investorFinancials').doc('finance').update({
         'company_profit': FieldValue.increment(amount),
       }).whenComplete(() {
-        investorReference.update({'company_profit':FieldValue.increment(amount)});
+       // investorReference.update({'company_profit':FieldValue.increment(amount)});
         
         documentReferencePurchase.update({'companyProfit':FieldValue.increment(-amount)}).whenComplete(() {companyProfit -= amount;});
       });
@@ -247,8 +247,8 @@ List<Investors>? investors ;
         for(var investor in investors!){
 
           int amountDivided=((amount/100)*investor.percentageInvestment!).toInt();
-          investorReference
-              .update({'currentBalance': FieldValue.increment(amountDivided)});
+          investor.investorReference
+              ?.update({'currentBalance': FieldValue.increment(amountDivided)});
 
         }
       });
@@ -256,7 +256,11 @@ List<Investors>? investors ;
       cloud.collection('investorFinancials').doc('finance').update({
         'company_profit': FieldValue.increment(amount),
       }).whenComplete(() {
-        investorReference.update({'company_profit':FieldValue.increment(amount)});
+        for(var investor in investors!){
+
+          investor.investorReference?.update({'company_profit':FieldValue.increment((amount/100)*investor.percentageInvestment!)});
+        }
+
         documentReferencePurchase.update({'companyProfit':FieldValue.increment(-amount)}).whenComplete(() {companyProfit -= amount;});
       });
     }
@@ -269,15 +273,20 @@ List<Investors>? investors ;
         'date': Timestamp.fromDate(dateTime),
       },
     );
-    investorReference.update({
-      'outstandingBalance': FieldValue.increment(-amount),
-      'amountPaid': FieldValue.increment(amount),
-    });
-    investorReference.collection('transactions').add({
-      'date': Timestamp.fromDate(dateTime),
-      'amount': amount,
-      'description':
-          'Payment received from customer($customerID) for Product($productName)'
-    });
+    for(var investor in investors!){
+
+      investor.investorReference?.update({
+        'outstandingBalance': FieldValue.increment(-((amount/100)*investor.percentageInvestment!)),
+        'amountPaid': FieldValue.increment((amount/100)*investor.percentageInvestment!),
+      });
+      investor.investorReference?.collection('transactions').add({
+        'date': Timestamp.fromDate(dateTime),
+        'amount': (amount/100)*investor.percentageInvestment!,
+        'description':
+        'Payment received from customer($customerID) for Product($productName)'
+      });
+
+    }
+
   }
 }

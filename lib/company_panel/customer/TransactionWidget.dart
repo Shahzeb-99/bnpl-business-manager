@@ -44,12 +44,12 @@ class _TransactionWidgetState extends State<TransactionWidget> {
             Expanded(
               flex: 2,
               child: Text(
-                  '${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].date.toDate().day.toString()} - ${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].date.toDate().month.toString()} - ${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].date.toDate().year.toString()}'),
+                  '${Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].date.toDate().day.toString()} - ${Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].date.toDate().month.toString()} - ${Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].date.toDate().year.toString()}'),
             ),
             Expanded(
               flex: 4,
               child: Text(
-                  'Amount : ${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].amount.toString()} PKR'),
+                  'Amount : ${Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].amount.toString()} PKR'),
             ),
           ],
         ),

@@ -64,7 +64,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                       .buffer
                       .asUint8List();
                   final list = Provider.of<CustomerView>(context, listen: false)
-                      .allCustomers;
+                      .thisMonthCustomer;
                   pdf.addPage(
                     pw.Page(
                         build: (pw.Context context) => pw.Column(
@@ -228,7 +228,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
             itemCount: Provider.of<CustomerView>(context, listen: false)
                         .option ==
                     CustomerFilterOptions.all
-                ? Provider.of<CustomerView>(context).allCustomers.length
+                ? Provider.of<CustomerView>(context).thisMonthCustomer.length
                 : Provider.of<CustomerView>(context).thisMonthCustomers.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
@@ -300,7 +300,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                           .option ==
                                       CustomerFilterOptions.all
                                   ? Provider.of<CustomerView>(context)
-                                      .allCustomers[index]
+                                      .thisMonthCustomer[index]
                                       .image
                                   : Provider.of<CustomerView>(context)
                                       .thisMonthCustomers[index]
@@ -318,7 +318,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                           .option ==
                                       CustomerFilterOptions.all
                                   ? Provider.of<CustomerView>(context)
-                                      .allCustomers[index]
+                                      .thisMonthCustomer[index]
                                       .name
                                   : Provider.of<CustomerView>(context)
                                       .thisMonthCustomers[index]
@@ -326,7 +326,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                               style: kBoldText,
                             ),
                             Text(
-                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).option == CustomerFilterOptions.all ? Provider.of<CustomerView>(context).allCustomers[index].outstandingBalance : Provider.of<CustomerView>(context).thisMonthCustomers[index].outstandingBalance} PKR',
+                              'Outstanding Balance : ${Provider.of<CustomerView>(context, listen: false).option == CustomerFilterOptions.all ? Provider.of<CustomerView>(context).thisMonthCustomer[index].outstandingBalance : Provider.of<CustomerView>(context).thisMonthCustomers[index].outstandingBalance} PKR',
                             ),
                           ],
                         )

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/investor_panel/model/expenses.dart';
 
-import '../../investor_panel/model/expenses.dart';
+
+
 
 class Investors {
   Investors(

@@ -34,7 +34,7 @@ class _PaymentTransactionHistoryScreenState
       body: ListView.builder(
         physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
         itemCount: Provider.of<CustomerView>(context)
-            .allCustomers[widget.index]
+            .thisMonthCustomer[widget.index]
             .purchases[widget.productIndex]
             .paymentSchedule[widget.paymentIndex].transactionHistory
             .length,

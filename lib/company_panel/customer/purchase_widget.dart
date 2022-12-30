@@ -42,7 +42,7 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
       child: InkWell(
         onLongPress: () async {
           final service = PdfInvoiceService();
-          final data = await service.createInvoice(Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex]);
+          final data = await service.createInvoice(Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex]);
           service.savePdfFile('invoice', data);
         },
         onTap: () {

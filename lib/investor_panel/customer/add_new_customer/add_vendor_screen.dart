@@ -1,12 +1,15 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, camel_case_types
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_bnql/investor_panel//customer/add_new_customer/update_firebase_class.dart';
+import 'package:ecommerce_bnql/investor_panel/customer/add_new_customer/update_firebase_class.dart';
+import 'package:ecommerce_bnql/investor_panel/model/vendors.dart';
 import 'package:ecommerce_bnql/investor_panel/pageview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:collection/collection.dart';
 
-enum Vendor { newVendor, existingVendor }
+import '../customer_page/batch_order_widget.dart';
+enum Vendor { newVendor, existingVendor,batchOrder }
 
 class AddVendorScreen extends StatefulWidget {
   const AddVendorScreen(
@@ -25,9 +28,13 @@ class AddVendorScreen extends StatefulWidget {
 }
 
 class _AddVendorScreenState extends State<AddVendorScreen> {
+  List<Investors> selectedInvestors = [];
+  List<String> investorList = [];
+  List<num> investorBalance = [];
+  List<Investors> investorListBatchOrder = [];
   List<double> numberOfPayments = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   double? selectedPayment;
-  List<String> investorList = [];
+
   String investorVendor = 'Select';
   bool loading = false;
   var cashInHand = 0;
@@ -37,7 +44,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       TextEditingController();
   final TextEditingController investorProfitController =
       TextEditingController();
-
+  List<int> totalSelected = [];
   final formKey = GlobalKey<FormState>();
   Vendor? _selectedVendorOption;
   DateTime? firstPaymentDate;
@@ -54,6 +61,11 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       (value) {
         for (var investor in value.docs) {
           final String name = investor.get('name');
+
+
+
+          investorListBatchOrder.add(Investors(investorReference: investor.reference, currentBalance: investor.get('currentBalance')));
+          totalSelected.add(0);
           investorList.add(name);
           investorVendor = investorList.first;
         }
@@ -178,6 +190,137 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                             onChanged: (value) {
                               setState(() {
                                 _selectedVendorOption = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Theme(
+                        data: Theme.of(context).copyWith(unselectedWidgetColor: const Color(0xFFE56E14), disabledColor: Colors.blue),
+                        child: ListTile(
+                          title: const Text('Exissting Investor'),
+                          leading: Radio<Vendor?>(
+                            activeColor: const Color(0xFFE56E14),
+                            value: Vendor.batchOrder,
+                            groupValue: _selectedVendorOption,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedInvestors=[];
+                                showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return SafeArea(
+                                        child: Container(
+                                            height: MediaQuery.of(context).size.height * 0.75,
+                                            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text('Total : ${widget.productPurchasecost}'),
+                                                      const Text(
+                                                        'Add Investors',
+                                                        style: TextStyle(fontSize: 20),
+                                                      ),
+                                                      Text('Selected : ${totalSelected.sum}'),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: investorList.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return BatchOrderInvestorWidget(
+                                                            investorsList: investorListBatchOrder,
+                                                            index: index,
+                                                            investorList: investorList,
+                                                            onChanged: (int value) {
+                                                              setState(() {
+                                                                totalSelected[index] = value;
+                                                              });
+                                                              setState(() {});
+                                                            },
+                                                          );
+                                                        }),
+                                                  ),
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        int index = 0;
+                                                        for (var hmm in totalSelected) {
+                                                          if (totalSelected[index] > investorListBatchOrder[index].currentBalance!) {
+                                                            showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext context) {
+                                                                  return AlertDialog(
+                                                                    backgroundColor: Colors.white,
+                                                                    title: const Text('Insufficient Funds'),
+                                                                    content: const Text('One or more investors have insufficient funds'),
+                                                                    actions: [
+                                                                      TextButton(
+                                                                          onPressed: () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child: const Text('Ok'))
+                                                                    ],
+                                                                  );
+                                                                });
+                                                            break;
+                                                          }
+                                                        }
+
+                                                        if (totalSelected.sum != widget.productPurchasecost) {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext context) {
+                                                                return AlertDialog(
+                                                                  backgroundColor: Colors.white,
+                                                                  title: const Text('Incomplete Form'),
+                                                                  content: const Text('Selected amount should match the purchase cost'),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                        onPressed: () {
+                                                                          Navigator.pop(context);
+                                                                        },
+                                                                        child: const Text('Ok'))
+                                                                  ],
+                                                                );
+                                                              });
+                                                        } else {
+                                                          int index = 0;
+
+                                                          for (var value in totalSelected) {
+                                                            if (value > 0) {
+                                                              var percentage = (totalSelected[index] / widget.productPurchasecost) * 100;
+                                                              selectedInvestors.add(
+                                                                Investors(investorReference: investorListBatchOrder[index].investorReference, percentageInvestment: percentage.toInt()),
+                                                              );
+                                                              print('1');
+                                                            }
+
+                                                            index++;
+                                                          }
+                                                          setState(() {
+                                                            _selectedVendorOption = value;
+                                                          });
+                                                          Navigator.pop(context);
+
+                                                        }
+                                                      },
+                                                      child: const Text('Add Investors'))
+                                                ],
+                                              ),
+                                            )),
+                                      );
+                                    });
                               });
                             },
                           ),
@@ -394,6 +537,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 bool status = _selectedVendorOption ==
                                         Vendor.existingVendor
                                     ? await UpdateFirestore(
+                                    investorList: [],
                                             investorProfitPercentage:
                                                 double.parse(
                                                     investorProfitController
@@ -419,6 +563,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                         .addCustomerToExistingInvestor()
                                     : _selectedVendorOption == Vendor.newVendor
                                         ? await UpdateFirestore(
+                                  investorList: [],
                                             investorProfitPercentage:
                                                 double.parse(
                                                     investorProfitController
@@ -443,7 +588,31 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                                     ? nameController.text
                                                     : 'No Name',
                                           ).addCustomerToNewVendor()
-                                        : false;
+                                        : await UpdateFirestore(
+                                  investorList: selectedInvestors,
+                                  investorProfitPercentage:
+                                  double.parse(
+                                      investorProfitController
+                                          .text),
+                                  numberOfPayments: selectedPayment!,
+                                  orderDate: orderDate!,
+                                  productSalePrice:
+                                  widget.productPurchasecost,
+                                  vendorName:
+                                  nameController.text.isNotEmpty
+                                      ? nameController.text
+                                      : 'No Name',
+                                  customerName: widget.customerName,
+                                  productCost:
+                                  int.parse(costController.text),
+                                  productName: widget.productName,
+                                  firstPaymnetDate: firstPaymentDate!,
+                                  openingBalance: 0,
+                                  investorName:
+                                  nameController.text.isNotEmpty
+                                      ? nameController.text
+                                      : 'No Name',
+                                ).addCustomerToExistingInvestorBatch();
 
                                 if (!mounted) return;
 

@@ -189,6 +189,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                             groupValue: _selectedVendorOption,
                             onChanged: (value) {
                               setState(() {
+                                selectedInvestors=[];
                                 showModalBottomSheet(
                                     isScrollControlled: true,
                                     backgroundColor: Colors.transparent,
@@ -290,6 +291,11 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
 
                                                             index++;
                                                           }
+                                                          setState(() {
+                                                            _selectedVendorOption = value;
+                                                          });
+                                                          Navigator.pop(context);
+
                                                         }
                                                       },
                                                       child: const Text('Add Investors'))
@@ -482,26 +488,31 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             bool hasEnoughBalance = false;
-                            await FirebaseFirestore.instance.collection('investors').where('name', isEqualTo: selectedInvestor).get().then((value) {
-                              num currentBalance = value.docs[0].get('currentBalance');
-
-                              int companyProfit = ((widget.productPurchasecost - int.parse(costController.text)) -
-                                      (widget.productPurchasecost - int.parse(costController.text)) * (double.parse(investorProfitController.text) / 100))
-                                  .toInt();
-
-                              if (int.parse(costController.text) + (companyProfit) <= currentBalance) {
-                                hasEnoughBalance = true;
-                              }
-                            });
+                            if (_selectedVendorOption != Vendor.batchOrder) {
+                              await FirebaseFirestore.instance.collection('investors').where('name', isEqualTo: selectedInvestor).get().then((value) {
+                                num currentBalance = value.docs[0].get('currentBalance');
+                              
+                                int companyProfit = ((widget.productPurchasecost - int.parse(costController.text)) -
+                                        (widget.productPurchasecost - int.parse(costController.text)) * (double.parse(investorProfitController.text) / 100))
+                                    .toInt();
+                              
+                                if (int.parse(costController.text) + (companyProfit) <= currentBalance) {
+                                  hasEnoughBalance = true;
+                                }
+                              });
+                            }
                             setState(() {
                               modalHUD = true;
                             });
 
                             if (formKey.currentState!.validate()) {
-                              if (hasEnoughBalance == true) {
+                              if (hasEnoughBalance == true||_selectedVendorOption == Vendor.batchOrder) {
                                 if (selectedPayment != null || firstPaymentDate != null || orderDate != null) {
+                                  print('1');
+                                  print(_selectedVendorOption);
                                   bool status = _selectedVendorOption == Vendor.existingVendor
                                       ? await UpdateFirestore(
+                                      investorList: [],
                                               investorProfitPercentage: double.parse(investorProfitController.text),
                                               numberOfPayments: selectedPayment!,
                                               orderDate: orderDate!,
@@ -516,6 +527,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           .addProduct()
                                       : _selectedVendorOption == Vendor.newVendor
                                           ? await UpdateFirestore(
+                                      investorList: [],
                                                   investorProfitPercentage: double.parse(investorProfitController.text),
                                                   numberOfPayments: selectedPayment!,
                                                   orderDate: orderDate!,
@@ -528,7 +540,20 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                                   openingBalance: int.parse(openingBalanceController.text),
                                                   investorName: nameController.text)
                                               .addProductToNewVendor()
-                                          : false;
+                                          : await UpdateFirestore(
+                                    investorList: selectedInvestors,
+                                      investorProfitPercentage: double.parse(investorProfitController.text),
+                                      numberOfPayments: selectedPayment!,
+                                      orderDate: orderDate!,
+                                      productSalePrice: widget.productPurchasecost,
+                                      vendorName: nameController.text,
+                                      customerName: widget.customerName,
+                                      productCost: int.parse(costController.text),
+                                      productName: widget.productName,
+                                      firstPaymnetDate: firstPaymentDate!,
+                                      openingBalance: 0,
+                                      investorName: nameController.text)
+                                      .addProducsssst(selectedInvestors);
 
                                   if (!mounted) return;
 

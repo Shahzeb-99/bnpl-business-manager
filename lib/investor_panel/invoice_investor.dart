@@ -23,8 +23,8 @@ class PdfInvoiceServiceInvestor {
 
   Future<Uint8List> createInvoice(Purchase soldProducts) async {
     final pdf = pw.Document();
-final  investorRef= await soldProducts.investorReference.get();
-final investorName  = investorRef.get('name');
+//final  investorRef= await soldProducts.investorReference.get();
+final investorName  = 'investorRef.get(''name'')';
 
     final List<CustomRow> elements = [
       CustomRow(

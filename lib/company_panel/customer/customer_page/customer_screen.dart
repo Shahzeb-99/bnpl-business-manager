@@ -39,7 +39,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
           children: [
             Text(
               Provider.of<CustomerView>(context, listen: false)
-                  .allCustomers[widget.index]
+                  .thisMonthCustomer[widget.index]
                   .name,
               style:   const TextStyle(  fontSize: 25,color: Color(0xFFE56E14),),
             ),
@@ -47,7 +47,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
             CircleAvatar(
                 backgroundImage: CachedNetworkImageProvider(
                     Provider.of<CustomerView>(context, listen: false)
-                        .allCustomers[widget.index]
+                        .thisMonthCustomer[widget.index]
                         .image)),
           ],
         ),
@@ -58,11 +58,11 @@ class _CustomerProfileState extends State<CustomerProfile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Outstanding Balance: ${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].outstandingBalance} PKR',
+              'Outstanding Balance: ${Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].outstandingBalance} PKR',
               style: const TextStyle(fontSize: 20),
             ),
             Text(
-              'Amount Paid: ${Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].paidAmount} PKR',
+              'Amount Paid: ${Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].paidAmount} PKR',
               style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(
@@ -85,7 +85,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
                                   customerName: Provider.of<CustomerView>(
                                           context,
                                           listen: false)
-                                      .allCustomers[widget.index]
+                                      .thisMonthCustomer[widget.index]
                                       .name),
                             ),
                           );
@@ -102,34 +102,34 @@ class _CustomerProfileState extends State<CustomerProfile> {
             ),
             Expanded(
               child: Provider.of<CustomerView>(context)
-                      .allCustomers[widget.index]
+                      .thisMonthCustomer[widget.index]
                       .purchases
                       .isNotEmpty
                   ? ListView.builder(
                       physics:
                           const ScrollPhysics(parent: BouncingScrollPhysics()),
                       itemCount: Provider.of<CustomerView>(context)
-                          .allCustomers[widget.index]
+                          .thisMonthCustomer[widget.index]
                           .purchases
                           .length,
                       itemBuilder: (BuildContext context, int index) {
                         return checkToggle(index)
                             ? PurchaseWidget(
                                 image: Provider.of<CustomerView>(context)
-                                    .allCustomers[widget.index]
+                                    .thisMonthCustomer[widget.index]
                                     .purchases[index]
                                     .productImage,
                                 name: Provider.of<CustomerView>(context)
-                                    .allCustomers[widget.index]
+                                    .thisMonthCustomer[widget.index]
                                     .purchases[index]
                                     .productName,
                                 outstandingBalance:
                                     Provider.of<CustomerView>(context)
-                                        .allCustomers[widget.index]
+                                        .thisMonthCustomer[widget.index]
                                         .purchases[index]
                                         .outstandingBalance,
                                 amountPaid: Provider.of<CustomerView>(context)
-                                    .allCustomers[widget.index]
+                                    .thisMonthCustomer[widget.index]
                                     .purchases[index]
                                     .amountPaid,
                                 productIndex: index,
@@ -153,7 +153,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
     if (Provider.of<CustomerView>(context, listen: false).option ==
         CustomerFilterOptions.oneMonth) {
       return Provider.of<CustomerView>(context)
-              .allCustomers[widget.index]
+              .thisMonthCustomer[widget.index]
               .purchases[index]
               .purchaseDate
               .compareTo(Timestamp.fromDate(
@@ -162,7 +162,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
     } else if (Provider.of<CustomerView>(context, listen: false).option ==
         CustomerFilterOptions.sixMonths) {
       return Provider.of<CustomerView>(context)
-              .allCustomers[widget.index]
+              .thisMonthCustomer[widget.index]
               .purchases[index]
               .purchaseDate
               .compareTo(Timestamp.fromDate(
