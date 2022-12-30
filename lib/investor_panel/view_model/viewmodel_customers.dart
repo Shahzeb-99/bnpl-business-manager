@@ -5,8 +5,6 @@ import '../../investor_panel/customer/all_customer_screen.dart';
 import '../../investor_panel/dashboard/dashboard_screen.dart';
 import '../../investor_panel/model/customers.dart';
 
-
-
 class CustomerViewInvestor extends ChangeNotifier {
   List<Customers> allCustomers = [];
   List<Customers> thisMonthCustomers = [];
@@ -59,8 +57,7 @@ class CustomerViewInvestor extends ChangeNotifier {
     notifyListeners();
   }
 
-  getThisMonthCustomersOutstanding(
-      {required DashboardFilterOptions option}) async {
+  getThisMonthCustomersOutstanding({required DashboardFilterOptions option}) async {
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     cloud.settings.persistenceEnabled;
@@ -69,18 +66,11 @@ class CustomerViewInvestor extends ChangeNotifier {
       for (var customers in value.docs) {
         num outstandingAmount = 0;
 
-        await customers.reference
-            .collection('purchases')
-            .get()
-            .then((value) async {
+        await customers.reference.collection('purchases').get().then((value) async {
           for (var purchase in value.docs) {
             await purchase.reference
                 .collection('payment_schedule')
-                .where('date',
-                    isLessThanOrEqualTo: option != DashboardFilterOptions.all
-                        ? DateTime(
-                            DateTime.now().year, DateTime.now().month + 1, 0,23,59)
-                        : DateTime(2100))
+                .where('date', isLessThanOrEqualTo: option != DashboardFilterOptions.all ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59) : DateTime(2100))
                 .get()
                 .then((value) {
               for (var payment in value.docs) {
@@ -106,8 +96,7 @@ class CustomerViewInvestor extends ChangeNotifier {
     notifyListeners();
   }
 
-  getThisMonthCustomersRecovery(
-      {required DashboardFilterOptions option}) async {
+  getThisMonthCustomersRecovery({required DashboardFilterOptions option}) async {
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     cloud.settings.persistenceEnabled;
@@ -117,18 +106,11 @@ class CustomerViewInvestor extends ChangeNotifier {
         num outstandingBalance = customers.get('outstanding_balance');
         num amountPaid = 0;
 
-        await customers.reference
-            .collection('purchases')
-            .get()
-            .then((value) async {
+        await customers.reference.collection('purchases').get().then((value) async {
           for (var purchase in value.docs) {
             await purchase.reference
                 .collection('transaction_history')
-                .where('date',
-                    isLessThanOrEqualTo: option != DashboardFilterOptions.all
-                        ? DateTime(
-                            DateTime.now().year, DateTime.now().month + 1, 0,23,59)
-                        : DateTime(2100))
+                .where('date', isLessThanOrEqualTo: option != DashboardFilterOptions.all ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59) : DateTime(2100))
                 .get()
                 .then((value) {
               for (var transaction in value.docs) {
@@ -166,76 +148,43 @@ class CustomerViewInvestor extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getMonthlyPurchasesRecovery(
-      int index, DashboardFilterOptions option) async {
-    await thisMonthCustomers[index]
-        .getThisMonthPurchasesRecovery(option: option);
+  void getMonthlyPurchasesRecovery(int index, DashboardFilterOptions option) async {
+    await thisMonthCustomers[index].getThisMonthPurchasesRecovery(option: option);
     notifyListeners();
   }
 
-  void getPaymentSchedule(
-      {required int index, required int productIndex}) async {
-    await allCustomers[index]
-        .purchases[productIndex]
-        .getPaymentSchedule(allCustomers[index].documentID);
+  void getPaymentSchedule({required int index, required int productIndex}) async {
+    await allCustomers[index].purchases[productIndex].getPaymentSchedule(allCustomers[index].documentID);
     notifyListeners();
   }
 
-  void getAllPaymentScheduleDashboardView(
-      {required int index, required int productIndex}) async {
-    await thisMonthCustomers[index]
-        .purchases[productIndex]
-        .getPaymentSchedule(thisMonthCustomers[index].documentID);
+  void getAllPaymentScheduleDashboardView({required int index, required int productIndex}) async {
+    await thisMonthCustomers[index].purchases[productIndex].getPaymentSchedule(thisMonthCustomers[index].documentID);
     notifyListeners();
   }
 
-  void getPaymentScheduleMonthlyOutstanding(
-      {required int index, required int productIndex}) async {
-    await thisMonthCustomers[index]
-        .purchases[productIndex]
-        .getPaymentScheduleMonthlyOutstanding(
-            thisMonthCustomers[index].documentID);
+  void getPaymentScheduleMonthlyOutstanding({required int index, required int productIndex}) async {
+    await thisMonthCustomers[index].purchases[productIndex].getPaymentScheduleMonthlyOutstanding(thisMonthCustomers[index].documentID);
     notifyListeners();
   }
 
-  void getPaymentScheduleMonthlyRecovery(
-      {required int index,
-      required int productIndex,
-      required DashboardFilterOptions option}) async {
-    await thisMonthCustomers[index]
-        .purchases[productIndex]
-        .getPaymentScheduleMonthlyRecovery(
-            thisMonthCustomers[index].documentID, option);
+  void getPaymentScheduleMonthlyRecovery({required int index, required int productIndex, required DashboardFilterOptions option}) async {
+    await thisMonthCustomers[index].purchases[productIndex].getPaymentScheduleMonthlyRecovery(thisMonthCustomers[index].documentID, option);
     notifyListeners();
   }
 
-  void getTransactionHistory(
-      {required int index, required int productIndex}) async {
-    await allCustomers[index]
-        .purchases[productIndex]
-        .getTransactionHistory(allCustomers[index].documentID);
+  void getTransactionHistory({required int index, required int productIndex}) async {
+    await allCustomers[index].purchases[productIndex].getTransactionHistory(allCustomers[index].documentID);
     notifyListeners();
   }
 
-  void getTransactionHistoryRecovery(
-      {required int index,
-      required int productIndex,
-      required bool isThisMonth}) async {
-    await thisMonthCustomers[index]
-        .purchases[productIndex]
-        .getTransactionHistoryRecovery(
-            thisMonthCustomers[index].documentID, isThisMonth);
+  void getTransactionHistoryRecovery({required int index, required int productIndex, required bool isThisMonth}) async {
+    await thisMonthCustomers[index].purchases[productIndex].getTransactionHistoryRecovery(thisMonthCustomers[index].documentID, isThisMonth);
     notifyListeners();
   }
 
-  void getInstallmentTransactionHistory(
-      {required int index,
-      required int productIndex,
-      required paymentIndex}) async {
-    await allCustomers[index]
-        .purchases[productIndex]
-        .paymentSchedule[paymentIndex]
-        .getInstallmentTransactionHistory();
+  void getInstallmentTransactionHistory({required int index, required int productIndex, required paymentIndex}) async {
+    await allCustomers[index].purchases[productIndex].paymentSchedule[paymentIndex].getInstallmentTransactionHistory();
     notifyListeners();
   }
 

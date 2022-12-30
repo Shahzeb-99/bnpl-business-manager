@@ -28,7 +28,8 @@ class PaymentSchedule {
         .update({
       'date': date,
       'isPaid': isPaid,
-      'remainingAmount': remainingAmount
+      'remainingAmount': remainingAmount,
+      'amount':amount
     });
   }
 

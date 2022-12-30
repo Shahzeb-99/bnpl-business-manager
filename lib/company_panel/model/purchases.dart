@@ -191,7 +191,7 @@ class Purchase {
 
   }
 
-  void addTransaction({required int amount, required DateTime dateTime}) {
+  Future<void> addTransaction({required int amount, required DateTime dateTime}) async {
     documentReferencePurchase.collection('transaction_history').add(
       {
         'amount': amount,

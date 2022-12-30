@@ -78,7 +78,7 @@ class _AllVendorScreenState extends State<AllVendorScreen> {
                               Text(
                                 Provider.of<VendorViewInvestor>(context)
                                     .allVendors[index]
-                                    .name,
+                                    .name!,
                                 style: const TextStyle(
                                     fontSize: 17, fontWeight: FontWeight.bold),
                                 softWrap: true,

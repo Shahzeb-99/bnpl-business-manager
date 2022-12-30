@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/investor_panel/model/vendors.dart';
 
 import '../../investor_panel/customer/payment_schedule_class.dart';
 import '../../investor_panel/customer/transaction_history_class.dart';
@@ -8,25 +9,27 @@ import '../../investor_panel/dashboard/dashboard_screen.dart';
 
 class Purchase {
   num companyProfit;
-  String customerID;
-  DocumentReference documentReferencePurchase;
-  Timestamp purchaseDate;
-  var purchaseAmount;
-  String vendorName;
-  var sellingAmount;
-  String? profitPercentage;
-  var totalProfit;
-  String productName;
-  String productImage;
+ final String customerID;
+ final DocumentReference documentReferencePurchase;
+ final Timestamp purchaseDate;
+  final  purchaseAmount;
+  final String vendorName;
+  final sellingAmount;
+  final String? profitPercentage;
+  final totalProfit;
+  final String productName;
+  final String productImage;
   var outstandingBalance;
   var amountPaid;
-  String customerName;
+  final String customerName;
   List<PaymentSchedule> paymentSchedule = [];
   List<TransactionHistory> transactionHistory = [];
-  DocumentReference investorReference;
+  final DocumentReference investorReference;
+bool isBatchOrder;
 
+List<Investors>? investors ;
   Purchase(
-      {
+      {this.investors,
         required this.customerName,required this.investorReference,
       required this.companyProfit,
       required this.customerID,
@@ -40,7 +43,7 @@ class Purchase {
       required this.purchaseAmount,
       required this.sellingAmount,
       this.totalProfit,
-      required this.purchaseDate});
+      required this.purchaseDate,required this.isBatchOrder});
 
   Future<void> getPaymentSchedule(String customerDocID) async {
     paymentSchedule = [];
@@ -210,6 +213,50 @@ class Purchase {
       }).whenComplete(() {
         investorReference.update({'company_profit':FieldValue.increment(amount)});
         
+        documentReferencePurchase.update({'companyProfit':FieldValue.increment(-amount)}).whenComplete(() {companyProfit -= amount;});
+      });
+    }
+  }
+  updateCustomBatchTransaction({required int amount}) async {
+    final cloud = FirebaseFirestore.instance;
+
+    await cloud.collection('investorCustomers').doc(customerID).update({
+      'outstanding_balance': FieldValue.increment(-amount),
+      'paid_amount': FieldValue.increment(amount),
+    });
+
+    await documentReferencePurchase.update({
+      'outstanding_balance': FieldValue.increment(-amount),
+      'paid_amount': FieldValue.increment(amount),
+    });
+    cloud.collection('investorFinancials').doc('finance').update({
+      'amount_paid': FieldValue.increment(amount),
+      'outstanding_balance': FieldValue.increment(-amount),
+    });
+
+    if (amount > companyProfit) {
+      cloud.collection('investorFinancials').doc('finance').update({
+        'companyProfit': FieldValue.increment(companyProfit),
+      }).whenComplete(() {
+        amount -= companyProfit.toInt();
+
+        documentReferencePurchase.update({'companyProfit':0}).whenComplete(() {companyProfit=0;});
+        cloud.collection('investorFinancials').doc('finance').update({
+          'cash_available': FieldValue.increment(amount),
+        });
+        for(var investor in investors!){
+
+          int amountDivided=((amount/100)*investor.percentageInvestment!).toInt();
+          investorReference
+              .update({'currentBalance': FieldValue.increment(amountDivided)});
+
+        }
+      });
+    } else {
+      cloud.collection('investorFinancials').doc('finance').update({
+        'company_profit': FieldValue.increment(amount),
+      }).whenComplete(() {
+        investorReference.update({'company_profit':FieldValue.increment(amount)});
         documentReferencePurchase.update({'companyProfit':FieldValue.increment(-amount)}).whenComplete(() {companyProfit -= amount;});
       });
     }

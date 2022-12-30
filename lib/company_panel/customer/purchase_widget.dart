@@ -9,13 +9,7 @@ import '../view_model/viewmodel_customers.dart';
 
 class PurchaseWidget extends StatefulWidget {
   const PurchaseWidget(
-      {Key? key,
-      required this.image,
-      required this.name,
-      required this.outstandingBalance,
-      required this.amountPaid,
-      required this.productIndex,
-      required this.index})
+      {Key? key, required this.image, required this.name, required this.outstandingBalance, required this.amountPaid, required this.productIndex, required this.index})
       : super(key: key);
 
   final int productIndex;
@@ -47,11 +41,9 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
       color: Colors.white,
       child: InkWell(
         onLongPress: () async {
-
           final service = PdfInvoiceService();
-          final data = await service.createInvoice(Provider.of<CustomerView>(context,listen: false).allCustomers[widget.index].purchases[widget.productIndex]);
+          final data = await service.createInvoice(Provider.of<CustomerView>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex]);
           service.savePdfFile('invoice', data);
-
         },
         onTap: () {
           Navigator.push(
@@ -63,21 +55,17 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                 index: widget.index,
               ),
             ),
-          ).whenComplete(
-              () {
-                Provider.of<CustomerView>(context, listen: false).update();
-                setState(() {
-
-                });
-              });
+          ).whenComplete(() {
+            Provider.of<CustomerView>(context, listen: false).update();
+            setState(() {});
+          });
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(500)),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(500)),
                 height: MediaQuery.of(context).size.height * 0.10,
                 width: MediaQuery.of(context).size.height * 0.10,
                 child: Image.network(
@@ -88,17 +76,25 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
               const SizedBox(
                 width: 15,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                      'Outstanding Balance : ${widget.outstandingBalance} PKR'),
-                  Text('Amount Paid : ${widget.amountPaid} PKR'),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.fade,
+                    ),
+                    Text(
+                      'Outstanding Balance : ${widget.outstandingBalance} PKR',
+                      overflow: TextOverflow.fade,
+                    ),
+                    Text(
+                      'Amount Paid : ${widget.amountPaid} PKR',
+                      overflow: TextOverflow.fade,
+                    ),
+                  ],
+                ),
               )
             ],
           ),

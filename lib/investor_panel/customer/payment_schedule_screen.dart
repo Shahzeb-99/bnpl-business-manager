@@ -12,12 +12,7 @@ import '../../investor_panel/view_model/viewmodel_customers.dart';
 import '../view_model/viewmodel_user.dart';
 
 class PaymentScheduleScreen extends StatefulWidget {
-  const PaymentScheduleScreen(
-      {Key? key,
-      required this.paymentList,
-      required this.productIndex,
-      required this.index})
-      : super(key: key);
+  const PaymentScheduleScreen({Key? key, required this.paymentList, required this.productIndex, required this.index}) : super(key: key);
 
   final List<PaymentSchedule> paymentList;
   final int productIndex;
@@ -30,9 +25,7 @@ class PaymentScheduleScreen extends StatefulWidget {
 class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
   @override
   void initState() {
-    Provider.of<CustomerViewInvestor>(context, listen: false)
-        .getPaymentSchedule(
-            index: widget.index, productIndex: widget.productIndex);
+    Provider.of<CustomerViewInvestor>(context, listen: false).getPaymentSchedule(index: widget.index, productIndex: widget.productIndex);
     super.initState();
   }
 
@@ -62,13 +55,8 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                 onPressed: () async {
                   final service = PdfInvoiceServiceInvestor();
                   final date = await service.createPaymentList(
-                    Provider.of<CustomerViewInvestor>(context, listen: false)
-                        .allCustomers[widget.index]
-                        .purchases[widget.productIndex]
-                        .paymentSchedule,
-                    Provider.of<CustomerViewInvestor>(context, listen: false)
-                        .allCustomers[widget.index]
-                        .purchases[widget.productIndex],
+                    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].paymentSchedule,
+                    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex],
                   );
 
                   service.savePdfFile('Order Status', date);
@@ -80,8 +68,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                     onPressed: () {
                       time = TimeOfDay.now();
                       dateTime = DateTime.now();
-                      final TextEditingController moneyController =
-                          TextEditingController();
+                      final TextEditingController moneyController = TextEditingController();
                       showModalBottomSheet<void>(
                         isScrollControlled: true,
                         backgroundColor: Colors.transparent,
@@ -89,18 +76,12 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                         builder: (BuildContext context) {
                           return SingleChildScrollView(
                             child: Container(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20))),
+                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                              decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
                               child: Padding(
                                 padding: const EdgeInsets.all(20),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
                                     const Text(
                                       'Add Money',
@@ -110,16 +91,13 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                       height: 15,
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
                                       child: InkWell(
                                         onTap: () async {
-                                          DateTime? newDate =
-                                              await showDatePicker(
+                                          DateTime? newDate = await showDatePicker(
                                             context: context,
                                             initialDate: dateTime,
-                                            initialDatePickerMode:
-                                                DatePickerMode.day,
+                                            initialDatePickerMode: DatePickerMode.day,
                                             firstDate: DateTime(2000),
                                             lastDate: DateTime(2100),
                                           );
@@ -131,29 +109,20 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
                                             color: Colors.grey.shade200,
-                                            borderRadius:
-                                                BorderRadius.circular(4),
+                                            borderRadius: BorderRadius.circular(4),
                                           ),
                                           child: Text(
-                                            DateFormat.yMMMMEEEEd()
-                                                .format(dateTime),
-                                            style: const TextStyle(
-                                                color: Color(0xFFE56E14),
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600),
+                                            DateFormat.yMMMMEEEEd().format(dateTime),
+                                            style: const TextStyle(color: Color(0xFFE56E14), fontSize: 20, fontWeight: FontWeight.w600),
                                           ),
                                         ),
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
                                       child: GestureDetector(
                                         onTap: () async {
-                                          TimeOfDay? newTime =
-                                              await showTimePicker(
-                                                  context: context,
-                                                  initialTime: TimeOfDay.now());
+                                          TimeOfDay? newTime = await showTimePicker(context: context, initialTime: TimeOfDay.now());
                                           setState(() {
                                             time = newTime!;
                                           });
@@ -162,27 +131,17 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
                                             color: Colors.grey.shade200,
-                                            borderRadius:
-                                                BorderRadius.circular(4),
+                                            borderRadius: BorderRadius.circular(4),
                                           ),
                                           child: Text(
-                                            DateFormat.jms().format(DateTime(
-                                                dateTime.year,
-                                                dateTime.month,
-                                                dateTime.day,
-                                                time.hour,
-                                                time.minute)),
-                                            style: const TextStyle(
-                                                color: Color(0xFFE56E14),
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600),
+                                            DateFormat.jms().format(DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute)),
+                                            style: const TextStyle(color: Color(0xFFE56E14), fontSize: 20, fontWeight: FontWeight.w600),
                                           ),
                                         ),
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
                                       child: Row(
                                         children: [
                                           Expanded(
@@ -190,27 +149,14 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                               key: formKey,
                                               autofocus: true,
                                               controller: moneyController,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly
-                                              ],
-                                              decoration: kDecoration.inputBox(
-                                                  'Amount', 'PKR'),
+                                              keyboardType: TextInputType.number,
+                                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                              decoration: kDecoration.inputBox('Amount', 'PKR'),
                                               validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
+                                                if (value == null || value.isEmpty) {
                                                   return 'This field is required';
                                                 } else if (int.parse(value) >
-                                                    Provider.of<CustomerViewInvestor>(
-                                                            context,
-                                                            listen: false)
-                                                        .allCustomers[
-                                                            widget.index]
-                                                        .purchases[
-                                                            widget.productIndex]
-                                                        .outstandingBalance) {
+                                                    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].outstandingBalance) {
                                                   return 'Value greater than outstanding amount';
                                                 }
                                                 return null;
@@ -220,284 +166,110 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                           IconButton(
                                               color: Colors.purple.shade900,
                                               onPressed: () async {
-                                                if (formKey.currentState!
-                                                    .validate()) {
-                                                  if (Provider.of<CustomerViewInvestor>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .allCustomers[
-                                                                  widget.index]
-                                                              .purchases[widget
-                                                                  .productIndex]
-                                                              .outstandingBalance -
-                                                          int.parse(
-                                                              moneyController
-                                                                  .text) >
+                                                if (formKey.currentState!.validate()) {
+                                                  if (Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].outstandingBalance -
+                                                          int.parse(moneyController.text) >
                                                       500) {
-                                                    Provider.of<CustomerViewInvestor>(
-                                                            context,
-                                                            listen: false)
-                                                        .allCustomers[
-                                                            widget.index]
-                                                        .purchases[
-                                                            widget.productIndex]
-                                                        .addTransaction(
-                                                            amount: int.parse(
-                                                                moneyController
-                                                                    .text),
-                                                            dateTime: DateTime(
-                                                                dateTime.year,
-                                                                dateTime.month,
-                                                                dateTime.day,
-                                                                time.hour,
-                                                                time.minute));
+                                                    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].addTransaction(
+                                                        amount: int.parse(moneyController.text), dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
 
                                                     int index = 0;
-                                                    int length = Provider.of<
-                                                                CustomerViewInvestor>(
-                                                            context,
-                                                            listen: false)
-                                                        .allCustomers[
-                                                            widget.index]
-                                                        .purchases[
-                                                            widget.productIndex]
-                                                        .paymentSchedule
-                                                        .length;
-                                                    int newPayment = int.parse(
-                                                        moneyController.text);
+                                                    int length =
+                                                        Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].paymentSchedule.length;
+                                                    int newPayment = int.parse(moneyController.text);
 
-                                                    updateLocalState(
-                                                        context, newPayment);
-                                                    Provider.of<CustomerViewInvestor>(
-                                                            context,
-                                                            listen: false)
-                                                        .allCustomers[
-                                                            widget.index]
-                                                        .purchases[
-                                                            widget.productIndex]
-                                                        .updateCustomTransaction(
-                                                            amount: newPayment);
+                                                    updateLocalState(context, newPayment);
+                                                    Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                        .allCustomers[widget.index]
+                                                        .purchases[widget.productIndex]
+                                                        .updateCustomBatchTransaction(amount: newPayment);
 
-                                                    final service =
-                                                        PdfInvoiceServiceInvestor();
-                                                    final date = await service
-                                                        .createPaymentReceipt(
-                                                            Provider.of<CustomerViewInvestor>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .allCustomers[
-                                                                        widget
-                                                                            .index]
-                                                                    .purchases[
-                                                                widget
-                                                                    .productIndex],
-                                                            int.parse(
-                                                                moneyController
-                                                                    .text),
-                                                            DateTime(
-                                                                dateTime.year,
-                                                                dateTime.month,
-                                                                dateTime.day,
-                                                                time.hour,
-                                                                time.minute));
+                                                    final service = PdfInvoiceServiceInvestor();
+                                                    final date = await service.createPaymentReceipt(
+                                                        Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex],
+                                                        int.parse(moneyController.text),
+                                                        DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
 
-                                                    service.savePdfFile(
-                                                        'receipt', date);
+                                                    service.savePdfFile('receipt', date);
 
                                                     moneyController.clear();
 
                                                     for (PaymentSchedule payment
-                                                        in Provider.of<
-                                                                    CustomerViewInvestor>(
-                                                                context,
-                                                                listen: false)
-                                                            .allCustomers[
-                                                                widget.index]
-                                                            .purchases[widget
-                                                                .productIndex]
-                                                            .paymentSchedule) {
+                                                        in Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].paymentSchedule) {
                                                       if (!payment.isPaid) {
-                                                        if (newPayment <=
-                                                            payment
-                                                                .remainingAmount) {
-                                                          payment.remainingAmount -=
-                                                              newPayment;
-                                                          payment.addTransaction(
-                                                              amount:
-                                                                  newPayment,
-                                                              dateTime: DateTime(
-                                                                  dateTime.year,
-                                                                  dateTime
-                                                                      .month,
-                                                                  dateTime.day,
-                                                                  time.hour,
-                                                                  time.minute));
-                                                          if (payment
-                                                                  .remainingAmount ==
-                                                              0) {
-                                                            payment.isPaid =
-                                                                true;
+                                                        if (newPayment <= payment.remainingAmount) {
+                                                          payment.remainingAmount -= newPayment;
+                                                          payment.addTransaction(amount: newPayment, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                          if (payment.remainingAmount == 0) {
+                                                            payment.isPaid = true;
                                                           }
-                                                          payment
-                                                              .updateFirestore();
+                                                          payment.updateFirestore();
                                                           newPayment = 0;
                                                           break;
                                                         } else {
-                                                          newPayment = newPayment -
-                                                              payment
-                                                                  .remainingAmount;
+                                                          newPayment = newPayment - payment.remainingAmount;
                                                           payment.addTransaction(
-                                                              amount: payment
-                                                                  .remainingAmount,
-                                                              dateTime: DateTime(
-                                                                  dateTime.year,
-                                                                  dateTime
-                                                                      .month,
-                                                                  dateTime.day,
-                                                                  time.hour,
-                                                                  time.minute));
-                                                          payment.remainingAmount =
-                                                              0;
+                                                              amount: payment.remainingAmount, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                          payment.remainingAmount = 0;
                                                           payment.isPaid = true;
-                                                          payment
-                                                              .updateFirestore();
+                                                          payment.updateFirestore();
 
                                                           index++;
                                                           length--;
 
-                                                          int roundedPayment =
-                                                              newPayment ~/
-                                                                  length;
+                                                          int roundedPayment = newPayment ~/ length;
 
                                                           for (index;
                                                               index <
-                                                                  Provider.of<CustomerViewInvestor>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .allCustomers[
-                                                                          widget
-                                                                              .index]
-                                                                      .purchases[
-                                                                          widget
-                                                                              .productIndex]
+                                                                  Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                      .allCustomers[widget.index]
+                                                                      .purchases[widget.productIndex]
                                                                       .paymentSchedule
                                                                       .length;
                                                               index++) {
                                                             if (index !=
-                                                                Provider.of<CustomerViewInvestor>(
-                                                                            context,
-                                                                            listen:
-                                                                                false)
-                                                                        .allCustomers[widget
-                                                                            .index]
-                                                                        .purchases[
-                                                                            widget.productIndex]
+                                                                Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                        .allCustomers[widget.index]
+                                                                        .purchases[widget.productIndex]
                                                                         .paymentSchedule
                                                                         .length -
                                                                     1) {
-                                                              Provider.of<CustomerViewInvestor>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .allCustomers[
-                                                                      widget
-                                                                          .index]
-                                                                  .purchases[widget
-                                                                      .productIndex]
-                                                                  .paymentSchedule[
-                                                                      index]
+                                                              Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                  .allCustomers[widget.index]
+                                                                  .purchases[widget.productIndex]
+                                                                  .paymentSchedule[index]
                                                                   .remainingAmount -= roundedPayment;
 
-                                                              Provider.of<CustomerViewInvestor>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .allCustomers[
-                                                                      widget
-                                                                          .index]
-                                                                  .purchases[widget
-                                                                      .productIndex]
-                                                                  .paymentSchedule[
-                                                                      index]
-                                                                  .addTransaction(
-                                                                      amount:
-                                                                          roundedPayment,
-                                                                      dateTime: DateTime(
-                                                                          dateTime
-                                                                              .year,
-                                                                          dateTime
-                                                                              .month,
-                                                                          dateTime
-                                                                              .day,
-                                                                          time.hour,
-                                                                          time.minute));
+                                                              Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                  .allCustomers[widget.index]
+                                                                  .purchases[widget.productIndex]
+                                                                  .paymentSchedule[index]
+                                                                  .addTransaction(amount: roundedPayment, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
 
-                                                              newPayment -=
-                                                                  roundedPayment;
-                                                              Provider.of<CustomerViewInvestor>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .allCustomers[
-                                                                      widget
-                                                                          .index]
-                                                                  .purchases[widget
-                                                                      .productIndex]
-                                                                  .paymentSchedule[
-                                                                      index]
+                                                              newPayment -= roundedPayment;
+                                                              Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                  .allCustomers[widget.index]
+                                                                  .purchases[widget.productIndex]
+                                                                  .paymentSchedule[index]
                                                                   .updateFirestore();
                                                             } else {
-                                                              Provider.of<CustomerViewInvestor>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .allCustomers[
-                                                                      widget
-                                                                          .index]
-                                                                  .purchases[widget
-                                                                      .productIndex]
-                                                                  .paymentSchedule[
-                                                                      index]
+                                                              Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                  .allCustomers[widget.index]
+                                                                  .purchases[widget.productIndex]
+                                                                  .paymentSchedule[index]
                                                                   .remainingAmount -= newPayment;
 
-                                                              Provider.of<CustomerViewInvestor>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .allCustomers[
-                                                                      widget
-                                                                          .index]
-                                                                  .purchases[widget
-                                                                      .productIndex]
-                                                                  .paymentSchedule[
-                                                                      index]
-                                                                  .addTransaction(
-                                                                      amount:
-                                                                          newPayment,
-                                                                      dateTime: DateTime(
-                                                                          dateTime
-                                                                              .year,
-                                                                          dateTime
-                                                                              .month,
-                                                                          dateTime
-                                                                              .day,
-                                                                          time.hour,
-                                                                          time.minute));
+                                                              Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                  .allCustomers[widget.index]
+                                                                  .purchases[widget.productIndex]
+                                                                  .paymentSchedule[index]
+                                                                  .addTransaction(amount: newPayment, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
 
                                                               newPayment = 0;
-                                                              Provider.of<CustomerViewInvestor>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .allCustomers[
-                                                                      widget
-                                                                          .index]
-                                                                  .purchases[widget
-                                                                      .productIndex]
-                                                                  .paymentSchedule[
-                                                                      index]
+                                                              Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                                  .allCustomers[widget.index]
+                                                                  .purchases[widget.productIndex]
+                                                                  .paymentSchedule[index]
                                                                   .updateFirestore();
                                                             }
                                                           }
@@ -510,126 +282,43 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                     Navigator.pop(context);
                                                     setState(() {});
                                                   } else {
-                                                    if (moneyController
-                                                        .text.isNotEmpty) {
-                                                      Provider.of<CustomerViewInvestor>(
-                                                              context,
-                                                              listen: false)
-                                                          .allCustomers[
-                                                              widget.index]
-                                                          .purchases[widget
-                                                              .productIndex]
-                                                          .addTransaction(
-                                                              amount: int.parse(
-                                                                  moneyController
-                                                                      .text),
-                                                              dateTime: DateTime(
-                                                                  dateTime.year,
-                                                                  dateTime
-                                                                      .month,
-                                                                  dateTime.day,
-                                                                  time.hour,
-                                                                  time.minute));
-                                                      int newPayment =
-                                                          int.parse(
-                                                              moneyController
-                                                                  .text);
+                                                    if (moneyController.text.isNotEmpty) {
+                                                      Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].addTransaction(
+                                                          amount: int.parse(moneyController.text), dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                      int newPayment = int.parse(moneyController.text);
                                                       moneyController.clear();
-                                                      updateLocalState(
-                                                          context, newPayment);
-                                                      Provider.of<CustomerViewInvestor>(
-                                                              context,
-                                                              listen: false)
-                                                          .allCustomers[
-                                                              widget.index]
-                                                          .purchases[widget
-                                                              .productIndex]
-                                                          .updateCustomTransaction(
-                                                              amount:
-                                                                  newPayment);
-                                                      final service =
-                                                          PdfInvoiceServiceInvestor();
-                                                      final date = await service
-                                                          .createPaymentReceipt(
-                                                              Provider.of<CustomerViewInvestor>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .allCustomers[
-                                                                          widget
-                                                                              .index]
-                                                                      .purchases[
-                                                                  widget
-                                                                      .productIndex],
-                                                              newPayment,
-                                                              DateTime(
-                                                                  dateTime.year,
-                                                                  dateTime
-                                                                      .month,
-                                                                  dateTime.day,
-                                                                  time.hour,
-                                                                  time.minute));
+                                                      updateLocalState(context, newPayment);
+                                                      Provider.of<CustomerViewInvestor>(context, listen: false)
+                                                          .allCustomers[widget.index]
+                                                          .purchases[widget.productIndex]
+                                                          .updateCustomBatchTransaction(amount: newPayment);
+                                                      final service = PdfInvoiceServiceInvestor();
+                                                      final date = await service.createPaymentReceipt(
+                                                          Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex],
+                                                          newPayment,
+                                                          DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
 
-                                                      service.savePdfFile(
-                                                          'receipt', date);
-                                                      for (var payment in Provider
-                                                              .of<CustomerViewInvestor>(
-                                                                  context,
-                                                                  listen: false)
-                                                          .allCustomers[
-                                                              widget.index]
-                                                          .purchases[widget
-                                                              .productIndex]
-                                                          .paymentSchedule) {
+                                                      service.savePdfFile('receipt', date);
+                                                      for (var payment
+                                                          in Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].paymentSchedule) {
                                                         setState(() {
                                                           if (!payment.isPaid) {
-                                                            if (newPayment >=
-                                                                payment
-                                                                    .remainingAmount) {
-                                                              payment.isPaid =
-                                                                  true;
-                                                              newPayment =
-                                                                  newPayment -
-                                                                      payment
-                                                                          .remainingAmount;
+                                                            if (newPayment >= payment.remainingAmount) {
+                                                              payment.isPaid = true;
+                                                              newPayment = newPayment - payment.remainingAmount;
                                                               payment.addTransaction(
-                                                                  amount: payment
-                                                                      .remainingAmount,
-                                                                  dateTime: DateTime(
-                                                                      dateTime
-                                                                          .year,
-                                                                      dateTime
-                                                                          .month,
-                                                                      dateTime
-                                                                          .day,
-                                                                      time.hour,
-                                                                      time.minute));
-                                                              payment.remainingAmount =
-                                                                  0;
+                                                                  amount: payment.remainingAmount, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                              payment.remainingAmount = 0;
                                                             } else {
-                                                              payment.remainingAmount =
-                                                                  payment.remainingAmount -
-                                                                      newPayment;
+                                                              payment.remainingAmount = payment.remainingAmount - newPayment;
 
-                                                              payment.addTransaction(
-                                                                  amount:
-                                                                      newPayment,
-                                                                  dateTime: DateTime(
-                                                                      dateTime
-                                                                          .year,
-                                                                      dateTime
-                                                                          .month,
-                                                                      dateTime
-                                                                          .day,
-                                                                      time.hour,
-                                                                      time.minute));
+                                                              payment.addTransaction(amount: newPayment, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
                                                               newPayment = 0;
                                                             }
                                                           }
                                                         });
 
-                                                        payment
-                                                            .updateFirestore();
+                                                        payment.updateFirestore();
                                                       }
                                                     }
 
@@ -637,8 +326,7 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                                                   }
                                                 }
                                               },
-                                              icon: const Icon(
-                                                  Icons.navigate_next))
+                                              icon: const Icon(Icons.navigate_next))
                                         ],
                                       ),
                                     ),
@@ -664,14 +352,10 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
               'Product Name : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].productName}',
               style: const TextStyle(fontSize: 20),
             ),
-            Text(
-                'Investor Name : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].vendorName}',
+            Text('Investor Name : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].vendorName}', style: const TextStyle(fontSize: 20)),
+            Text('Selling Amount : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].sellingAmount.toString()}',
                 style: const TextStyle(fontSize: 20)),
-            Text(
-                'Selling Amount : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].sellingAmount.toString()}',
-                style: const TextStyle(fontSize: 20)),
-            Text(
-                'Purchase Amount : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].purchaseAmount.toString()}',
+            Text('Purchase Amount : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].purchaseAmount.toString()}',
                 style: const TextStyle(fontSize: 20)),
             Text(
                 'Profit : ${Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].sellingAmount - Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].purchaseAmount}',
@@ -682,27 +366,15 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
                   Colors.grey.shade200,
                 )),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TransactionHistoryScreen(
-                              productIndex: widget.productIndex,
-                              index: widget.index)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionHistoryScreen(productIndex: widget.productIndex, index: widget.index)));
                 },
                 child: const Text('Transaction History')),
             Expanded(
               child: ListView.builder(
                 physics: const ScrollPhysics(parent: BouncingScrollPhysics()),
-                itemCount: Provider.of<CustomerViewInvestor>(context)
-                    .allCustomers[widget.index]
-                    .purchases[widget.productIndex]
-                    .paymentSchedule
-                    .length,
+                itemCount: Provider.of<CustomerViewInvestor>(context).allCustomers[widget.index].purchases[widget.productIndex].paymentSchedule.length,
                 itemBuilder: (BuildContext context, int paymentIndex) {
-                  return PaymentScheduleWidget(
-                      index: widget.index,
-                      productIndex: widget.productIndex,
-                      paymentIndex: paymentIndex);
+                  return PaymentScheduleWidget(index: widget.index, productIndex: widget.productIndex, paymentIndex: paymentIndex);
                 },
               ),
             ),
@@ -713,20 +385,10 @@ class _PaymentScheduleScreenState extends State<PaymentScheduleScreen> {
   }
 
   void updateLocalState(BuildContext context, int amount) {
-    Provider.of<CustomerViewInvestor>(context, listen: false)
-        .allCustomers[widget.index]
-        .purchases[widget.productIndex]
-        .outstandingBalance -= amount;
-    Provider.of<CustomerViewInvestor>(context, listen: false)
-        .allCustomers[widget.index]
-        .purchases[widget.productIndex]
-        .amountPaid += amount;
-    Provider.of<CustomerViewInvestor>(context, listen: false)
-        .allCustomers[widget.index]
-        .outstandingBalance -= amount;
-    Provider.of<CustomerViewInvestor>(context, listen: false)
-        .allCustomers[widget.index]
-        .paidAmount += amount;
+    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].outstandingBalance -= amount;
+    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex].amountPaid += amount;
+    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].outstandingBalance -= amount;
+    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].paidAmount += amount;
   }
 }
 

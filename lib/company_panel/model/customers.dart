@@ -59,18 +59,9 @@ class Customers {
     );
   }
 
-  Future<void> getPurchases() async {
+  Future<void> getPurchases({required Function notify}) async {
     purchases = [];
-    Timestamp purchaseDate;
     final cloud = FirebaseFirestore.instance;
-    DocumentReference documentReference;
-    var outstandingBalance;
-    var paidAmount;
-    String productName = '';
-    var productSellingPrice;
-    var productCost;
-    String productImage = '';
-    String vendorName = '';
 
     await cloud
         .collection('customers')
@@ -80,45 +71,60 @@ class Customers {
         .then(
       (value) async {
         for (var purchase in value.docs) {
-          documentReference = purchase.reference;
-          purchaseDate = purchase.get('purchaseDate');
-          outstandingBalance = purchase.get('outstanding_balance');
-          paidAmount = purchase.get('paid_amount');
-          DocumentReference productReference = purchase.get('product');
-          await productReference.get().then(
-            (value) async {
-              productName = value.get('name');
-              productSellingPrice = value.get('price');
-              DocumentReference vendorDocumentReference =
-                  value.get('reference');
-              await vendorDocumentReference.get().then(
-                (value) {
-                  productCost = value.get('price');
-                  productImage = value.get('image');
-                },
-              );
-              await vendorDocumentReference.parent.parent?.get().then((value) {
-                vendorName = value.get('name');
-              });
-            },
-          );
-
-          purchases.add(Purchase(
-            customerName: name,
-            customerID: documentID,
-            purchaseDate: purchaseDate,
-            vendorName: vendorName,
-            outstandingBalance: outstandingBalance,
-            amountPaid: paidAmount,
-            productName: productName,
-            productImage: productImage,
-            purchaseAmount: productCost,
-            sellingAmount: productSellingPrice,
-            documentReferencePurchase: documentReference,
-          ));
+          asyncGetPurchases(purchase: purchase, notify: notify);
         }
       },
     );
+  }
+  Future<void> asyncGetPurchases({required var purchase,required Function notify})async {
+    Timestamp purchaseDate;
+
+    DocumentReference documentReference;
+    var outstandingBalance;
+    var paidAmount;
+    String productName = '';
+    var productSellingPrice;
+    var productCost;
+    String productImage = '';
+    String vendorName = '';
+
+
+    documentReference = purchase.reference;
+    purchaseDate = purchase.get('purchaseDate');
+    outstandingBalance = purchase.get('outstanding_balance');
+    paidAmount = purchase.get('paid_amount');
+    DocumentReference productReference = purchase.get('product');
+    await productReference.get().then(
+          (value) async {
+        productName = value.get('name');
+        productSellingPrice = value.get('price');
+        DocumentReference vendorDocumentReference =
+        value.get('reference');
+        await vendorDocumentReference.get().then(
+              (value) {
+            productCost = value.get('price');
+            productImage = value.get('image');
+          },
+        );
+        await vendorDocumentReference.parent.parent?.get().then((value) {
+          vendorName = value.get('name');
+        });
+      },
+    );
+    purchases.add(Purchase(
+      customerName: name,
+      customerID: documentID,
+      purchaseDate: purchaseDate,
+      vendorName: vendorName,
+      outstandingBalance: outstandingBalance,
+      amountPaid: paidAmount,
+      productName: productName,
+      productImage: productImage,
+      purchaseAmount: productCost,
+      sellingAmount: productSellingPrice,
+      documentReferencePurchase: documentReference,
+    ));
+    notify();
   }
 
   Future<void> getAllPurchasesDashboardView() async {

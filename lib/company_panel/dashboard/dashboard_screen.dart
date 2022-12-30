@@ -131,6 +131,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                 )),
                 Expanded(child: Container()),
                 OutlinedButton(
+
                     child: const Text('Sign Out'),
                     onPressed: () {
                       FirebaseAuth.instance.signOut().whenComplete(() => Navigator.pushAndRemoveUntil(

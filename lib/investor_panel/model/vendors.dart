@@ -4,27 +4,30 @@ import '../../investor_panel/model/expenses.dart';
 
 class Investors {
   Investors(
-      {required this.companyProfit,
-      required this.investorReference,
-      required this.openingBalance,
-      required this.name,
-      required this.currentBalance,
-      required this.outstandingBalance,
-      required this.amountPaid});
-
+      { this.batchOrder,
+        this.percentageInvestment,
+        this.companyProfit,
+        this.investorReference,
+        this.openingBalance,
+        this.name,
+        this.currentBalance,
+        this.outstandingBalance,
+       this.amountPaid});
+  bool? batchOrder;
+  int? percentageInvestment;
+num? outstandingBalance;
   List<Expenses> expensesList = [];
-  final String name;
-  num amountPaid;
-  num outstandingBalance;
-  num currentBalance;
-  num openingBalance;
-  num companyProfit;
-  DocumentReference investorReference;
+  final String? name;
+  num? amountPaid;
+  num? currentBalance;
+  num? openingBalance;
+  num? companyProfit;
+  DocumentReference? investorReference;
 
   getTransactions() async {
     expensesList = [];
     await investorReference
-        .collection('transactions')
+        ?.collection('transactions')
         .orderBy('date', descending: true)
         .get()
         .then((value) {
@@ -41,9 +44,9 @@ class Investors {
       {required int amount,
       required String description,
       required Timestamp date}) {
-    currentBalance += amount;
+    currentBalance = currentBalance!+ amount;
     investorReference
-        .collection('transactions')
+        ?.collection('transactions')
         .add({'date': date, 'amount': amount, 'description': description});
   }
 }

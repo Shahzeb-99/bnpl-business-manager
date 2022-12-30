@@ -150,12 +150,12 @@ class CustomerView extends ChangeNotifier {
   }
 
   void getPurchases(int index) async {
-    await allCustomers[index].getPurchases();
+    await allCustomers[index].getPurchases(notify: (){notifyListeners();},);
     notifyListeners();
   }
 
   void getAllPurchasesDashboardView(int index) async {
-    await thisMonthCustomers[index].getPurchases();
+    await thisMonthCustomers[index].getPurchases( notify: (){},);
     notifyListeners();
   }
 

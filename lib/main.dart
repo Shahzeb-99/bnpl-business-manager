@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
               textTheme: GoogleFonts.poppinsTextTheme(
                 Theme.of(context).textTheme,
               ).apply(
-                bodyColor: const Color(0xFFE56E14), //<-- SEE HERE
+                bodyColor: const Color(0xFFE56E14),
                 displayColor:  const Color(0xFFE56E14),
               ),
               scaffoldBackgroundColor: Colors.white,

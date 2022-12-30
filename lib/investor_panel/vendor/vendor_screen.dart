@@ -43,7 +43,7 @@ class _VendorProfileState extends State<VendorProfile> {
               Text(
                 Provider.of<VendorViewInvestor>(context, listen: false)
                     .allVendors[widget.index]
-                    .name,
+                    .name!,
                 style: const TextStyle(
                   fontSize: 25,
                   color: Color(0xFFE56E14),
@@ -210,7 +210,7 @@ class _VendorProfileState extends State<VendorProfile> {
                                                       context,
                                                       listen: false)
                                                   .allVendors[widget.index]
-                                                  .investorReference
+                                                  .investorReference!
                                                   .update({
                                                 'currentBalance': FieldValue
                                                     .increment(int.parse(
@@ -286,11 +286,11 @@ class _VendorProfileState extends State<VendorProfile> {
                           color: Provider.of<VendorViewInvestor>(context,
                                           listen: false)
                                       .allVendors[widget.index]
-                                      .currentBalance <
+                                      .currentBalance! <
                                   Provider.of<VendorViewInvestor>(context,
                                           listen: false)
                                       .allVendors[widget.index]
-                                      .openingBalance
+                                      .openingBalance!
                               ? Colors.redAccent
                               : Colors.greenAccent,
                           fontSize: 20)),
@@ -308,7 +308,7 @@ class _VendorProfileState extends State<VendorProfile> {
                           color: Provider.of<VendorViewInvestor>(context,
                                           listen: false)
                                       .allVendors[widget.index]
-                                      .outstandingBalance >
+                                      .outstandingBalance! >
                                   0
                               ? Colors.redAccent
                               : Colors.greenAccent,
@@ -324,7 +324,7 @@ class _VendorProfileState extends State<VendorProfile> {
                           color: Provider.of<VendorViewInvestor>(context,
                                           listen: false)
                                       .allVendors[widget.index]
-                                      .amountPaid >
+                                      .amountPaid! >
                                   0
                               ? Colors.greenAccent
                               : Colors.redAccent,
@@ -394,9 +394,9 @@ class _VendorProfileState extends State<VendorProfile> {
         await Provider.of<VendorViewInvestor>(context, listen: false)
             .allVendors[widget.index]
             .investorReference
-            .collection('products')
+            ?.collection('products')
             .get();
-    for (QueryDocumentSnapshot productDocument in productCollection.docs) {
+    for (QueryDocumentSnapshot productDocument in productCollection!.docs) {
       makeWidget(productDocument);
     }
   }

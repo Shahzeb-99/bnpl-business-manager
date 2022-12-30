@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, no_leading_underscores_for_local_identifiers
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_bnql/investor_panel/model/vendors.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,16 +9,13 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../../pageview_screen.dart';
 import '../add_new_customer/update_firebase_class.dart';
+import 'batch_order_widget.dart';
+import 'package:collection/collection.dart';
 
-enum Vendor { newVendor, existingVendor }
+enum Vendor { newVendor, existingVendor, batchOrder }
 
 class AddVendorScreen extends StatefulWidget {
-  const AddVendorScreen(
-      {Key? key,
-      required this.customerName,
-      required this.productName,
-      required this.productPurchasecost})
-      : super(key: key);
+  const AddVendorScreen({Key? key, required this.customerName, required this.productName, required this.productPurchasecost}) : super(key: key);
 
   final String customerName;
   final String productName;
@@ -28,24 +26,24 @@ class AddVendorScreen extends StatefulWidget {
 }
 
 class _AddVendorScreenState extends State<AddVendorScreen> {
+  List<Investors> selectedInvestors = [];
   List<String> investorList = [];
   List<num> investorBalance = [];
+  List<Investors> investorListBatchOrder = [];
   String selectedInvestor = 'Select';
   bool loading = false;
   var cashInHand = 0;
   final TextEditingController costController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController openingBalanceController =
-      TextEditingController();
-  final TextEditingController investorProfitController =
-      TextEditingController();
+  final TextEditingController openingBalanceController = TextEditingController();
+  final TextEditingController investorProfitController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   DateTime? firstPaymentDate;
   DateTime? orderDate;
   List<double> numberOfPayments = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   double? selectedPayment;
   bool modalHUD = false;
-
+  List<int> totalSelected = [];
   Vendor? _selectedVendorOption;
 
   @override
@@ -55,6 +53,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
       (value) {
         for (var investor in value.docs) {
           final String name = investor.get('name');
+          investorListBatchOrder.add(Investors(investorReference: investor.reference, currentBalance: investor.get('currentBalance')));
+          totalSelected.add(0);
           investorList.add(name);
           selectedInvestor = investorList.first;
         }
@@ -113,8 +113,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
         child: loading
             ? SingleChildScrollView(
                 reverse: true,
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -122,9 +121,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Theme(
-                        data: Theme.of(context).copyWith(
-                            unselectedWidgetColor: const Color(0xFFE56E14),
-                            disabledColor: Colors.blue),
+                        data: Theme.of(context).copyWith(unselectedWidgetColor: const Color(0xFFE56E14), disabledColor: Colors.blue),
                         child: ListTile(
                           title: const Text('New Investor'),
                           leading: Radio<Vendor?>(
@@ -144,8 +141,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                               children: [
                                 TextFormField(
                                   controller: nameController,
-                                  decoration:
-                                      kDecoration.inputBox('Investor Name', ''),
+                                  decoration: kDecoration.inputBox('Investor Name', ''),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'This field is required';
@@ -155,11 +151,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 ),
                                 TextFormField(
                                   controller: openingBalanceController,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  decoration: kDecoration.inputBox(
-                                      'Opening Balance', 'PKR'),
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                  decoration: kDecoration.inputBox('Opening Balance', 'PKR'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'This field is required';
@@ -171,9 +164,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                             )
                           : const Divider(),
                       Theme(
-                        data: Theme.of(context).copyWith(
-                            unselectedWidgetColor:const Color(0xFFE56E14),
-                            disabledColor: Colors.blue),
+                        data: Theme.of(context).copyWith(unselectedWidgetColor: const Color(0xFFE56E14), disabledColor: Colors.blue),
                         child: ListTile(
                           title: const Text('Existing Investor'),
                           leading: Radio<Vendor?>(
@@ -188,12 +179,134 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                           ),
                         ),
                       ),
+                      Theme(
+                        data: Theme.of(context).copyWith(unselectedWidgetColor: const Color(0xFFE56E14), disabledColor: Colors.blue),
+                        child: ListTile(
+                          title: const Text('Exissting Investor'),
+                          leading: Radio<Vendor?>(
+                            activeColor: const Color(0xFFE56E14),
+                            value: Vendor.batchOrder,
+                            groupValue: _selectedVendorOption,
+                            onChanged: (value) {
+                              setState(() {
+                                showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return SafeArea(
+                                        child: Container(
+                                            height: MediaQuery.of(context).size.height * 0.75,
+                                            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text('Total : ${widget.productPurchasecost}'),
+                                                      const Text(
+                                                        'Add Investors',
+                                                        style: TextStyle(fontSize: 20),
+                                                      ),
+                                                      Text('Selected : ${totalSelected.sum}'),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: investorList.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return BatchOrderInvestorWidget(
+                                                            investorsList: investorListBatchOrder,
+                                                            index: index,
+                                                            investorList: investorList,
+                                                            onChanged: (int value) {
+                                                              setState(() {
+                                                                totalSelected[index] = value;
+                                                              });
+                                                              setState(() {});
+                                                            },
+                                                          );
+                                                        }),
+                                                  ),
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        int index = 0;
+                                                        for (var hmm in totalSelected) {
+                                                          if (totalSelected[index] > investorListBatchOrder[index].currentBalance!) {
+                                                            showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext context) {
+                                                                  return AlertDialog(
+                                                                    backgroundColor: Colors.white,
+                                                                    title: const Text('Insufficient Funds'),
+                                                                    content: const Text('One or more investors have insufficient funds'),
+                                                                    actions: [
+                                                                      TextButton(
+                                                                          onPressed: () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child: const Text('Ok'))
+                                                                    ],
+                                                                  );
+                                                                });
+                                                            break;
+                                                          }
+                                                        }
+
+                                                        if (totalSelected.sum != widget.productPurchasecost) {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext context) {
+                                                                return AlertDialog(
+                                                                  backgroundColor: Colors.white,
+                                                                  title: const Text('Incomplete Form'),
+                                                                  content: const Text('Selected amount should match the purchase cost'),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                        onPressed: () {
+                                                                          Navigator.pop(context);
+                                                                        },
+                                                                        child: const Text('Ok'))
+                                                                  ],
+                                                                );
+                                                              });
+                                                        } else {
+                                                          int index = 0;
+
+                                                          for (var value in totalSelected) {
+                                                            if (value > 0) {
+                                                              var percentage = (totalSelected[index] / widget.productPurchasecost) * 100;
+                                                              selectedInvestors.add(
+                                                                Investors(investorReference: investorListBatchOrder[index].investorReference, percentageInvestment: percentage.toInt()),
+                                                              );
+                                                            }
+
+                                                            index++;
+                                                          }
+                                                        }
+                                                      },
+                                                      child: const Text('Add Investors'))
+                                                ],
+                                              ),
+                                            )),
+                                      );
+                                    });
+                              });
+                            },
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(4)),
+                          decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
@@ -201,22 +314,21 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                               value: selectedInvestor,
                               items: investorList.map((String items) {
                                 return DropdownMenuItem(
-                                  value: items,
-                                  child: Text(
-                                    items,
-                                    style: const TextStyle(
-                                        color:Color(0xFFE56E14),
-                                  ),
-                                  ));
+                                    value: items,
+                                    child: Text(
+                                      items,
+                                      style: const TextStyle(
+                                        color: Color(0xFFE56E14),
+                                      ),
+                                    ));
                               }).toList(),
-                              onChanged:
-                                  _selectedVendorOption == Vendor.existingVendor
-                                      ? (value) {
-                                          setState(() {
-                                            selectedInvestor = value!;
-                                          });
-                                        }
-                                      : null,
+                              onChanged: _selectedVendorOption == Vendor.existingVendor
+                                  ? (value) {
+                                      setState(() {
+                                        selectedInvestor = value!;
+                                      });
+                                    }
+                                  : null,
                               hint: const Text('Select Investor'),
                             ),
                           ),
@@ -236,26 +348,20 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                     children: [
                                       Expanded(
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade200,
-                                              borderRadius:
-                                                  BorderRadius.circular(4)),
+                                          decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
                                           height: 60,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 20, horizontal: 10),
+                                          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                                           child: firstPaymentDate == null
                                               ? const Text(
                                                   'First Payment Date',
                                                   textAlign: TextAlign.start,
                                                 )
-                                              : Text(
-                                                  '${firstPaymentDate?.day}-${firstPaymentDate?.month}-${firstPaymentDate?.year}'),
+                                              : Text('${firstPaymentDate?.day}-${firstPaymentDate?.month}-${firstPaymentDate?.year}'),
                                         ),
                                       ),
                                       IconButton(
                                           onPressed: () async {
-                                            firstPaymentDate =
-                                                await showDatePicker(
+                                            firstPaymentDate = await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime(2000),
@@ -279,20 +385,15 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                     children: [
                                       Expanded(
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade200,
-                                              borderRadius:
-                                                  BorderRadius.circular(4)),
+                                          decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
                                           height: 60,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 20, horizontal: 10),
+                                          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                                           child: orderDate == null
                                               ? const Text(
                                                   'Order Date',
                                                   textAlign: TextAlign.start,
                                                 )
-                                              : Text(
-                                                  '${orderDate?.day}-${orderDate?.month}-${orderDate?.year}'),
+                                              : Text('${orderDate?.day}-${orderDate?.month}-${orderDate?.year}'),
                                         ),
                                       ),
                                       IconButton(
@@ -317,24 +418,20 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(4)),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
+                                    decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 5),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<double>(
                                         dropdownColor: Colors.grey.shade200,
                                         value: selectedPayment,
-                                        items: numberOfPayments
-                                            .map((double items) {
+                                        items: numberOfPayments.map((double items) {
                                           return DropdownMenuItem(
                                             value: items,
                                             child: Text(
                                               items.toInt().toString(),
                                               style: const TextStyle(
-                                                  color:
-                                                  Color(0xFFE56E14),),
+                                                color: Color(0xFFE56E14),
+                                              ),
                                             ),
                                           );
                                         }).toList(),
@@ -346,7 +443,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                         hint: const Text(
                                           'Number of Payments',
                                           style: TextStyle(
-                                              color:   Color(0xFFE56E14),),
+                                            color: Color(0xFFE56E14),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -354,17 +452,12 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 ),
                                 TextFormField(
                                   controller: investorProfitController,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  decoration: kDecoration.inputBox(
-                                      'Investor Profit Percentage', '%'),
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                  decoration: kDecoration.inputBox('Investor Profit Percentage', '%'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'This field is required';
-                                    } else if (int.parse(
-                                            investorProfitController.text) >
-                                        100) {
+                                    } else if (int.parse(investorProfitController.text) > 100) {
                                       return 'Percentage should not be greater than 100';
                                     }
                                     return null;
@@ -372,11 +465,8 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                 ),
                                 TextFormField(
                                   controller: costController,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  decoration: kDecoration.inputBox(
-                                      'Purchase Amount', 'PKR'),
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                  decoration: kDecoration.inputBox('Purchase Amount', 'PKR'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'This field is required';
@@ -392,94 +482,66 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             bool hasEnoughBalance = false;
-                            await FirebaseFirestore.instance
-                                .collection('investors')
-                                .where('name', isEqualTo: selectedInvestor)
-                                .get()
-                                .then((value) {
-                              num currentBalance =
-                                  value.docs[0].get('currentBalance');
-                              print(value.docs[0].get('currentBalance'));
-                              int companyProfit = ((widget.productPurchasecost -
-                                          int.parse(costController.text)) -
-                                      (widget.productPurchasecost -
-                                              int.parse(costController.text)) *
-                                          (double.parse(investorProfitController
-                                                  .text) /
-                                              100))
+                            await FirebaseFirestore.instance.collection('investors').where('name', isEqualTo: selectedInvestor).get().then((value) {
+                              num currentBalance = value.docs[0].get('currentBalance');
+
+                              int companyProfit = ((widget.productPurchasecost - int.parse(costController.text)) -
+                                      (widget.productPurchasecost - int.parse(costController.text)) * (double.parse(investorProfitController.text) / 100))
                                   .toInt();
-                              print(companyProfit);
-                              if (int.parse(costController.text) +
-                                      (companyProfit) <=
-                                  currentBalance) {
-                                print('true');
+
+                              if (int.parse(costController.text) + (companyProfit) <= currentBalance) {
                                 hasEnoughBalance = true;
                               }
                             });
                             setState(() {
                               modalHUD = true;
                             });
-                            print(hasEnoughBalance);
+
                             if (formKey.currentState!.validate()) {
                               if (hasEnoughBalance == true) {
-                                if (selectedPayment != null ||
-                                    firstPaymentDate != null ||
-                                    orderDate != null) {
-                                  bool status = _selectedVendorOption ==
-                                          Vendor.existingVendor
+                                if (selectedPayment != null || firstPaymentDate != null || orderDate != null) {
+                                  bool status = _selectedVendorOption == Vendor.existingVendor
                                       ? await UpdateFirestore(
-                                              investorProfitPercentage:
-                                                  double.parse(
-                                                      investorProfitController
-                                                          .text),
-                                              numberOfPayments:
-                                                  selectedPayment!,
+                                              investorProfitPercentage: double.parse(investorProfitController.text),
+                                              numberOfPayments: selectedPayment!,
                                               orderDate: orderDate!,
-                                              productSalePrice:
-                                                  widget.productPurchasecost,
-                                              vendorName:
-                                                  nameController.text.isNotEmpty
-                                                      ? nameController.text
-                                                      : 'No Name',
+                                              productSalePrice: widget.productPurchasecost,
+                                              vendorName: nameController.text.isNotEmpty ? nameController.text : 'No Name',
                                               customerName: widget.customerName,
-                                              productCost: int.parse(
-                                                  costController.text),
+                                              productCost: int.parse(costController.text),
                                               productName: widget.productName,
-                                              firstPaymnetDate:
-                                                  firstPaymentDate!,
-                                              openingBalance:
-                                                  _selectedVendorOption ==
-                                                          Vendor.newVendor
-                                                      ? int.parse(
-                                                          openingBalanceController
-                                                              .text)
-                                                      : 0,
+                                              firstPaymnetDate: firstPaymentDate!,
+                                              openingBalance: _selectedVendorOption == Vendor.newVendor ? int.parse(openingBalanceController.text) : 0,
                                               investorName: selectedInvestor)
                                           .addProduct()
                                       : _selectedVendorOption == Vendor.newVendor
-                                          ? await UpdateFirestore(investorProfitPercentage: double.parse(investorProfitController.text), numberOfPayments: selectedPayment!, orderDate: orderDate!, productSalePrice: widget.productPurchasecost, vendorName: nameController.text, customerName: widget.customerName, productCost: int.parse(costController.text), productName: widget.productName, firstPaymnetDate: firstPaymentDate!, openingBalance: int.parse(openingBalanceController.text), investorName: nameController.text).addProductToNewVendor()
+                                          ? await UpdateFirestore(
+                                                  investorProfitPercentage: double.parse(investorProfitController.text),
+                                                  numberOfPayments: selectedPayment!,
+                                                  orderDate: orderDate!,
+                                                  productSalePrice: widget.productPurchasecost,
+                                                  vendorName: nameController.text,
+                                                  customerName: widget.customerName,
+                                                  productCost: int.parse(costController.text),
+                                                  productName: widget.productName,
+                                                  firstPaymnetDate: firstPaymentDate!,
+                                                  openingBalance: int.parse(openingBalanceController.text),
+                                                  investorName: nameController.text)
+                                              .addProductToNewVendor()
                                           : false;
 
                                   if (!mounted) return;
 
                                   if (status) {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MainScreen()),
-                                        (route) => false);
+                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MainScreen()), (route) => false);
                                   } else {
-                                    _showMyDialog(
-                                        'All the field are required to continue.');
+                                    _showMyDialog('All the field are required to continue.');
                                   }
                                 } else {
-                                  _showMyDialog(
-                                      'All the field are required to continue.');
+                                  _showMyDialog('All the field are required to continue.');
                                 }
                               } else {
-                                _showMyDialog(
-                                    'Investor does not have enough cash');
+                                _showMyDialog('Investor does not have enough cash');
                               }
                             }
                             setState(() {

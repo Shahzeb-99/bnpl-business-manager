@@ -100,7 +100,7 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
+              Flexible(
                 flex: 2,
                 child: Text(
                     '${Provider
@@ -123,7 +123,7 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                         .year
                         .toString()}'),
               ),
-              Expanded(
+              Flexible(
                 flex: 4,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -148,8 +148,8 @@ class _PaymentScheduleWidgetState extends State<PaymentScheduleWidget> {
                   .purchases[widget.productIndex]
                   .paymentSchedule[widget.paymentIndex]
                   .isPaid
-                  ? const Expanded(flex: 1, child: Text('Paid'))
-                  : const Expanded(flex: 1, child: Text('Not Paid')),
+                  ? const Flexible(flex: 1, child: Text('Paid'))
+                  : const Flexible(flex: 1, child: Text('Not Paid')),
             ],
           ),
         ),

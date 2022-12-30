@@ -1,17 +1,15 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/investor_panel/model/purchases.dart';
+import 'package:ecommerce_bnql/investor_panel/model/vendors.dart';
 
 import '../../investor_panel/dashboard/dashboard_screen.dart';
 
 class Customers {
-  Customers(
-      {required this.name,
-      required this.image,
-      required this.outstandingBalance,
-      required this.paidAmount,
-      required this.documentID});
+  Customers({required this.name, required this.image, required this.outstandingBalance, required this.paidAmount, required this.documentID});
 
   final String name;
   final String image;
@@ -23,12 +21,7 @@ class Customers {
   deleteCustomer() async {
     int cost = 0;
     final cloud = FirebaseFirestore.instance;
-    await cloud
-        .collection('investorCustomers')
-        .doc(documentID)
-        .collection('purchases')
-        .get()
-        .then(
+    await cloud.collection('investorCustomers').doc(documentID).collection('purchases').get().then(
       (value) async {
         if (value.docs.isNotEmpty) {
           for (var product in value.docs) {
@@ -74,26 +67,28 @@ class Customers {
     String vendorName = '';
     num companyProfit;
 
-    await cloud
-        .collection('investorCustomers')
-        .doc(documentID)
-        .collection('purchases')
-        .get()
-        .then(
+    await cloud.collection('investorCustomers').doc(documentID).collection('purchases').get().then(
       (value) async {
         for (var purchase in value.docs) {
+          List<Investors> investors = [];
           documentReference = purchase.reference;
           purchaseDate = purchase.get('purchaseDate');
           companyProfit = purchase.get('companyProfit');
           outstandingBalance = purchase.get('outstanding_balance');
           paidAmount = purchase.get('paid_amount');
+
+          purchase.reference.collection('batchOrder').get().then((value) {
+            for (var investor in value.docs) {
+              investors.add(Investors(percentageInvestment: investor.get('percentage'), investorReference: investor.get('investor')));
+            }
+          });
+
           DocumentReference productReference = purchase.get('product');
           await productReference.get().then(
             (value) async {
               productName = value.get('name');
               productSellingPrice = value.get('price');
-              DocumentReference vendorDocumentReference =
-                  value.get('reference');
+              DocumentReference vendorDocumentReference = value.get('reference');
               await vendorDocumentReference.get().then(
                 (value) {
                   productCost = value.get('price');
@@ -107,6 +102,8 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            investors: investors,
+            isBatchOrder: purchase.get('batchOrder'),
             customerName: name,
             companyProfit: companyProfit,
             customerID: documentID,
@@ -139,12 +136,7 @@ class Customers {
     String productImage = '';
     String vendorName = '';
     num companyProfit;
-    await cloud
-        .collection('investorCustomers')
-        .doc(documentID)
-        .collection('purchases')
-        .get()
-        .then(
+    await cloud.collection('investorCustomers').doc(documentID).collection('purchases').get().then(
       (value) async {
         for (var purchase in value.docs) {
           documentReference = purchase.reference;
@@ -157,8 +149,7 @@ class Customers {
             (value) async {
               productName = value.get('name');
               productSellingPrice = value.get('price');
-              DocumentReference vendorDocumentReference =
-                  value.get('reference');
+              DocumentReference vendorDocumentReference = value.get('reference');
               await vendorDocumentReference.get().then(
                 (value) {
                   productCost = value.get('price');
@@ -172,6 +163,7 @@ class Customers {
           );
 
           purchases.add(Purchase(
+            isBatchOrder: purchase.get('batchOrder'),
             customerName: name,
             investorReference: purchase.get('investorReference'),
             companyProfit: companyProfit,
@@ -205,23 +197,12 @@ class Customers {
     String productImage = '';
     String vendorName = '';
 
-    await cloud
-        .collection('investorCustomers')
-        .doc(documentID)
-        .collection('purchases')
-        .get()
-        .then(
+    await cloud.collection('investorCustomers').doc(documentID).collection('purchases').get().then(
       (value) async {
         for (var purchase in value.docs) {
           outstandingBalance = 0;
 
-          await purchase.reference
-              .collection('payment_schedule')
-              .where('date',
-                  isLessThanOrEqualTo: DateTime(
-                      DateTime.now().year, DateTime.now().month + 1, 0,23,59))
-              .get()
-              .then((value) {
+          await purchase.reference.collection('payment_schedule').where('date', isLessThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59)).get().then((value) {
             for (var payment in value.docs) {
               if (!payment.get('isPaid')) {
                 outstandingBalance += payment.get('remainingAmount');
@@ -239,23 +220,21 @@ class Customers {
               (value) async {
                 productName = value.get('name');
                 productSellingPrice = value.get('price');
-                DocumentReference vendorDocumentReference =
-                    value.get('reference');
+                DocumentReference vendorDocumentReference = value.get('reference');
                 await vendorDocumentReference.get().then(
                   (value) {
                     productCost = value.get('price');
                     productImage = value.get('image');
                   },
                 );
-                await vendorDocumentReference.parent.parent
-                    ?.get()
-                    .then((value) {
+                await vendorDocumentReference.parent.parent?.get().then((value) {
                   vendorName = value.get('name');
                 });
               },
             );
 
             purchases.add(Purchase(
+              isBatchOrder: purchase.get('batchOrder'),
               customerName: name,
               investorReference: purchase.get('investorReference'),
               companyProfit: companyProfit,
@@ -276,8 +255,7 @@ class Customers {
     );
   }
 
-  Future<void> getThisMonthPurchasesRecovery(
-      {required DashboardFilterOptions option}) async {
+  Future<void> getThisMonthPurchasesRecovery({required DashboardFilterOptions option}) async {
     purchases = [];
     num companyProfit;
     Timestamp purchaseDate;
@@ -291,12 +269,7 @@ class Customers {
     String productImage = '';
     String vendorName = '';
 
-    await cloud
-        .collection('investorCustomers')
-        .doc(documentID)
-        .collection('purchases')
-        .get()
-        .then(
+    await cloud.collection('investorCustomers').doc(documentID).collection('purchases').get().then(
       (value) async {
         for (var purchase in value.docs) {
           outstandingBalance = 0;
@@ -304,11 +277,7 @@ class Customers {
 
           await purchase.reference
               .collection('transaction_history')
-              .where('date',
-                  isLessThanOrEqualTo: option != DashboardFilterOptions.all
-                      ? DateTime(
-                          DateTime.now().year, DateTime.now().month + 1, 0,23,59)
-                      : DateTime(2100))
+              .where('date', isLessThanOrEqualTo: option != DashboardFilterOptions.all ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59) : DateTime(2100))
               .get()
               .then((value) {
             for (var transaction in value.docs) {
@@ -326,23 +295,21 @@ class Customers {
               (value) async {
                 productName = value.get('name');
                 productSellingPrice = value.get('price');
-                DocumentReference vendorDocumentReference =
-                    value.get('reference');
+                DocumentReference vendorDocumentReference = value.get('reference');
                 await vendorDocumentReference.get().then(
                   (value) {
                     productCost = value.get('price');
                     productImage = value.get('image');
                   },
                 );
-                await vendorDocumentReference.parent.parent
-                    ?.get()
-                    .then((value) {
+                await vendorDocumentReference.parent.parent?.get().then((value) {
                   vendorName = value.get('name');
                 });
               },
             );
 
             purchases.add(Purchase(
+              isBatchOrder: purchase.get('batchOrder'),
               customerName: name,
               investorReference: purchase.get('investorReference'),
               companyProfit: companyProfit,
