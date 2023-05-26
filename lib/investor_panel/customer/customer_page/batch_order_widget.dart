@@ -58,10 +58,11 @@ class _BatchOrderInvestorWidgetState extends State<BatchOrderInvestorWidget> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: kDecoration.inputBox('Investment Amount', 'PKR'),
-                onChanged: (value) {setState(() {
-  widget.onChanged(int.parse(value));
-});
-},
+                onChanged: (value) {
+                  setState(() {
+                    widget.onChanged(int.parse(value));
+                  });
+                },
               ),
             )
           ],
@@ -74,7 +75,7 @@ class _BatchOrderInvestorWidgetState extends State<BatchOrderInvestorWidget> {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? Text(suffix) : null,
+      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
       filled: true,
       fillColor: Colors.grey.shade200,
       hintStyle: const TextStyle(

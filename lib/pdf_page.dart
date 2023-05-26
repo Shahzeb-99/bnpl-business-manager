@@ -56,21 +56,21 @@ class _MyAppssState extends State<MyAppss> {
       drawer: Drawer(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 36),
+            const SizedBox(height: 36),
             ListTile(
-              title: Text('Load from Assets'),
+              title: const Text('Load from Assets'),
               onTap: () {
                 changePDF(1);
               },
             ),
             ListTile(
-              title: Text('Load from URL'),
+              title: const Text('Load from URL'),
               onTap: () {
                 changePDF(2);
               },
             ),
             ListTile(
-              title: Text('Restore default'),
+              title: const Text('Restore default'),
               onTap: () {
                 changePDF(3);
               },
@@ -83,7 +83,7 @@ class _MyAppssState extends State<MyAppss> {
       ),
       body: Center(
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : PDFViewer(
           document: document,
           zoomSteps: 1,

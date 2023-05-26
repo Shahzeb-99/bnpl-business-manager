@@ -6,12 +6,14 @@ import '../dashboard/dashboard_screen.dart';
 
 class Customers {
   Customers(
-      {required this.name,
+      {required this.index,
+        required this.name,
       required this.image,
       required this.outstandingBalance,
       required this.paidAmount,
       required this.documentID});
 
+  final int index;
   final String name;
   final String image;
   var outstandingBalance;
@@ -62,6 +64,7 @@ class Customers {
   Future<void> getPurchases({required Function notify}) async {
     purchases = [];
     final cloud = FirebaseFirestore.instance;
+    cloud.settings = const Settings(persistenceEnabled: true);
 
     await cloud
         .collection('customers')

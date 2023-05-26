@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:ecommerce_bnql/company_panel/customer/payment_schedule_class.dart';
+import 'package:ecommerce_bnql/company_panel/customer/transaction_history_class.dart';
 import 'package:ecommerce_bnql/company_panel/model/purchases.dart';
 import 'package:flutter/services.dart';
 import 'package:open_filex/open_filex.dart';
@@ -101,6 +102,96 @@ class PdfInvoiceService {
     final pdf = pw.Document();
 
     final image =
+    (await rootBundle.load("assets/dart.png")).buffer.asUint8List();
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Column(
+            children: [
+              pw.Image(pw.MemoryImage(image),
+                  width: 200, height: 101, fit: pw.BoxFit.fill),
+              pw.SizedBox(height: 50),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        "Customer Name : ${soldProduct.customerName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Vendor Name : ${soldProduct.vendorName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Product Name : ${soldProduct.productName}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.Text(
+                        "Purchase Date : ${DateFormat.yMMMMd().format(soldProduct.purchaseDate.toDate())}",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 50),
+              pw.Column(children: [
+                pw.Row(
+                  children: [
+                    pw.Expanded(
+                        child: pw.Text(
+                          "Date",
+                          textAlign: pw.TextAlign.left,
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        )),
+                    pw.Expanded(
+                        child: pw.Text(
+                          "Amount ",
+                          textAlign: pw.TextAlign.right,
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        )),
+                    pw.Expanded(
+                        child: pw.Text("Remaining Amount",
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                            textAlign: pw.TextAlign.right)),
+                    pw.Expanded(
+                        child: pw.Text("Payment Status",
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                            textAlign: pw.TextAlign.right)),
+                  ],
+                ),
+                pw.Divider()
+              ]),
+              paymentScheduleColumn(paymentSchedule, soldProduct),
+              pw.Row(children: [
+                pw.Expanded(child: pw.Container()),
+                pw.Expanded(child: pw.Container()),
+                pw.Expanded(
+                    child: pw.Column(children: [
+                      pw.SizedBox(width: 200, child: pw.Divider()),
+                      pw.Text(
+                        'Company Signature',
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      )
+                    ])),
+              ]),
+            ],
+          );
+        },
+      ),
+    );
+    return pdf.save();
+  }
+
+  Future<Uint8List> createTransactionList(
+      List<TransactionHistory> transactionHistory, Purchase soldProduct) async {
+    final pdf = pw.Document();
+
+    final image =
         (await rootBundle.load("assets/dart.png")).buffer.asUint8List();
     pdf.addPage(
       pw.Page(
@@ -149,23 +240,23 @@ class PdfInvoiceService {
                     )),
                     pw.Expanded(
                         child: pw.Text(
-                      "Amount ",
+                      "",
                       textAlign: pw.TextAlign.right,
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                     )),
                     pw.Expanded(
-                        child: pw.Text("Remaining Amount",
+                        child: pw.Text("",
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.right)),
                     pw.Expanded(
-                        child: pw.Text("Payment Status",
+                        child: pw.Text("Amount",
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                             textAlign: pw.TextAlign.right)),
                   ],
                 ),
                 pw.Divider()
               ]),
-              paymentScheduleColumn(paymentSchedule, soldProduct),
+              transactionHistoryColumn(transactionHistory, soldProduct),
               pw.Row(children: [
                 pw.Expanded(child: pw.Container()),
                 pw.Expanded(child: pw.Container()),
@@ -358,7 +449,6 @@ class PdfInvoiceService {
     );
     return pdf.save();
   }
-
   pw.Expanded paymentScheduleColumn(
       List<PaymentSchedule> elements, Purchase soldProduct) {
     return pw.Expanded(
@@ -386,6 +476,78 @@ class PdfInvoiceService {
                       child: pw.Text(element.isPaid ? 'Paid' : 'Not Paid',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.right)),
+                ],
+              ),
+              pw.Divider(),
+            ]),
+          pw.Column(
+            children: [
+              pw.Row(
+                children: [
+                  pw.Expanded(child: pw.Text("", textAlign: pw.TextAlign.left)),
+                  pw.Expanded(
+                      child: pw.Text("", textAlign: pw.TextAlign.right)),
+                  pw.Expanded(
+                      child: pw.Text("Total Outstanding",
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          textAlign: pw.TextAlign.right)),
+                  pw.Expanded(
+                      child: pw.Text(
+                          '${soldProduct.outstandingBalance.toString()} PKR',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          textAlign: pw.TextAlign.right)),
+                ],
+              ),
+              pw.Divider()
+            ],
+          ),
+          pw.Column(
+            children: [
+              pw.Row(
+                children: [
+                  pw.Expanded(child: pw.Text("", textAlign: pw.TextAlign.left)),
+                  pw.Expanded(
+                      child: pw.Text("", textAlign: pw.TextAlign.right)),
+                  pw.Expanded(
+                      child: pw.Text("Total Amount Paid",
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          textAlign: pw.TextAlign.right)),
+                  pw.Expanded(
+                      child: pw.Text('${soldProduct.amountPaid.toString()} PKR',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          textAlign: pw.TextAlign.right)),
+                ],
+              ),
+              pw.Divider()
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+  pw.Expanded transactionHistoryColumn(
+      List<TransactionHistory> elements, Purchase soldProduct) {
+    return pw.Expanded(
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+        children: [
+          for (var element in elements)
+            pw.Column(children: [
+              pw.Row(
+                children: [
+                  pw.Expanded(
+                      child: pw.Text(
+                          DateFormat.yMMMMd().format(element.date.toDate()),
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          textAlign: pw.TextAlign.left)),pw.Expanded(
+                      child: pw.Text("", textAlign: pw.TextAlign.right)),pw.Expanded(
+                      child: pw.Text("", textAlign: pw.TextAlign.right)),
+                  pw.Expanded(
+                      child: pw.Text(element.amount.toString(),
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          textAlign: pw.TextAlign.right)),
+
+
                 ],
               ),
               pw.Divider(),

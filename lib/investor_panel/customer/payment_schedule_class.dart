@@ -21,11 +21,12 @@ class PaymentSchedule {
       required this.isPaid,
       required this.customerdocID});
 
-  Future<void> updateFirestore() async {
+  void updateFirestore() async {
     purchaseReference
         .collection('payment_schedule')
         .doc(paymentReference)
         .update({
+      'amount':amount,
       'date': date,
       'isPaid': isPaid,
       'remainingAmount': remainingAmount
@@ -84,7 +85,7 @@ class PaymentSchedule {
 
   Future<void> togglePayment() async {
     isPaid = !isPaid;
-    await updateFirestore();
+      updateFirestore();
     await updateBalance();
   }
 

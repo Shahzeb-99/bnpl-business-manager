@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../investor_panel/customer/TransactionWidget.dart';
 import '../../investor_panel/view_model/viewmodel_customers.dart';
+import '../invoice_investor.dart';
 
 
 
@@ -32,7 +33,27 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
   Widget build(BuildContext context) {
     return   Scaffold(
       appBar: AppBar(
-        title:   const Text('Transaction History',style: TextStyle(color: Color(0xFFE56E14),),),
+        title:   Row(
+          children: [
+            const Text('Transaction History',style: TextStyle(color: Color(0xFFE56E14),),),
+            Expanded(child: Container()),
+            IconButton(
+                color: const Color(0xFFE56E14),
+                onPressed: () async {
+                  final service = PdfInvoiceServiceInvestor();
+                  final date = await service.createTransactionList(
+                    Provider.of<CustomerViewInvestor>(context, listen: false)
+                        .allCustomers[widget.index]
+                        .purchases[widget.productIndex]
+                        .transactionHistory,
+                    Provider.of<CustomerViewInvestor>(context, listen: false).allCustomers[widget.index].purchases[widget.productIndex],
+                  );
+
+                  service.savePdfFile('TransactionHistory', date);
+                },
+                icon: const Icon(Icons.receipt)),
+          ],
+        ),
       ),
       body: ListView.builder(
         physics: const ScrollPhysics(parent: BouncingScrollPhysics()),

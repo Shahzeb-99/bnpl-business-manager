@@ -198,7 +198,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                       Theme(
                         data: Theme.of(context).copyWith(unselectedWidgetColor: const Color(0xFFE56E14), disabledColor: Colors.blue),
                         child: ListTile(
-                          title: const Text('Exissting Investor'),
+                          title: const Text('Batch Order'),
                           leading: Radio<Vendor?>(
                             activeColor: const Color(0xFFE56E14),
                             value: Vendor.batchOrder,
@@ -303,7 +303,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                                               selectedInvestors.add(
                                                                 Investors(investorReference: investorListBatchOrder[index].investorReference, percentageInvestment: percentage.toInt()),
                                                               );
-                                                              print('1');
+
                                                             }
 
                                                             index++;
@@ -652,7 +652,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
 class kDecoration {
   static InputDecoration inputBox(String hintText, String suffix) {
     return InputDecoration(
-      suffix: suffix.isNotEmpty ? const Text('PKR') : null,
+      suffix: suffix.isNotEmpty ?   Text(suffix) : null,
       filled: true,
       fillColor: Colors.grey.shade200,
       hintStyle: const TextStyle(color:  Color(0xFFE56E14),),

@@ -154,187 +154,287 @@ class _PaymentScheduleScreenMonthlyOutstandingState extends State<PaymentSchedul
                                             color: const Color(0xFFE56E14),
                                             onPressed: () async {
                                               if (formKey.currentState!.validate()) {
-                                                int length = Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule.length;
+                                                int length = Provider.of<CustomerView>(context, listen: false)
+                                                    .thisMonthCustomers[widget.index]
+                                                    .purchases[widget.productIndex]
+                                                    .paymentSchedule
+                                                    .length;
                                                 int index = 0;
                                                 int newPayment = int.parse(moneyController.text);
                                                 int transactionAmount = newPayment;
 
-                                                for (PaymentSchedule payment
-                                                    in Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule) {
+                                                for (PaymentSchedule payment in Provider.of<CustomerView>(context, listen: false)
+                                                    .thisMonthCustomers[widget.index]
+                                                    .purchases[widget.productIndex]
+                                                    .paymentSchedule) {
                                                   if (payment.isPaid) {
                                                     index++;
                                                   }
                                                 }
                                                 if (index == length - 1) {
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].remainingAmount -=
-                                                      newPayment;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .remainingAmount -= newPayment;
 
                                                   Provider.of<CustomerView>(context, listen: false)
-                                                      .thisMonthCustomer[widget.index]
+                                                      .thisMonthCustomers[widget.index]
                                                       .purchases[widget.productIndex]
                                                       .paymentSchedule[index]
                                                       .addTransaction(amount: newPayment, dateTime: dateTime);
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index].updateFirestore();
+
                                                   if (Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
-                                                          .purchases[widget.productIndex]
-                                                          .paymentSchedule[index]
-                                                          .remainingAmount ==
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .remainingAmount ==
                                                       0) {
-                                                    Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].isPaid = true;
+                                                    Provider.of<CustomerView>(context, listen: false)
+                                                        .thisMonthCustomers[widget.index]
+                                                        .purchases[widget.productIndex]
+                                                        .paymentSchedule[index]
+                                                        .isPaid = true;
                                                   }
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].updateFirestore();
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .updateFirestore();
                                                 } else if (newPayment <
                                                     Provider.of<CustomerView>(context, listen: false)
-                                                        .thisMonthCustomer[widget.index]
+                                                        .thisMonthCustomers[widget.index]
                                                         .purchases[widget.productIndex]
                                                         .paymentSchedule[index]
                                                         .remainingAmount) {
                                                   int outstandingAmount = 0;
 
                                                   outstandingAmount = Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
-                                                          .purchases[widget.productIndex]
-                                                          .paymentSchedule[index]
-                                                          .remainingAmount -
-                                                      newPayment;
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].remainingAmount =
-                                                      0;
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].amount =
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .remainingAmount -
                                                       newPayment;
                                                   Provider.of<CustomerView>(context, listen: false)
-                                                      .thisMonthCustomer[widget.index]
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .remainingAmount = 0;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .amount = newPayment;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
                                                       .purchases[widget.productIndex]
                                                       .paymentSchedule[index]
                                                       .addTransaction(amount: newPayment, dateTime: dateTime);
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].isPaid = true;
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].updateFirestore();
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .isPaid = true;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .updateFirestore();
                                                   index++;
                                                   length--;
                                                   int roundedPayment = outstandingAmount ~/ length;
 
                                                   for (index;
-                                                      index < Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule.length;
-                                                      index++) {
-                                                    if (index !=
-                                                        Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule.length - 1) {
-                                                      Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].amount +=
-                                                          roundedPayment;
+                                                  index <
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
+                                                          .purchases[widget.productIndex]
+                                                          .paymentSchedule
+                                                          .length;
+                                                  index++) {
+                                                    if (index !=
+                                                        Provider.of<CustomerView>(context, listen: false)
+                                                            .thisMonthCustomers[widget.index]
+                                                            .purchases[widget.productIndex]
+                                                            .paymentSchedule
+                                                            .length -
+                                                            1) {
+                                                      Provider.of<CustomerView>(context, listen: false)
+                                                          .thisMonthCustomers[widget.index]
+                                                          .purchases[widget.productIndex]
+                                                          .paymentSchedule[index]
+                                                          .amount += roundedPayment;
+                                                      Provider.of<CustomerView>(context, listen: false)
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .remainingAmount += roundedPayment;
                                                       outstandingAmount -= roundedPayment;
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .updateFirestore();
                                                     } else {
-                                                      Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].amount +=
-                                                          outstandingAmount;
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
+                                                          .purchases[widget.productIndex]
+                                                          .paymentSchedule[index]
+                                                          .amount += outstandingAmount;
+                                                      Provider.of<CustomerView>(context, listen: false)
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .remainingAmount += outstandingAmount;
                                                       outstandingAmount = 0;
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .updateFirestore();
                                                     }
                                                   }
                                                 } else if (newPayment >
-                                                        Provider.of<CustomerView>(context, listen: false)
-                                                            .thisMonthCustomer[widget.index]
-                                                            .purchases[widget.productIndex]
-                                                            .paymentSchedule[index]
-                                                            .remainingAmount &&
-                                                    Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].outstandingBalance - newPayment >=
+                                                    Provider.of<CustomerView>(context, listen: false)
+                                                        .thisMonthCustomers[widget.index]
+                                                        .purchases[widget.productIndex]
+                                                        .paymentSchedule[index]
+                                                        .remainingAmount &&
+                                                    Provider.of<CustomerView>(context, listen: false)
+                                                        .thisMonthCustomers[widget.index]
+                                                        .purchases[widget.productIndex]
+                                                        .outstandingBalance -
+                                                        newPayment >=
                                                         500) {
                                                   int outstandingAmount = newPayment -
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .remainingAmount;
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].addTransaction(
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .addTransaction(
                                                       amount: Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .remainingAmount,
                                                       dateTime: dateTime);
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].remainingAmount =
-                                                      0;
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].isPaid = true;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .remainingAmount = 0;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .isPaid = true;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index].updateFirestore();
+
                                                   index++;
                                                   length--;
                                                   int roundedPayment = outstandingAmount ~/ length;
 
                                                   for (index;
-                                                      index < Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule.length;
-                                                      index++) {
-                                                    if (index !=
-                                                        Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule.length - 1) {
+                                                  index <
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
+                                                          .purchases[widget.productIndex]
+                                                          .paymentSchedule
+                                                          .length;
+                                                  index++) {
+                                                    if (index !=
+                                                        Provider.of<CustomerView>(context, listen: false)
+                                                            .thisMonthCustomers[widget.index]
+                                                            .purchases[widget.productIndex]
+                                                            .paymentSchedule
+                                                            .length -
+                                                            1) {
+                                                      Provider.of<CustomerView>(context, listen: false)
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .remainingAmount -= roundedPayment;
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
-                                                          .addTransaction(amount: roundedPayment, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                          .addTransaction(
+                                                          amount: roundedPayment,
+                                                          dateTime:
+                                                          DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
                                                       outstandingAmount -= roundedPayment;
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .updateFirestore();
                                                     } else {
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .remainingAmount -= outstandingAmount;
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
-                                                          .addTransaction(amount: outstandingAmount, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                          .addTransaction(
+                                                          amount: outstandingAmount,
+                                                          dateTime:
+                                                          DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
                                                       outstandingAmount = 0;
                                                       Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .updateFirestore();
                                                     }
                                                   }
                                                 } else if (newPayment >
-                                                        Provider.of<CustomerView>(context, listen: false)
-                                                            .thisMonthCustomer[widget.index]
-                                                            .purchases[widget.productIndex]
-                                                            .paymentSchedule[index]
-                                                            .remainingAmount &&
-                                                    Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].outstandingBalance - newPayment <=
+                                                    Provider.of<CustomerView>(context, listen: false)
+                                                        .thisMonthCustomers[widget.index]
+                                                        .purchases[widget.productIndex]
+                                                        .paymentSchedule[index]
+                                                        .remainingAmount &&
+                                                    Provider.of<CustomerView>(context, listen: false)
+                                                        .thisMonthCustomers[widget.index]
+                                                        .purchases[widget.productIndex]
+                                                        .outstandingBalance -
+                                                        newPayment <=
                                                         500) {
-                                                  for (var payment in Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule) {
+                                                  for (var payment in Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule) {
                                                     setState(() {
                                                       if (!payment.isPaid) {
                                                         if (newPayment >= payment.remainingAmount) {
                                                           payment.isPaid = true;
                                                           newPayment = newPayment - payment.remainingAmount;
                                                           payment.addTransaction(
-                                                              amount: payment.remainingAmount, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                              amount: payment.remainingAmount,
+                                                              dateTime:
+                                                              DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
                                                           payment.remainingAmount = 0;
                                                         } else {
                                                           payment.remainingAmount = payment.remainingAmount - newPayment;
 
-                                                          payment.addTransaction(amount: newPayment, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
+                                                          payment.addTransaction(
+                                                              amount: newPayment,
+                                                              dateTime:
+                                                              DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute));
                                                           newPayment = 0;
                                                         }
                                                       }
@@ -343,24 +443,37 @@ class _PaymentScheduleScreenMonthlyOutstandingState extends State<PaymentSchedul
                                                     payment.updateFirestore();
                                                   }
                                                 } else {
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].addTransaction(
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .addTransaction(
                                                       amount: Provider.of<CustomerView>(context, listen: false)
-                                                          .thisMonthCustomer[widget.index]
+                                                          .thisMonthCustomers[widget.index]
                                                           .purchases[widget.productIndex]
                                                           .paymentSchedule[index]
                                                           .remainingAmount,
                                                       dateTime: dateTime);
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].remainingAmount =
-                                                      0;
-                                                  Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].paymentSchedule[index].isPaid = true;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .remainingAmount = 0;
+                                                  Provider.of<CustomerView>(context, listen: false)
+                                                      .thisMonthCustomers[widget.index]
+                                                      .purchases[widget.productIndex]
+                                                      .paymentSchedule[index]
+                                                      .isPaid = true;
                                                 }
                                                 Provider.of<CustomerView>(context, listen: false)
-                                                    .thisMonthCustomer[widget.index]
+                                                    .thisMonthCustomers[widget.index]
                                                     .purchases[widget.productIndex]
-                                                    .addTransaction(amount: transactionAmount, dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute))
+                                                    .addTransaction(
+                                                    amount: transactionAmount,
+                                                    dateTime: DateTime(dateTime.year, dateTime.month, dateTime.day, time.hour, time.minute))
                                                     .whenComplete(() {
                                                   Provider.of<CustomerView>(context, listen: false)
-                                                      .thisMonthCustomer[widget.index]
+                                                      .thisMonthCustomers[widget.index]
                                                       .purchases[widget.productIndex]
                                                       .updateCustomTransaction(amount: transactionAmount);
                                                   updateLocalState(context, transactionAmount);
@@ -370,7 +483,11 @@ class _PaymentScheduleScreenMonthlyOutstandingState extends State<PaymentSchedul
                                                 });
                                                 final service = PdfInvoiceService();
                                                 final date = await service.createPaymentReceipt(
-                                                    Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex], transactionAmount, dateTime);
+                                                    Provider.of<CustomerView>(context, listen: false)
+                                                        .thisMonthCustomers[widget.index]
+                                                        .purchases[widget.productIndex],
+                                                    transactionAmount,
+                                                    dateTime);
                                                 service.savePdfFile('Order Status', date);
                                               }
                                             },

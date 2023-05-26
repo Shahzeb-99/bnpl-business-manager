@@ -261,7 +261,7 @@ class UpdateFirestore {
     return true;
   }
   Future<bool> addProduct() async {
-    print('1');
+
     final cloud = FirebaseFirestore.instance;
 
     int companyProfit = ((productSalePrice - productCost) -
@@ -285,7 +285,7 @@ class UpdateFirestore {
       'image':
       'https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc='
     });
-    print('2');
+
     final vendorDocumentReference =
     await vendorReference.collection('products').add(
       {
@@ -302,7 +302,7 @@ class UpdateFirestore {
         'reference': vendorDocumentReference
       },
     );
-    print('3');
+
     await cloud
         .collection('investorCustomers')
         .where('name', isEqualTo: customerName)
@@ -315,13 +315,13 @@ class UpdateFirestore {
           'total_profit': FieldValue.increment(productSalePrice - productCost),
         },
       );
-      print('4');
+
       value.docs[0].reference.update(
         {
           'outstanding_balance': FieldValue.increment(productSalePrice),
         },
       );
-      print('5');
+
       final purchaseReference = await cloud
           .collection('investorCustomers')
           .doc(value.docs[0].id)
@@ -335,9 +335,8 @@ class UpdateFirestore {
           'companyProfit': companyProfit,
         },
       );
-      print('6');
-      print(investorName);
-      print('6');
+
+
       await cloud
           .collection('investors')
           .where('name', isEqualTo: investorName)
@@ -512,7 +511,6 @@ class UpdateFirestore {
 
 
   Future<bool> addProducsssst(List<Investors> investors) async {
-    print('1');
     final cloud = FirebaseFirestore.instance;
 
     int companyProfit = ((productSalePrice - productCost) -
@@ -526,7 +524,6 @@ class UpdateFirestore {
     cloud.collection('financials').doc('finance').update(
       {'investor_profit': FieldValue.increment(companyProfit)},
     );
-    print('1');
     DocumentReference vendorReference;
 
     vendorReference = await cloud.collection('investorVendors').add({
@@ -536,7 +533,6 @@ class UpdateFirestore {
       'image':
       'https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc='
     });
-    print('2');
     final vendorDocumentReference =
     await vendorReference.collection('products').add(
       {
@@ -553,7 +549,6 @@ class UpdateFirestore {
         'reference': vendorDocumentReference
       },
     );
-    print('3');
     await cloud
         .collection('investorCustomers')
         .where('name', isEqualTo: customerName)
@@ -566,13 +561,11 @@ class UpdateFirestore {
           'total_profit': FieldValue.increment(productSalePrice - productCost),
         },
       );
-      print('4');
       value.docs[0].reference.update(
         {
           'outstanding_balance': FieldValue.increment(productSalePrice),
         },
       );
-      print('5');
       final purchaseReference = await cloud
           .collection('investorCustomers')
           .doc(value.docs[0].id)
@@ -587,7 +580,6 @@ class UpdateFirestore {
           'batchOrder':true
         },
       );
-      print('6');
 
 
 
@@ -602,7 +594,6 @@ class UpdateFirestore {
         investor.investorReference?.collection('products').add({'productReference':purchaseReference});
 
       }
-      print('7');
       final double productPayment = productSalePrice / numberOfPayments;
       final double lastPayment =
           productSalePrice - productPayment.toInt() * numberOfPayments;
@@ -636,7 +627,6 @@ class UpdateFirestore {
     return true;
   }
   Future<bool> addCustomerToExistingInvestorBatch() async {
-    print('1');
     int companyProfit = ((productSalePrice - productCost) -
         (productSalePrice - productCost) * (investorProfitPercentage / 100))
         .toInt();
@@ -656,7 +646,6 @@ class UpdateFirestore {
         'investor_profit': FieldValue.increment(companyProfit),
       },
     );
-    print('2');
     DocumentReference vendorReference;
 
     vendorReference = await cloud.collection('investorVendors').add({
@@ -666,7 +655,6 @@ class UpdateFirestore {
       'image':
       'https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc='
     });
-    print('3');
     final vendorDocumentReference =
     await vendorReference.collection('products').add(
       {
@@ -693,7 +681,6 @@ class UpdateFirestore {
 
       },
     );
-    print('4');
     final purchaseReference = await cloud
         .collection('investorCustomers')
         .doc(newCustomerReference.id)
@@ -708,7 +695,6 @@ class UpdateFirestore {
         'batchOrder' : true
       },
     );
-    print('5');
 
 
       for(var investor in investorList){
@@ -721,7 +707,6 @@ class UpdateFirestore {
         investor.investorReference?.collection('products').add({'productReference':purchaseReference});
 
       }
-    print('6');
 
 
     final double productPayment = productSalePrice / numberOfPayments;

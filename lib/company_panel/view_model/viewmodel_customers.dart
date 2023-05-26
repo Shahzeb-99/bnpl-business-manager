@@ -13,18 +13,22 @@ class CustomerView extends ChangeNotifier {
 
   void getCustomers() async {
     thisMonthCustomer = [];
-    final cloud = FirebaseFirestore.instance;
+    int index=0;
+    var cloud = FirebaseFirestore.instance;
+    cloud.settings = const Settings(persistenceEnabled: true);
     await cloud.collection('customers').get().then(
       (value) async {
         if (value.docs.isNotEmpty) {
           for (var customer in value.docs) {
             Customers newCustomer = Customers(
+              index: index,
               name: customer.get('name'),
               image: customer.get('image'),
               outstandingBalance: customer.get('outstanding_balance'),
               paidAmount: customer.get('paid_amount'),
               documentID: customer.id,
             );
+            index++;
             thisMonthCustomer.add(newCustomer);
             notifyListeners();
           }
@@ -35,6 +39,7 @@ class CustomerView extends ChangeNotifier {
   }
 
   void getAllCustomersDashboardView() async {
+    int index=0;
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     await cloud.collection('customers').get().then(
@@ -42,12 +47,14 @@ class CustomerView extends ChangeNotifier {
         if (value.docs.isNotEmpty) {
           for (var customer in value.docs) {
             Customers newCustomer = Customers(
+              index: index,
               name: customer.get('name'),
               image: customer.get('image'),
               outstandingBalance: customer.get('outstanding_balance'),
               paidAmount: customer.get('paid_amount'),
               documentID: customer.id,
             );
+            index++;
             thisMonthCustomers.add(newCustomer);
             notifyListeners();
           }
@@ -58,7 +65,7 @@ class CustomerView extends ChangeNotifier {
   }
 
   getThisMonthCustomersOutstanding(
-      {required DashboardFilterOptions option}) async {
+      {required DashboardFilterOptions option}) async {int index=0;
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     cloud.settings.persistenceEnabled;
@@ -91,12 +98,13 @@ class CustomerView extends ChangeNotifier {
         });
         if (outstandingAmount > 0) {
           thisMonthCustomers.add(Customers(
+            index: index,
             name: customers.get('name'),
             image: customers.get('image'),
             outstandingBalance: outstandingAmount,
             paidAmount: customers.get('paid_amount'),
             documentID: customers.id,
-          ));
+          ));index++;
         }
       }
     });
@@ -105,7 +113,7 @@ class CustomerView extends ChangeNotifier {
   }
 
   getThisMonthCustomersRecovery(
-      {required DashboardFilterOptions option}) async {
+      {required DashboardFilterOptions option}) async {int index=0;
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     cloud.settings.persistenceEnabled;
@@ -136,13 +144,13 @@ class CustomerView extends ChangeNotifier {
           }
         });
         if (amountPaid > 0) {
-          thisMonthCustomers.add(Customers(
+          thisMonthCustomers.add(Customers(index: index,
             name: customers.get('name'),
             image: customers.get('image'),
             outstandingBalance: outstandingBalance,
             paidAmount: amountPaid,
             documentID: customers.id,
-          ));
+          ));index++;
         }
       }
     });

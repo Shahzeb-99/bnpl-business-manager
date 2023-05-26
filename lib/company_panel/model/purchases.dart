@@ -40,6 +40,7 @@ class Purchase {
 
   Future<void> getPaymentSchedule(String customerDocID) async {
     paymentSchedule = [];
+
     await documentReferencePurchase
         .collection('payment_schedule')
         .orderBy('date', descending: false)

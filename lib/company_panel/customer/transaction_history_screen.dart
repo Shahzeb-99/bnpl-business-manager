@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../invoice.dart';
 import '../view_model/viewmodel_customers.dart';
 import 'TransactionWidget.dart';
 
@@ -29,7 +30,22 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:   const Text('Transaction History',style: TextStyle(color:  Color(0xFFE56E14),),),
+        title:   Row(
+          children: [
+            const Text('Transaction History',style: TextStyle(color:  Color(0xFFE56E14),),),
+            Expanded(child: Container()),
+            IconButton(
+                onPressed: () async {
+                  final service = PdfInvoiceService();
+                  final date = await service.createTransactionList(
+                    Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex].transactionHistory,
+                    Provider.of<CustomerView>(context, listen: false).thisMonthCustomer[widget.index].purchases[widget.productIndex],
+                  );
+                  service.savePdfFile('Order Status', date);
+                },
+                icon: const Icon(Icons.receipt)),
+          ],
+        ),
       ),
       body: ListView.builder(
         physics: const ScrollPhysics(parent: BouncingScrollPhysics()),

@@ -11,20 +11,21 @@ class CustomerViewInvestor extends ChangeNotifier {
   bool monthSwitch = false;
   CustomerFilterOptions option = CustomerFilterOptions.all;
 
-  void getCustomers() async {
+  void getCustomers() async {int index=0;
     allCustomers = [];
     final cloud = FirebaseFirestore.instance;
+    cloud.settings = const Settings(persistenceEnabled: true);
     await cloud.collection('investorCustomers').get().then(
       (value) async {
         if (value.docs.isNotEmpty) {
           for (var customer in value.docs) {
-            Customers newCustomer = Customers(
+            Customers newCustomer = Customers(index: index,
               name: customer.get('name'),
               image: customer.get('image'),
               outstandingBalance: customer.get('outstanding_balance'),
               paidAmount: customer.get('paid_amount'),
               documentID: customer.id,
-            );
+            );index++;
             allCustomers.add(newCustomer);
             notifyListeners();
           }
@@ -34,20 +35,20 @@ class CustomerViewInvestor extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getAllCustomersDashboardView() async {
+  void getAllCustomersDashboardView() async {int index=0;
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     await cloud.collection('investorCustomers').get().then(
       (value) async {
         if (value.docs.isNotEmpty) {
           for (var customer in value.docs) {
-            Customers newCustomer = Customers(
+            Customers newCustomer = Customers(index: index,
               name: customer.get('name'),
               image: customer.get('image'),
               outstandingBalance: customer.get('outstanding_balance'),
               paidAmount: customer.get('paid_amount'),
               documentID: customer.id,
-            );
+            );index++;
             thisMonthCustomers.add(newCustomer);
             notifyListeners();
           }
@@ -57,7 +58,7 @@ class CustomerViewInvestor extends ChangeNotifier {
     notifyListeners();
   }
 
-  getThisMonthCustomersOutstanding({required DashboardFilterOptions option}) async {
+  getThisMonthCustomersOutstanding({required DashboardFilterOptions option}) async {int index=0;
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     cloud.settings.persistenceEnabled;
@@ -82,13 +83,13 @@ class CustomerViewInvestor extends ChangeNotifier {
           }
         });
         if (outstandingAmount > 0) {
-          thisMonthCustomers.add(Customers(
+          thisMonthCustomers.add(Customers(index: index,
             name: customers.get('name'),
             image: customers.get('image'),
             outstandingBalance: outstandingAmount,
             paidAmount: customers.get('paid_amount'),
             documentID: customers.id,
-          ));
+          ));index++;
         }
       }
     });
@@ -96,7 +97,7 @@ class CustomerViewInvestor extends ChangeNotifier {
     notifyListeners();
   }
 
-  getThisMonthCustomersRecovery({required DashboardFilterOptions option}) async {
+  getThisMonthCustomersRecovery({required DashboardFilterOptions option}) async {int index=0;
     thisMonthCustomers = [];
     final cloud = FirebaseFirestore.instance;
     cloud.settings.persistenceEnabled;
@@ -120,13 +121,13 @@ class CustomerViewInvestor extends ChangeNotifier {
           }
         });
         if (amountPaid > 0) {
-          thisMonthCustomers.add(Customers(
+          thisMonthCustomers.add(Customers(index: index,
             name: customers.get('name'),
             image: customers.get('image'),
             outstandingBalance: outstandingBalance,
             paidAmount: amountPaid,
             documentID: customers.id,
-          ));
+          ));index++;
         }
       }
     });

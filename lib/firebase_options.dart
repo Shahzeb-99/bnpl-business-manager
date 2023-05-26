@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,21 +49,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBjXFPbRIMUiDxwm7lq6LcAMtk8eE8Tz8k',
-    appId: '1:508326179650:web:d13d2a984c1ab261c80edb',
-    messagingSenderId: '508326179650',
-    projectId: 'ecommerce-bnpl',
-    authDomain: 'ecommerce-bnpl.firebaseapp.com',
-    storageBucket: 'ecommerce-bnpl.appspot.com',
-    measurementId: 'G-8L5ZF9FHP6',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBBPK2_w_6TP5gBCKqgK57ApaiTRKB123U',
     appId: '1:508326179650:android:c74e9634b7cb99afc80edb',
     messagingSenderId: '508326179650',
     projectId: 'ecommerce-bnpl',
+    databaseURL: 'https://ecommerce-bnpl-default-rtdb.firebaseio.com',
     storageBucket: 'ecommerce-bnpl.appspot.com',
   );
 
@@ -69,6 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:508326179650:ios:226d24fa1628a32ec80edb',
     messagingSenderId: '508326179650',
     projectId: 'ecommerce-bnpl',
+    databaseURL: 'https://ecommerce-bnpl-default-rtdb.firebaseio.com',
     storageBucket: 'ecommerce-bnpl.appspot.com',
     iosClientId: '508326179650-a55mccnio7vtefkruk7vu1rk145dbmjt.apps.googleusercontent.com',
     iosBundleId: 'com.example.ecommerceBnql',

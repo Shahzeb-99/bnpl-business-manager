@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_bnql/investor_panel/model/purchases.dart';
 import 'package:ecommerce_bnql/investor_panel/model/vendors.dart';
@@ -9,8 +7,8 @@ import 'package:ecommerce_bnql/investor_panel/model/vendors.dart';
 import '../../investor_panel/dashboard/dashboard_screen.dart';
 
 class Customers {
-  Customers({required this.name, required this.image, required this.outstandingBalance, required this.paidAmount, required this.documentID});
-
+  Customers({required this.index,required this.name, required this.image, required this.outstandingBalance, required this.paidAmount, required this.documentID});
+final int index;
   final String name;
   final String image;
   var outstandingBalance;
@@ -57,6 +55,7 @@ class Customers {
     purchases = [];
     Timestamp purchaseDate;
     final cloud = FirebaseFirestore.instance;
+    cloud.settings = const Settings(persistenceEnabled: true);
     DocumentReference documentReference;
     var outstandingBalance;
     var paidAmount;
@@ -69,6 +68,7 @@ class Customers {
 
     await cloud.collection('investorCustomers').doc(documentID).collection('purchases').get().then(
       (value) async {
+        print(1);
         for (var purchase in value.docs) {
           List<Investors> investors = [];
           documentReference = purchase.reference;
@@ -116,7 +116,6 @@ class Customers {
             purchaseAmount: productCost,
             sellingAmount: productSellingPrice,
             documentReferencePurchase: documentReference,
-
           ));
         }
       },
@@ -163,9 +162,8 @@ class Customers {
           );
 
           purchases.add(Purchase(
-            isBatchOrder: purchase.get('batchOrder'),
+            isBatchOrder: false,
             customerName: name,
-
             companyProfit: companyProfit,
             customerID: documentID,
             purchaseDate: purchaseDate,
@@ -202,7 +200,11 @@ class Customers {
         for (var purchase in value.docs) {
           outstandingBalance = 0;
 
-          await purchase.reference.collection('payment_schedule').where('date', isLessThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59)).get().then((value) {
+          await purchase.reference
+              .collection('payment_schedule')
+              .where('date', isLessThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59))
+              .get()
+              .then((value) {
             for (var payment in value.docs) {
               if (!payment.get('isPaid')) {
                 outstandingBalance += payment.get('remainingAmount');
@@ -234,9 +236,8 @@ class Customers {
             );
 
             purchases.add(Purchase(
-              isBatchOrder: purchase.get('batchOrder'),
+              isBatchOrder: false,
               customerName: name,
-
               companyProfit: companyProfit,
               customerID: documentID,
               purchaseDate: purchaseDate,
@@ -277,7 +278,9 @@ class Customers {
 
           await purchase.reference
               .collection('transaction_history')
-              .where('date', isLessThanOrEqualTo: option != DashboardFilterOptions.all ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59) : DateTime(2100))
+              .where('date',
+                  isLessThanOrEqualTo:
+                      option != DashboardFilterOptions.all ? DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 23, 59) : DateTime(2100))
               .get()
               .then((value) {
             for (var transaction in value.docs) {
@@ -309,9 +312,8 @@ class Customers {
             );
 
             purchases.add(Purchase(
-              isBatchOrder: purchase.get('batchOrder'),
+              isBatchOrder: false,
               customerName: name,
-
               companyProfit: companyProfit,
               customerID: documentID,
               purchaseDate: purchaseDate,

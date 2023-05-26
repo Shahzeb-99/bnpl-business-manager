@@ -57,9 +57,9 @@ class DashboardData {
                       DateTime.now().year, DateTime.now().month + 1, 0,23,59))
               .where('purchaseDate',
                   isGreaterThanOrEqualTo: isThisMonth
-                      ? DateTime(DateTime.now().year, DateTime.now().month, 1,23,59)
+                      ? DateTime(DateTime.now().year, DateTime.now().month, 1,0,0)
                       : DateTime(
-                          DateTime.now().year, DateTime.now().month - 5, 1,23,59))
+                          DateTime.now().year, DateTime.now().month - 5, 1,0,0))
               .get()
               .then((value) {
             for (var purchase in value.docs) {
@@ -128,9 +128,9 @@ class DashboardData {
                       DateTime.now().year, DateTime.now().month + 1, 0,23,59))
               .where('date',
                   isGreaterThanOrEqualTo: isThisMonth
-                      ? DateTime(DateTime.now().year, DateTime.now().month, 1,23,59)
+                      ? DateTime(DateTime.now().year, DateTime.now().month, 1,0,0)
                       : DateTime(
-                          DateTime.now().year, DateTime.now().month - 5, 1,23,59))
+                          DateTime.now().year, DateTime.now().month - 5, 1,0,0))
               .get()
               .then((value) {
             for (var transaction in value.docs) {

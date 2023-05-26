@@ -182,7 +182,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                       Theme(
                         data: Theme.of(context).copyWith(unselectedWidgetColor: const Color(0xFFE56E14), disabledColor: Colors.blue),
                         child: ListTile(
-                          title: const Text('Exissting Investor'),
+                          title: const Text('Batch Order'),
                           leading: Radio<Vendor?>(
                             activeColor: const Color(0xFFE56E14),
                             value: Vendor.batchOrder,
@@ -508,8 +508,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                             if (formKey.currentState!.validate()) {
                               if (hasEnoughBalance == true||_selectedVendorOption == Vendor.batchOrder) {
                                 if (selectedPayment != null || firstPaymentDate != null || orderDate != null) {
-                                  print('1');
-                                  print(_selectedVendorOption);
+
                                   bool status = _selectedVendorOption == Vendor.existingVendor
                                       ? await UpdateFirestore(
                                       investorList: [],

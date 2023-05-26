@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../investor_panel/view_model/viewmodel_customers.dart';
+import '../../invoice_investor.dart';
 
 
 
@@ -24,47 +25,56 @@ class TransactionWidgetRecovery extends StatefulWidget {
 class _TransactionWidgetRecoveryState extends State<TransactionWidgetRecovery> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color:Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 2,
-              child: Text(
-                  '${Provider
-                      .of<CustomerViewInvestor>(context, listen: false)
-                      .thisMonthCustomers[widget.index].purchases[widget
-                      .productIndex].transactionHistory[widget.paymentIndex].date
-                      .toDate()
-                      .day
-                      .toString()} - ${Provider
-                      .of<CustomerViewInvestor>(context, listen: false)
-                      .thisMonthCustomers[widget.index].purchases[widget
-                      .productIndex].transactionHistory[widget.paymentIndex].date
-                      .toDate()
-                      .month
-                      .toString()} - ${Provider
-                      .of<CustomerViewInvestor>(context, listen: false)
-                      .thisMonthCustomers[widget.index].purchases[widget
-                      .productIndex].transactionHistory[widget.paymentIndex].date
-                      .toDate()
-                      .year
-                      .toString()}'),
-            ),
-            Expanded(
-              flex: 4,
-              child: Text(
-                  'Amount : ${Provider
-                      .of<CustomerViewInvestor>(context, listen: false)
-                      .thisMonthCustomers[widget.index].purchases[widget
-                      .productIndex].transactionHistory[widget.paymentIndex]
-                      .amount.toString()} PKR'),
-            ),
+    return InkWell(onTap: ()async{
+      final service = PdfInvoiceServiceInvestor();
+      final date = await service.createPaymentReceipt(
+          Provider.of<CustomerViewInvestor>(context, listen: false).thisMonthCustomers[widget.index].purchases[widget.productIndex],
+          Provider.of<CustomerViewInvestor>(context, listen: false).thisMonthCustomers[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].amount,
+          Provider.of<CustomerViewInvestor>(context, listen: false).thisMonthCustomers[widget.index].purchases[widget.productIndex].transactionHistory[widget.paymentIndex].date.toDate());
+      service.savePdfFile('Order Status', date);
+    },
+      child: Card(
+        color:Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Text(
+                    '${Provider
+                        .of<CustomerViewInvestor>(context, listen: false)
+                        .thisMonthCustomers[widget.index].purchases[widget
+                        .productIndex].transactionHistory[widget.paymentIndex].date
+                        .toDate()
+                        .day
+                        .toString()} - ${Provider
+                        .of<CustomerViewInvestor>(context, listen: false)
+                        .thisMonthCustomers[widget.index].purchases[widget
+                        .productIndex].transactionHistory[widget.paymentIndex].date
+                        .toDate()
+                        .month
+                        .toString()} - ${Provider
+                        .of<CustomerViewInvestor>(context, listen: false)
+                        .thisMonthCustomers[widget.index].purchases[widget
+                        .productIndex].transactionHistory[widget.paymentIndex].date
+                        .toDate()
+                        .year
+                        .toString()}'),
+              ),
+              Expanded(
+                flex: 4,
+                child: Text(
+                    'Amount : ${Provider
+                        .of<CustomerViewInvestor>(context, listen: false)
+                        .thisMonthCustomers[widget.index].purchases[widget
+                        .productIndex].transactionHistory[widget.paymentIndex]
+                        .amount.toString()} PKR'),
+              ),
 
-          ],
+            ],
+          ),
         ),
       ),
     );

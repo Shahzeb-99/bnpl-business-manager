@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "508326179650",
+    "firebase_url": "https://ecommerce-bnpl-default-rtdb.firebaseio.com",
     "project_id": "ecommerce-bnpl",
     "storage_bucket": "ecommerce-bnpl.appspot.com"
   },

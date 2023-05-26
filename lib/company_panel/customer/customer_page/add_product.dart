@@ -37,7 +37,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           'Add Product',
           style: TextStyle(
             fontSize: 25,
-            color: const Color(0xFFE56E14),
+            color: Color(0xFFE56E14),
           ),
         ),
       ),

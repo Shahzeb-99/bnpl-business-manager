@@ -283,7 +283,7 @@ class _AddVendorScreenState extends State<AddVendorScreen> {
                                           },
                                           icon: const Icon(
                                             Icons.date_range_rounded,
-                                            color: const Color(0xFFE56E14),
+                                            color: Color(0xFFE56E14),
                                           ))
                                     ],
                                   ),
